@@ -3,15 +3,15 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-team-roster',
+  selector: 'app-login',
   standalone: true,
   imports: [
     RouterOutlet,
     CommonModule
   ],
-  templateUrl: './team-roster.component.html',
-  styleUrl: './team-roster.component.css'
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
-export class TeamRosterComponent {
+export class LoginComponent {
 
 }
