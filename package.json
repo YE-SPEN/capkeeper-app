@@ -1,13 +1,15 @@
 {
   "name": "capkeeper-app",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.config.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:capkeeper-app": "node dist/capkeeper-app/server/server.mjs"
+    "tailwind": "npx tailwindcss -i src/styles.css -o src/assets/tailwind.css --watch",
+    "dev": "nodemon --exec babel-node server.js"
   },
   "private": true,
   "dependencies": {
@@ -23,7 +25,12 @@
     "@angular/ssr": "^17.3.7",
     "@babel/runtime": "^7.25.6",
     "@hapi/hapi": "^21.3.10",
+    "@hapi/inert": "^7.1.0",
+    "@tailwindcss/forms": "^0.5.9",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
+    "flowbite": "^2.5.1",
+    "mysql2": "^3.11.0",
     "rxjs": "~7.8.0",
     "tailwind": "^4.0.0",
     "tslib": "^2.3.0",

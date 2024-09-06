@@ -2,13 +2,14 @@ import path from 'path';
 import Hapi from '@hapi/hapi';
 import Inert from '@hapi/inert';
 import admin from 'firebase-admin';
-import routes from './routes/index.js';
+import routes from './src/routes/index.js';
 import { db } from './database.js';
 import fs from 'fs';
 
 // Log to verify that the script is running
 console.log('Starting server initialization...');
 
+/*
 // Resolve the credentials path and read the credentials file
 const credentialsPath = path.resolve(process.cwd(), 'credentials.json');
 console.log(`Resolved credentials path: ${credentialsPath}`);
@@ -21,8 +22,9 @@ admin.initializeApp({
     credential: admin.credential.cert(credentials),
 });
 console.log('Firebase admin initialized');
+*/
 
-const distDir = fs.existsSync('./dist') ? './dist' : '../bbhl-app/dist/bbhl-app';
+const distDir = fs.existsSync('./dist') ? './dist' : '../dist/capkeeper-app';
 
 let server;
 

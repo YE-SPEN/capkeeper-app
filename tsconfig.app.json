@@ -9,10 +9,11 @@
   },
   "files": [
     "src/main.ts",
-    "src/main.server.ts",
-    "server.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "src/**/*.js",
+    "src/**/*.mjs",
+    "tailwind.config.js",
   ]
 }
