@@ -8,8 +8,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "tailwind": "npx tailwindcss -i src/styles.css -o src/assets/tailwind.css --watch",
-    "dev": "nodemon --exec babel-node server.js"
+    "tailwind": "npx tailwindcss -i src/styles.css -o src/assets/tailwind.css --watch"
   },
   "private": true,
   "dependencies": {

@@ -1,34 +1,14 @@
 {
-    "name": "capkeeper-backend",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "type": "module",
-    "scripts": {
-      "dev": "nodemon --exec babel-node server.js",
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-      "@aws-sdk/client-s3": "^3.637.0",
-      "@aws-sdk/s3-request-presigner": "^3.637.0",
-      "@babel/runtime": "^7.22.5",
-      "@hapi/boom": "^10.0.1",
-      "@hapi/hapi": "^21.3.2",
-      "@hapi/inert": "^7.1.0",
-      "aws-sdk": "^2.1687.0",
-      "dotenv": "^16.4.5",
-      "firebase-admin": "^11.9.0",
-      "mysql": "^2.18.1",
-      "mysql2": "^3.10.3"
-    },
-    "devDependencies": {
-      "@babel/core": "^7.22.5",
-      "@babel/node": "^7.22.5",
-      "@babel/plugin-transform-runtime": "^7.22.5",
-      "@babel/preset-env": "^7.22.5",
-      "nodemon": "^2.0.22"
-    }
-  }
+  "name": "capkeeper-backend",
+  "version": "1.0.0",
+  "main": "database.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec babel-node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
