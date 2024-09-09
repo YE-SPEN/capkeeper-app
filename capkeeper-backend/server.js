@@ -2,7 +2,7 @@ import path from 'path';
 import Hapi from '@hapi/hapi';
 import Inert from '@hapi/inert';
 import admin from 'firebase-admin';
-import routes from './src/routes/index.js';
+import routes from './routes/index.js';
 import { db } from './database.js';
 import fs from 'fs';
 

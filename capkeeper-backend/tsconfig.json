@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+      "target": "ES2022",
+      "module": "ES2022",
+      "strict": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "skipLibCheck": true,
+      "moduleResolution": "node",
+      "outDir": "./dist",
+      "baseUrl": "./",
+      "paths": {
+        "*": ["node_modules/*"]
+      }
+    },
+    "include": [
+      "**/*.ts",
+      "**/*.js",
+      "**/*.mjs",
+      "hapi-cors.d.ts"
+    ],
+    "exclude": [
+      "node_modules",
+      "dist"
+    ]
+  }
+  
