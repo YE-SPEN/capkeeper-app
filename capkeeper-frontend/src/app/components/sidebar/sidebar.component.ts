@@ -8,8 +8,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./sidebar.component.css'],
   standalone: true,
   imports: [
-    RouterModule,
-    CommonModule,
+
   ]
 })
 export class SidebarComponent {
