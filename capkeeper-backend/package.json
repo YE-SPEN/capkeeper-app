@@ -8,7 +8,7 @@
     "dev": "nodemon --exec babel-node src/server.js",
     "start": "node server.js"
   },
-  "author": "",
+  "author": "Eric Spensieri",
   "license": "ISC",
   "description": "",
   "dependencies": {
@@ -19,6 +19,14 @@
     "@hapi/inert": "^7.1.0",
     "aws-sdk": "^2.1687.0",
     "dotenv": "^16.4.5",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "mysql2": "^3.10.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/node": "^7.22.5",
+    "@babel/plugin-transform-runtime": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "nodemon": "^3.1.4"
   }
 }
