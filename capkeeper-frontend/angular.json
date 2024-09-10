@@ -28,7 +28,20 @@
               "src/assets/tailwind.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "server": "src/main.server.ts",
+            "prerender": true,
+            "ssr": {
+              "entry": "../capkeeper-backend/src/server.js"
+            },
+            "allowedCommonJsDependencies": [
+              "@hapi/hapi",
+              "@hapi/inert",
+              "firebase-admin",
+              "mysql2/promise",
+              "dotenv",
+              "@hapi/boom"
+            ]
           },
           "configurations": {
             "production": {
