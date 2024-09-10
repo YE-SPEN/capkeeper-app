@@ -14,10 +14,10 @@
       }
     },
     "include": [
-      "**/*.ts",
-      "**/*.js",
-      "**/*.mjs",
-      "hapi-cors.d.ts"
+      "src/**/*.ts",
+      "src/**/*.js",
+      "src/**/*.mjs",
+      "src/hapi-cors.d.ts"
     ],
     "exclude": [
       "node_modules",
