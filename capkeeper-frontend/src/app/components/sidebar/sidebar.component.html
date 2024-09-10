@@ -81,8 +81,8 @@
                   </svg>
             </button>
             <ul *ngIf="teamsMenuIsOpen" id="dropdown-example" class="py-2 space-y-2">
-                  <li>
-                    <a routerLink="/roster"  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Team 1</a>
+                  <li *ngFor="let team of teams">
+                    <a [routerLink]="['league?.league_id', 'teams', 'team.team_id']"  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">{{ team.team_name }}</a>
                   </li>
             </ul>
         </li>
