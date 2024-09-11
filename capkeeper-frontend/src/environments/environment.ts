@@ -5,14 +5,6 @@
 export const environment = {
     production: false,
     apiUrl: 'http://localhost:4200/api',
-    firebase: {
-        apiKey: "AIzaSyDt_7IMc1GnWRZLy6Sxpw7uDGmveJsGbmk",
-        authDomain: "bbhl-project.firebaseapp.com",
-        projectId: "bbhl-project",
-        storageBucket: "bbhl-project.appspot.com",
-        messagingSenderId: "261942850972",
-        appId: "1:261942850972:web:266a8c974f5c6064754459"
-      }
   };
   
   /*
