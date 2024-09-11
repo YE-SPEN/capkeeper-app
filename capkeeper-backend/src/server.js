@@ -43,6 +43,7 @@ const start = async () => {
     routes.forEach(route => {
         if (route.method && route.path) {
             server.route(route);
+            console.log('Registered route: ', route);
         } else {
             console.error('Invalid route object:', route);
         }
@@ -54,7 +55,7 @@ const start = async () => {
         path: '/{param*}',
         handler:  {
             directory: {
-                path: `${distDir}/bbhl-app`,
+                path: `${distDir}/capkeeper-app`,
                 index: ['index.html'],
                 redirectToSlash: true
             }
@@ -68,7 +69,7 @@ const start = async () => {
         if(response.isBoom && response.output.statusCode === 404) {
             try {
                 
-            return reply.file(`${distDir}/bbhl-app/index.html`, {
+            return reply.file(`${distDir}/capkeeper-app/index.html`, {
                 confine: false
             });
         } catch(e) {

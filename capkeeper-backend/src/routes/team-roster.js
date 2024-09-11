@@ -9,7 +9,7 @@ export const teamRosterRoute = {
         const league_id = req.params.league_id;
 
         try {
-            const { rows: roster} = await db.query( 
+            const { results: roster} = await db.query( 
                 `SELECT p.*, pob.isRookie, nl.logo 
                 FROM nhl_logos nl
                     JOIN players p ON
@@ -26,14 +26,14 @@ export const teamRosterRoute = {
                  [league_id, team_id]
             );
 
-            const { rows } = await db.query( 
+            const { results: teamInfo } = await db.query( 
                 `SELECT * FROM teams
                 WHERE league_id = ?
                 AND team_id = ?`,
                 [league_id, team_id]
             );
 
-            const team = rows[0] || null;
+            const team = teamInfo[0];
 
             return { roster, team };
 

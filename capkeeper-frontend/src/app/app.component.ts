@@ -1,24 +1,40 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { LoginComponent } from './components/login/login.component';
-import { TeamRosterComponent } from './components/team-roster/team-roster.component';
-import { RouterModule } from '@angular/router';
+import { TeamService } from './services/team.service';
+import { Team, League } from './types';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  imports: [
-    CommonModule,
-    RouterModule,
-    SidebarComponent,
-    LoginComponent,
-    TeamRosterComponent,
-  ],
 })
 
 export class AppComponent {
   title = 'capkeeper-app';
+  userMenuIsOpen: boolean = false;
+  teamsMenuIsOpen: boolean = false;
+  league: League | null = null;
+  teams: Team[] = [];
+
+  constructor(
+    private teamService: TeamService,
+  ) { }
+
+  ngOnInit(): void {
+    this.teamService.getTeamsByLeague('100')
+      .subscribe(response => {
+        this.teams = response.teams;
+        this.league = response.league;
+        console.log('Called get TeamsMethod')
+        console.log(this.teams)
+        console.log(this.league)
+      })
+  }
+
+  toggleUserMenu(): void {
+    this.userMenuIsOpen = !this.userMenuIsOpen;
+  }
+
+  toggleTeamsMenu(): void {
+    this.teamsMenuIsOpen = !this.teamsMenuIsOpen;
+  }
 }

@@ -19,7 +19,7 @@ export class TeamService {
     return this.http.get<{ league: League, teams: Team[] }>(url);
   }
   
-  getTeamRoster(league_id: string, team_id: string): Observable<{ team: Team, roster: Player[] }> {
+  getRosterByTeam(league_id: string, team_id: string): Observable<{ team: Team, roster: Player[] }> {
     const url = `api/${league_id}/teams/${team_id}`;
     return this.http.get<{ team: Team, roster: Player[] }>(url);
   }

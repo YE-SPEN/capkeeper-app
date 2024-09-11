@@ -8,22 +8,19 @@ export const leagueRoute = {
         const league_id = req.params.league_id;
 
         try {
-            const { rows } = await db.query( 
+            const { results: leagueInfo } = await db.query( 
                 `SELECT * from leagues
-                WHERE
-                    league_id = ?`,
+                WHERE league_id = ?`,
                  [league_id]
             );
 
-            const league = rows[0] || null;
+            const league = leagueInfo[0];
 
-            const { rows: teams } = await db.query( 
+            const { results: teams } = await db.query( 
                 `SELECT * FROM teams
                 WHERE league_id = ?`,
                 [league_id]
             );
-
-            const team = rows[0] || null;
 
             return { league, teams };
 

@@ -50,6 +50,7 @@ export interface Player {
     short_code: string,
     logo: string,
     position: string,
+    isRookie: boolean,
     contract_status: string,
     contract_end: string,
     expiry_status: string, 
