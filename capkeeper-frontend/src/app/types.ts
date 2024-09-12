@@ -25,6 +25,7 @@ export interface Team {
     [key: string]: any; 
     team_id: string,
     team_name: string,
+    managed_by: string,
     picture: string,
     roster_size: number,
     total_cap: number,
@@ -58,4 +59,7 @@ export interface Player {
     aav_current: number,
     years_left_next: number,
     aav_next: number,
+    owned_by: string,
+    last_updated: string,
+    updated_by: string,
 };

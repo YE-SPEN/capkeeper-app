@@ -1,0 +1,171 @@
+<div class="relative overflow-x-auto">
+   <div class="relative">
+      <h1 class="font-bold text-2xl">
+         Player Database
+      </h1>
+   </div>
+    <div class="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+       <div>
+         <!-- Control Panel -->
+         <ul class="flex flex-col items-center md:flex-row md:items-center gap-4 py-4">
+            <!-- Search Bar -->
+            <li class="w-full md:w-auto flex flex-col md:flex-row items-center justify-center md:justify-start">
+               <label for="table-search" class="sr-only">Search</label>
+               <div class="relative">
+                   <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                       <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                       </svg>
+                   </div>
+                   <input type="text" id="table-search-users" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for users">
+               </div>
+            </li>
+
+            <!-- Toggle Unowned -->
+            <li class="w-full md:w-auto flex flex-col md:flex-row items-center justify-center md:justify-start">
+               <label for="teams" class="text-lg font-semibold text-gray-900 dark:text-white mr-4 mb-2 md:mb-0">Sort by:</label>
+               <select 
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 min-w-[200px]">
+                  
+                  <option value="all">All Players</option>
+                  <option value="unowned">All Available</option>
+                  <option value="owned">All Owned</option>         
+            </select>        
+            </li>
+
+            <!-- Team Filter -->
+            <li class="w-full md:w-auto flex flex-col md:flex-row items-center justify-center md:justify-start">
+               <label for="teams" class="text-lg font-semibold text-gray-900 dark:text-white mr-4 mb-2 md:mb-0">Select season:</label>
+               <select required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 min-w-[200px]">
+                  <option *ngFor="let team of teams" [value]="team">
+                        Team 1
+                  </option>
+               </select>
+            </li>
+
+            <!-- Sort By -->
+
+         </ul>         
+       </div>
+ </div>
+
+    <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2">
+       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+           <tr class="border-b-2">
+
+             <th scope="col" class="p-4 bg-gray-50 dark:bg-gray-700">
+               Add
+             </th>
+     
+             <th scope="col" class="p-4 bg-gray-50 dark:bg-gray-700">
+               Player
+             </th>
+             <th scope="col" class="text-center p-4 bg-gray-50 dark:bg-gray-700">
+               Status
+             </th>
+             <th scope="col" class="text-center p-4 bg-gray-50 dark:bg-gray-700">
+               Owned By
+             </th>
+             <th scope="col" class="text-center p-4 bg-gray-50 dark:bg-gray-700">
+               Years Left
+             </th>
+             <th scope="col" class="text-center p-4 bg-gray-50 dark:bg-gray-700">
+               Current AAV
+             </th>
+             <th scope="col" class="text-center p-4 bg-gray-50 dark:bg-gray-700">
+               Last Updated
+             </th>
+           </tr>
+         </thead>
+         <tbody>
+           <tr *ngFor="let player of filteredPlayers" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+             <td class="p-4 dark:bg-gray-800">
+                <div class="flex items-center">
+                  <svg class="w-6 h-6 text-green-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                   </svg>      
+                </div>
+             </td>
+
+             <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white dark:bg-gray-800">
+                <img class="w-10 h-10 rounded-full" src="{{player.logo}}" alt="Player image">
+                <div class="ps-3 bg-white">
+                <div class="text-base font-semibold">{{ player.first_name }} {{ player.last_name }}</div>
+                <div class="font-normal text-gray-500">{{ player.position }} - {{ player.short_code }}</div>
+                </div>
+             </td>
+
+            <td class="px-6 py-4">
+               <div class="flex items-center">
+                     <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> {{ player.contract_status }}
+               </div>
+            </td>
+            <td class="px-6 py-4">
+               {{ player['owned_by'] ? player['owned_by'] : 'Unowned' }}
+           </td>
+           <td class="px-6 py-4">
+               {{ player.years_left_current }}
+            </td>
+            <td class="px-6 py-4">
+               {{ player.aav_current > 0 ? '$' +(player.aav_current | number:'1.0-0') : 'N/A' }}
+            </td>
+            <td class="px-6 py-4 text-xs">
+               {{ player.last_updated }}<br>
+               <span class="italic">by {{ player.updated_by }}</span>
+            </td>
+            <td class="px-6 py-4">
+               <a href="#" class="font-medium text-green-500 dark:text-green-500 hover:underline">Edit Contract</a>
+           </td>
+
+           </tr>
+         </tbody>
+       </table>
+     </div>       
+     
+   <!-- Edit Player Modal -->
+   <ng-template #editTeamModal id="editTeamModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+      <div class="relative w-full max-w-2xl max-h-full">
+            <form class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+   
+               <div class="flex items-start justify-between p-4 rounded-t">
+                  <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                     Edit Team Info
+                  </h3>
+                  <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
+                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                  </svg>
+                  <span class="sr-only">Close modal</span>
+               </button>
+               </div>
+   
+               <div class="p-6 space-y-6">
+                  <div class="grid grid-cols-6 gap-6">
+                     <div class="col-span-6 sm:col-span-3">
+                           <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
+                           <input type="text" name="first-name" id="first-name" class="shadow-sm bg-gray-50  text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Bonnie" required="">
+                     </div>
+                     <div class="col-span-6 sm:col-span-3">
+                           <label for="last-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
+                           <input type="text" name="last-name" id="last-name" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Green" required="">
+                     </div>
+                     <div class="col-span-6 sm:col-span-3">
+                           <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                           <input type="email" name="email" id="email" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="example@company.com" required="">
+                     </div>
+                     <div class="col-span-6 sm:col-span-3">
+                           <label for="phone-number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
+                           <input type="number" name="phone-number" id="phone-number" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-blue-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="e.g. +(12)3456 789" required="">
+                     </div>
+                  </div>
+               </div>
+   
+               <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse rounded-b">
+                  <button type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Save Changes</button>
+                  <button type="submit" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+               </div>
+         </form>
+      </div>
+</ng-template>
