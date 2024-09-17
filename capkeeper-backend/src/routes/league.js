@@ -22,7 +22,11 @@ export const leagueRoute = {
                 [league_id]
             );
 
-            return { league, teams };
+            const { results: nhl_teams } = await db.query(
+                `SELECT * FROM nhl_logos`
+            )
+
+            return { league, teams, nhl_teams };
 
         } catch (err) {
             console.error(err);
