@@ -165,6 +165,14 @@ export class PlayerDatabaseComponent {
     return formattedDate;    
   }
 
+  getTime(): string {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+  }  
+
   playerFormSubmit(event: Event) {
       const formElement = event.target as HTMLFormElement;
       const action = formElement.getAttribute('data-action');
@@ -180,19 +188,20 @@ export class PlayerDatabaseComponent {
         updated_by: 'Eric Spensieri',
       };
 
-      console.log(submissionData)
+      let message;
+      let action_type;
+      if (submissionData.action === 'add') {
+        message = submissionData.first_name + ' ' + submissionData.last_name + ' added to the player database.';
+        action_type = 'create-player';
+      }
+      else {
+        message = 'Saved changes to player profile for ' + submissionData.first_name + ' ' + submissionData.last_name + '.';
+        action_type = 'edit-player';
+      }
       
       this.http.post('/api/players/create-player', submissionData)
         .subscribe({
           next: (response) => {
-            let message;
-
-            if (submissionData.action === 'add') {
-              message = submissionData.first_name + ' ' + submissionData.last_name + ' successfully added to the player database.';
-            }
-            else {
-              message = 'Saved changes to player profile for ' + submissionData.first_name + ' ' + submissionData.last_name;
-            }
             
             this.completeAction(message, true);
             console.log('Changes saved.', response);
@@ -209,6 +218,27 @@ export class PlayerDatabaseComponent {
           }
         });
 
+        const actionData = {
+          league_id: this.globalService.league?.league_id,
+          message: message,
+          date: this.getDate(),
+          time: this.getTime(),
+          user_id: 'e_spen',
+          action_type: action_type
+        }
+
+        console.log(actionData)
+
+        this.http.post('api/record-action', actionData)
+          .subscribe({
+            next: (response) => {
+              console.log('Action recorded successfully:', response);
+            },
+            error: (error) => {
+              console.error('Error recording action:', error);
+            }
+          });
+        
        this.closeModal();
        this.ngOnInit();
   }

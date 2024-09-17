@@ -177,15 +177,8 @@
          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
              <tr class="border-b-2">
-               <!-- Checkbox Column -->
                <th scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
-                 <div class="flex items-center">
-                     <input             
-                     id="default-checkbox"
-                     type="checkbox" 
-                     value="" 
-                     class="w-4 h-4 text-green-400 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-500 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"> 
-                 </div>
+
                </th>
        
                <!-- Player Column -->
@@ -195,7 +188,7 @@
        
                <!-- Action Column -->
                <th scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
-                 Action
+                 
                </th>
        
                <!-- Dynamic Columns -->
@@ -206,15 +199,14 @@
            </thead>
            <tbody>
              <tr *ngFor="let forward of team.forwards" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-               <!-- Checkbox Column -->
                <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
-                  <div class="flex items-center bg-white">
-                     <input             
-                     id="default-checkbox"
-                     type="checkbox" 
-                     value="" 
-                     class="w-4 h-4 text-green-400 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-500 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                  </div>
+                  <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
+                           stroke-width="2" 
+                           d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                  </svg>                    
                </td>
 
                <!-- Player Column -->
@@ -228,8 +220,12 @@
 
                <!-- Action Column -->
                <td class="text-center px-6 py-4 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
-                  <!-- Modal toggle -->
-                  <a href="#" type="button" data-modal-target="editUserModal" data-modal-show="editUserModal" class="font-medium text-red-600 dark:text-red-600 hover:underline">Drop player</a>
+                  <select class="inline-flex items-center max-w-[90px] text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                     <option value="7">Action</option>
+                     <option value="7">Place on IR</option>
+                     <option value="30">Add to Trade Block</option>
+                     <option value="90">Call-Up</option>         
+               </select> 
                </td>
        
                <!-- Salary Columns -->

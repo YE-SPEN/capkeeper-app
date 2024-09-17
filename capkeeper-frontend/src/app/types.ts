@@ -71,3 +71,13 @@ export interface NHL_Team {
     team_name: string,
     logo: string,
 }
+
+export interface Activity {
+    [key: string]: any;
+    league_id: string,
+    message: string,
+    action_type: string,
+    date: string,
+    time: string,
+    user_id: string,
+}

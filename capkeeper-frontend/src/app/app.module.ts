@@ -10,13 +10,15 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { TeamRosterComponent } from './components/team-roster/team-roster.component';
 import { PlayerDatabaseComponent } from './components/player-database/player-database.component';
+import { LeagueActivityComponent } from './components/league-activity/league-activity.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     TeamRosterComponent,
-    PlayerDatabaseComponent
+    PlayerDatabaseComponent,
+    LeagueActivityComponent
   ],
   imports: [
     BrowserModule,
