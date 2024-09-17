@@ -1,5 +1,6 @@
 import { Component, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../services/global.service';
 import { PlayerService } from '../../services/player.service';
 import { SortingService } from '../../services/sorting.service';
@@ -16,8 +17,9 @@ export class PlayerDatabaseComponent {
   modalRef!: BsModalRef;
   league_id!: string;
   allPlayers!: Player[];
-  filteredPlayers!: Player[];
-  teams!: Team[];
+  filteredPlayers: Player[] = [];
+  toEdit!: Player;
+  teams: Team[] = [];
   searchKey: string = '';
   currentPage = 1;
   totalPages!: number;
@@ -25,13 +27,26 @@ export class PlayerDatabaseComponent {
   statusFilter = 'all';
   positionFilter = 'all';
   teamFilter = 'all';
-
+  formSubmitted: boolean = false;
+  formData = {
+    first_name: '',
+    last_name: '',
+    short_code: '',
+    position: '',
+    years_left_current: 0,
+    aav_current: 0,
+    years_left_next: 0,
+    aav_next: 0,
+    expiry_status: '',
+  };
 
   constructor(
     private playerService: PlayerService,
     public globalService: GlobalService,
+    public sortingService: SortingService,
     private modalService: BsModalService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
@@ -42,6 +57,7 @@ export class PlayerDatabaseComponent {
         .subscribe(response => {
           this.allPlayers = response.players;
           this.filterPlayers();
+          console.log(this.globalService.nhl_teams)
 
           this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
       });
@@ -57,10 +73,8 @@ export class PlayerDatabaseComponent {
   }
 
   filterPlayers(): void {
-    console.log('Pos filter', this.positionFilter)
-    console.log('Status filter', this.statusFilter)
-    console.log('Team filter', this.teamFilter)
     this.filteredPlayers = this.allPlayers.filter(player => this.inPosFilter(player) && this.inStatusFilter(player) && this.inTeamFilter(player));
+    this.sortingService.sort(this.filteredPlayers, this.sortingService.sortColumn, this.sortingService.sortDirection);
   }
 
   isSkater(player: Player): boolean {
@@ -74,10 +88,11 @@ export class PlayerDatabaseComponent {
   }
 
   inStatusFilter(player: Player): boolean {
-    if (this.statusFilter === 'available' && player.owned_by === 'Unowned') { return true; }
+    if (this.statusFilter === 'all') { return true; }
+    if (this.statusFilter === 'available' && player.owned_by === null) { return true; }
     if (this.statusFilter === 'unsigned' && player.contract_status === 'Unsigned') { return true; }
-    if (this.statusFilter === 'owned' && player.owned_by !== 'Unowned') { return true; }
-    return true;
+    if (this.statusFilter === 'owned' && player.owned_by !== null) { return true; }
+    return false;
   }
 
   inTeamFilter(player: Player): boolean {
@@ -110,8 +125,12 @@ export class PlayerDatabaseComponent {
   }
 
   getPageEnd(): number {
+    if (!this.filteredPlayers) {
+      return 0; 
+    }
     return Math.min((this.currentPage % this.pageSize * this.pageSize), this.filteredPlayers.length);
   }
+  
 
   generatePageArray(): number[] {
     if (this.currentPage <= 3) {
@@ -134,12 +153,107 @@ export class PlayerDatabaseComponent {
     this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
   }
 
-  openModal(template: TemplateRef<any>) {
+  generateID(first_name: string, last_name: string): string {
+    const id = first_name.toLowerCase().replace(/\s+/g, '') + '-' + last_name.toLowerCase().replace(/\s+/g, '');
+    console.log(id)
+    return id;
+  }
+
+  getDate(): string {
+    const today = new Date();
+    const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+    return formattedDate;    
+  }
+
+  playerFormSubmit(event: Event) {
+      const formElement = event.target as HTMLFormElement;
+      const action = formElement.getAttribute('data-action');
+
+      const submissionData = {
+        action: action,
+        player_id: action === 'edit' ? this.toEdit.player_id : this.generateID(this.formData.first_name, this.formData.last_name),
+        first_name: this.formData.first_name,
+        last_name: this.formData.last_name,
+        position: this.formData.position,
+        short_code: this.formData.short_code,
+        last_updated: this.getDate(),
+        updated_by: 'Eric Spensieri',
+      };
+
+      console.log(submissionData)
+      
+      this.http.post('/api/players/create-player', submissionData)
+        .subscribe({
+          next: (response) => {
+            let message;
+
+            if (submissionData.action === 'add') {
+              message = submissionData.first_name + ' ' + submissionData.last_name + ' successfully added to the player database.';
+            }
+            else {
+              message = 'Saved changes to player profile for ' + submissionData.first_name + ' ' + submissionData.last_name;
+            }
+            
+            this.completeAction(message, true);
+            console.log('Changes saved.', response);
+  
+            this.formSubmitted = true;
+            setTimeout(() => {
+              this.formSubmitted = false;
+            }, 3000);
+            this.resetForm();
+          },
+          error: (error) => {
+            console.error('Error submitting form', error, submissionData);
+            this.completeAction('Error Submitting Player Form', false);
+          }
+        });
+
+       this.closeModal();
+       this.ngOnInit();
+  }
+
+  selectPlayer(player: Player) {
+    this.toEdit = player;
+    this.formData.first_name = this.toEdit.first_name;
+    this.formData.last_name = this.toEdit.last_name;
+    this.formData.short_code = this.toEdit.short_code;
+    this.formData.position = this.toEdit.position;
+    this.formData.years_left_current = this.toEdit.years_left_current;
+    this.formData.aav_current = this.toEdit.aav_current;
+    this.formData.years_left_next = this.toEdit.years_left_next;
+    this.formData.aav_next = this.toEdit.aav_next;
+    this.formData.expiry_status = this.toEdit.expiry_status;
+  }
+
+  resetForm() {
+    this.formData.first_name = '';
+    this.formData.last_name = '';
+    this.formData.short_code = '';
+    this.formData.position = '';
+    this.formData.years_left_current = 0;
+    this.formData.aav_current = 0;
+    this.formData.years_left_next = 0;
+    this.formData.aav_next = 0;
+    this.formData.expiry_status = '';
+  }
+
+  completeAction(message: string, success: boolean): void {
+    //this.actionCompleted.emit({ message, success });
+  }
+
+
+  openModal(template: TemplateRef<any>, player?: Player): void {
+    if (player) {
+      this.selectPlayer(player);
+    }
     this.modalRef = this.modalService.show(template);
   }
 
+
   closeModal() {
     this.modalRef.hide();
+    this.resetForm();
   }
 
 }

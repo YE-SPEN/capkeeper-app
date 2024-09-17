@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ModalModule, BsModalService } from 'ngx-bootstrap/modal';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,6 +23,7 @@ import { PlayerDatabaseComponent } from './components/player-database/player-dat
     AppRoutingModule,
     FormsModule,
     ModalModule,
+    ReactiveFormsModule,
     HttpClientModule,
   ],
   providers: [ 

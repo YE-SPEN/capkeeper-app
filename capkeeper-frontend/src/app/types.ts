@@ -63,3 +63,11 @@ export interface Player {
     last_updated: string,
     updated_by: string,
 };
+
+export interface NHL_Team {
+    [key: string]: any;
+    short_code: string,
+    city: string,
+    team_name: string,
+    logo: string,
+}

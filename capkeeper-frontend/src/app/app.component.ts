@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
       .subscribe(response => {
         this.globalService.teams = response.teams;
         this.globalService.league = response.league;
+        this.globalService.nhl_teams = response.nhl_teams;
         console.log(this.globalService.teams);
         console.log(this.globalService.league);
       });

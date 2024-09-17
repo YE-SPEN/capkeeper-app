@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Team, League } from '../types';
+import { Team, League, NHL_Team } from '../types';
 
 @Injectable({
   providedIn: 'root', 
@@ -9,6 +9,7 @@ export class GlobalService {
   teamsMenuIsOpen: boolean = false;
   league: League | null = null;
   teams: Team[] = [];
+  nhl_teams: NHL_Team[] = [];
 
   toggleUserMenu(): void {
     this.userMenuIsOpen = !this.userMenuIsOpen;

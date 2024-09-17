@@ -7,7 +7,7 @@ import { Team, Player } from '../types';
   providedIn: 'root'
 })
 export class SortingService {
-  sortColumn: string | null = 'points';
+  sortColumn: string | null = 'last_name';
   sortDirection: 'asc' | 'desc' = 'desc';  
 
   constructor(
@@ -26,6 +26,7 @@ export class SortingService {
         }
       });
     }
+    this.sortColumn = column;
     return data;
   }
 

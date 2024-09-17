@@ -139,3 +139,11 @@ input[type=checkbox], input[type=radio] {
     text-decoration: underline;
   }
 }
+
+.select-dropdown {
+  position: relative;
+  margin-top: 8px;
+  max-height: 96px; 
+  overflow-y: auto;
+  width: 100%;
+}
