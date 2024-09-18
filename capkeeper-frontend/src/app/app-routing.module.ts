@@ -5,6 +5,7 @@ import { TeamRosterComponent } from './components/team-roster/team-roster.compon
 import { AppComponent } from './app.component';
 import { PlayerDatabaseComponent } from './components/player-database/player-database.component';
 import { LeagueActivityComponent } from './components/league-activity/league-activity.component';
+import { RulesComponent } from './components/rules/rules.component';
 
 const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -12,6 +13,7 @@ const routes: Routes = [
     { path: ':league_id/activity-log', component: LeagueActivityComponent },
     { path: ':league_id/teams/:team_id', component: TeamRosterComponent },
     { path: ':league_id/players', component: PlayerDatabaseComponent },
+    { path: ':league_id/rules', component: RulesComponent },
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: '**', redirectTo: 'login' },
   ];

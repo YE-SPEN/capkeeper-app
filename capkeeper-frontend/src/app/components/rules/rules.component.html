@@ -1,0 +1,449 @@
+<!-- 3 column layout -->
+<div class="grid grid-cols-3 gap-4 mb-4">
+    
+    <!-- Team info card-->
+    <div class="flex h-auto bg-white dark:bg-gray-800">
+       <table>
+          <tr>
+              <td class="items-left p-4">
+                  <img [src]="globalService.league?.picture" class="max-w-[150px]">
+              </td>
+              <td>
+                  <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ globalService.league?.league_name }}</h1>
+                  <h3 class="pb-4"><b>Commissioner:</b> {{ globalService.league?.commissioner_id }}</h3>
+                  <button type="button" href="https://docs.google.com/document/d/1ArVU8c1MuoRNzT1E00IHIr4kVMZYn0vgarV1cOWTx3w/edit#heading=h.phna7c2aboas" class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                   <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M13 11.15V4a1 1 0 1 0-2 0v7.15L8.78 8.374a1 1 0 1 0-1.56 1.25l4 5a1 1 0 0 0 1.56 0l4-5a1 1 0 1 0-1.56-1.25L13 11.15Z" clip-rule="evenodd"/>
+                        <path fill-rule="evenodd" d="M9.657 15.874 7.358 13H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2.358l-2.3 2.874a3 3 0 0 1-4.685 0ZM17 16a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z" clip-rule="evenodd"/>
+                    </svg>                  
+                    Download
+                   </button>
+              </td>
+          </tr>
+      </table>
+     </div>
+ 
+     <!-- Cap summary tab -->
+     <div class="flex flex-col h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
+       <!-- Header Row with Dark Background -->
+       <div class="bg-green-400 text-white p-2 rounded-t-md">
+          <h3 class="font-semibold text-lg">League Settings</h3>
+       </div>
+       
+       <!-- Table Area -->
+       <div class="p-4">
+          <table class="w-full">
+             <tr>
+                <td class="items-left align-top">
+                   <span class="text-lg font-normal text-gray-500 lg:text-sm dark:text-gray-400">
+                      Number of teams: &nbsp;&nbsp;&nbsp; 
+                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                        {{ globalService.league?.['num_teams'] }}
+                      </span>
+                      <br><b>Salary Cap:</b> &nbsp;&nbsp;&nbsp; 
+                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                         ${{ globalService.league?.salary_cap | number:'1.0-0' }}
+                      </span>
+    
+                      <div class="py-2">
+                         <hr class="border-0 border-t-2 border-gray-300">
+                      </div>  
+                      
+                      <b>Max Roster Size:</b> &nbsp;&nbsp;&nbsp; 
+                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                         {{ globalService.league?.max_roster_size }}
+                      </span>
+                      
+                      <br>Minimum Forwards: &nbsp;&nbsp;&nbsp;
+                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                         {{ globalService.league?.min_forwards }}
+                      </span>
+    
+                      <br>Minimum Defense: &nbsp;&nbsp;&nbsp; 
+                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                         {{ globalService.league?.min_defense }}
+                      </span>
+
+                      <br>Minimum Goalies: &nbsp;&nbsp;&nbsp; 
+                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                         {{ globalService.league?.min_goalies }}
+                      </span>
+
+                      <div class="py-2">
+                        <hr class="border-0 border-t-2 border-gray-300">
+                     </div>  
+
+                      <b>Rookie Bank:</b> &nbsp;&nbsp;&nbsp; 
+                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                         Yes ({{ globalService.league?.rookie_bank_size }} maximum)
+                      </span>
+                   </span>
+                </td>
+             </tr>
+          </table>   
+       </div>
+    </div>   
+    
+    <!-- Contract Summary card -->
+     <div class="flex h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
+       <div class="w-full">
+          <!-- Header Row with Dark Background -->
+          <div class="bg-green-400 text-white p-2 rounded-t-md">
+             <h3 class="font-semibold text-lg">Table of Contents</h3>
+          </div>
+          
+          <!-- Content Area -->
+          <div class="p-4">
+             <table class="w-full">
+                <tr>
+                   <td class="items-left align-top">
+                      <h4 class="text-lg font-normal text-gray-500 lg:text-sm dark:text-gray-400">
+                         <ol class="ps-5 space-y-1 list-decimal">
+                            <li>League Overview</li>
+                            <li>Team Construction</li>
+                            <li>Rookie Bank</li>
+                            <li>Injured Reserve (IR)</li>
+                            <li>Protection Sheet</li>
+                            <li>Trading</li>
+                            <li>Salary Retention</li>
+                            <li>Free Agency</li>
+                            <li>Draft Day</li>
+                            <li>Playoffs</li>
+                            <li>Penalties</li>
+                            <li>Money & Points System</li>
+                         </ol> 
+                      </h4>
+                   </td>
+                </tr>
+             </table>
+          </div>
+       </div>
+    </div>
+    
+  </div>
+
+  <!-- Accordions Start -->
+   
+<div id="accordion-collapse" data-accordion="collapse">
+    <h2 id="accordion-collapse-heading-1">
+      <button type="button" (click)="toggle(0)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+        <span>League Overview</span>
+        <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[0] }">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+        </svg>
+      </button>
+    </h2>
+    <div id="accordion-body-0" *ngIf="chapters[0]" aria-labelledby="accordion-collapse-heading-1">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            Keeper League is a long-running fantasy league with a dynasty format, meaning the league doesn’t start fresh every year but carries over a portion of your team from one year to the next. We use real player salaries and the actual NHL salary cap to build our teams.
+        </p>
+        <h2 class="mb-2 px-10 text-lg font-semibold text-green-400 dark:text-white">The Basics</h2>
+            <ul class="max-w-full ps-10 mb-4 space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+                <li>Head-to-Head categories scoring format</li>
+                <li>Scoring categories: G, A, PTS, PPG, PPA, SHP, GWG, SOG, W, SV%, GAA, SHO</li>
+                <li>12 team league, with top 8 making playoffs</li>
+                <li>30-man max roster with a min of 9F, 5D, 2G (must be active NHL players)</li>
+                <li>Single-year pot for single-year winner and the runner-up</li>
+                <li>Three-year pot for best team over three years and the runner-up</li>
+            </ul>
+      </div>
+    </div>
+
+    <h2 id="accordion-collapse-heading-1">
+        <button type="button" (click)="toggle(1)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Team Construction</span>
+            <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[1] }">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+        </button>
+    </h2>
+    <div id="accordion-body-1" *ngIf="chapters[1]" aria-labelledby="accordion-collapse-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            Each GM is responsible for building a team consisting of at least 9 forwards, 5 defense, and 2 goalies on their main roster. These players must be active NHL players, meaning if the player has “NA” listed next to their name, they are not considered an active NHL player and don't count towards the 9F, 5D, 2G minimums. You may have as many players as you want from any position, so long as you abide by the 30-player limit (IR not included) and stay under the salary cap. The salary cap will match the actual NHL salary cap each year. If at any point you go under the minimum 9F, 5D, 2G, you are forced to take your next available FA immediately on whichever position you're missing, and take a penalty as well. In the event it is your first penalty of the season, you essentially lose your following two available FA picks.
+        </p>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            Each night, you must only play active players if they are available. You may not play an NA player over a player who would be playing that same night. Goalies must play a minimum of three starts in a given week in order for their stats to actually count, so make sure to keep this in mind when building your team. Strategically benching active goalies is permitted, but not if it results in you not making the minimum 3 starts in a given week. You are also always required to play all active players every night (you cannot simply bench your best players in favor of inactive players).
+        </p>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            We use cap hits according to CapWages.com. You must always ensure your team sheet on Google sheets is up-to-date and adjusted whenever you make any type of move. There is no salary cap limit in the offseason. If a player signs part-way through the season, use a prorated regular cap hit.
+        </p>
+      </div>
+    </div>
+        
+    <h2 id="accordion-collapse-heading-2">
+        <button type="button" (click)="toggle(2)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Rookie Bank</span>
+            <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[2] }">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+        </button>
+    </h2>
+    <div id="accordion-body-2" *ngIf="chapters[2]" aria-labelledby="accordion-collapse-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            Along with your main roster, you also have a rookie bank. The only way to have a player in your rookie bank is to draft them through the rookie draft. There are 10 spots in the rookie bank. This bank is completely separate and does not count towards your salary cap. Once you call up a rookie to your main roster, they may never be sent back down to the rookie bank. Once a player has played a minimum of 30 NHL games, they must be called up to your main roster the following year. During the offseason, if you decide to call up a player for the next season, or a rookie is being forced up (due to having played 30 or more games that past season), they will not need to be protected on your protection sheet. They will, however, count towards your salary cap during the general draft. They cannot be promoted without an NHL contract.
+        </p>
+      </div>
+    </div>
+    
+    <h2 id="accordion-collapse-heading-3">
+        <button type="button" (click)="toggle(3)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Injured Reserve (IR)</span>
+            <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[3] }">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+        </button>
+    </h2>
+    <div id="accordion-body-3" *ngIf="chapters[3]" aria-labelledby="accordion-collapse-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            There are three IR slots in our league. You may place a player in your IR slot once they’ve been listed as DTD, Out or IR on Yahoo. Once you’ve placed a player on IR, his cap hit no longer applies to your team. Once the player is healthy again, you may re-activate them by placing them in a regular roster position. You can choose to re-activate them whenever you want, however if you keep them on your IR while healthy, Yahoo will not allow you to make free agent pick-ups. Once re-activated, their cap hit will apply to your team once again, and it is your responsibility to make sure you have enough salary cap room for when they return.
+        </p>
+      </div>
+    </div>
+        
+    <h2 id="accordion-collapse-heading-4">
+        <button type="button" (click)="toggle(4)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Protection Sheet</span>
+            <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[4] }">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+        </button>
+    </h2>
+    <div id="accordion-body-1" *ngIf="chapters[4]" aria-labelledby="accordion-collapse-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            In the offseason, you will need to decide who you keep going forward into the next year and who you will release from your team. All released players will go into the general draft along with any other player not owned by any team. You must protect a minimum of:
+        </p>
+        <ul class="max-w-xl ps-10 mb-4 space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+            <li>5 Forwards</li>
+            <li>3 Defense</li>
+            <li>1 Goalie</li>
+        </ul>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            These players must be under the protection cap limit of $45M. Any unused cap space will be added to your bench. The “bench” is an additional player bank with 6 spots available to protect players. The bench has a salary cap as well, which is $5M + 50% of the excess/unused cap space from your main 5F/3D/1G protected players.
+        </p>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            Each team must designate a “franchise player”, which is a player whose cap hit will not count towards your protection sheet limits ($45M) BUT this player will still count as one of your 5F/3D/1G. We have a protection sheet page in our Google Sheets file to facilitate this process for you.
+        </p>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            <b>Note:</b> Rookie bank players do not need to be protected as long as they are still in the rookie bank. Their cap hit will count towards the general draft if you decide to promote them. They cannot be promoted without an NHL contract.
+        </p>
+      </div>
+    </div>
+        
+    <h2 id="accordion-collapse-heading-5">
+        <button type="button" (click)="toggle(5)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Trading</span>
+            <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[5] }">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+        </button>
+    </h2>
+    <div id="accordion-body-1" *ngIf="chapters[5]" aria-labelledby="accordion-collapse-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            You may trade players, rookie picks, general picks, and FA picks. Conditions are permitted as long as they are attainable and measurable. You must only trade assets you own, thus pending trades or conditions which haven’t been met yet are not eligible to be moved. If you trade an asset you do not own, the trade is canceled and you forfeit your next available FA to your trading partner. Trades are only made official by being posted on Discord. You must also adjust your team sheet on Google Sheets when the move is made. Please confirm the trade on Yahoo at the same time it is posted to Discord. Once that is done, the trade should go through instantaneously on Yahoo. The commissioner evaluates if it is a fair trade and reserves the right to reverse the trade if deemed illegal or there are signs of potential collusion/unfair activity. If rejected, see below:
+        </p>
+        <h2 class="mb-2 px-10 text-lg font-semibold text-green-400 dark:text-white">Veto</h2>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            There are typically no vetoes in this league. However, highly controversial/lopsided trades will be evaluated among Commissioner and Co-Commissioners (Chris, Ryan, Dov and Mitch) and will be decided upon when a consensus is reached. Commissioner (Chris) reserves the right to have the final decision.
+        </p>
+        <p class="mb-2 px-10 text-gray-500 font-bold dark:text-gray-400">
+            If you are deemed the loser of a vetoed trade:
+        </p>
+        <ul class="max-w-full ps-10 space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+            <li>1st trade vetoed is a warning</li>
+            <li>2nd trade vetoed is a penalty</li>
+            <li>3rd trade vetoed is another penalty and you may not trade again for remainder of season</li>
+        </ul>
+      </div>
+    </div>
+        
+    <h2 id="accordion-collapse-heading-6">
+        <button type="button" (click)="toggle(6)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Salary Retention</span>
+            <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[6] }">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+        </button>
+    </h2>
+    <div id="accordion-body-1" *ngIf="chapters[6]" aria-labelledby="accordion-collapse-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            You may retain up to 25% of a player’s cap hit in a trade under the following conditions:
+        </p>
+        <ul class="max-w-full ps-10 mb-4 space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+            <li class="pl-4">The player whose cap hit is being up to 25% retained must have been on the trading team's roster for a minimum of 4 weeks before the trade. Protecting a player in the offseason counts as 4 weeks being owned.</li>
+            <li class="pl-4">Each team can only retain a player's cap ONE TIME per season.</li>
+            <li class="pl-4">Each player's cap can only be retained by one single team, meaning one player can't get his cap retained multiple times on different teams.</li>
+            <li class="pl-4">A team can only RECEIVE a maximum of one retained caps per season.</li>
+            <li class="pl-4">The cap will remain retained until the final day of playoffs, after which point the player's full cap will affect the team which acquired it (if protected, it would be at full cap hit).</li>
+          </ul>          
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            <b>Note:</b> Cap retention in the real NHL does not affect our league. We still use the full cap hit.
+        </p>
+      </div>
+    </div>
+        
+    <h2 id="accordion-collapse-heading-7">
+        <button type="button" (click)="toggle(7)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Free Agency</span>
+            <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[7] }">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+        </button>
+    </h2>
+    <div id="accordion-body-1" *ngIf="chapters[7]" aria-labelledby="accordion-collapse-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            All undrafted players and players not owned on a main team or the rookie bank are considered free agents. Players without NHL contracts are not allowed to be picked up. Each GM starts the season with 1 FA pick per week, including a preseason FA. You will have unlimited drops. Pickups are based on waivers when the player is dropped or recently added to Yahoo’s database, however you must assure yourself you have the necessary cap space in order to add a player. You must also adjust your team sheet on Google Sheets when the move is made. For any FA pickup, the player must be on Yahoo to pick him up.
+        </p>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            All players dropped from a team's roster are immediately placed on a waiting period of one day to give all managers a chance to claim those players. If more than one manager claims the same player, the waiver priority determines which manager's request is processed first. Waiver priority means each successful claim moves a manager to the end of the waiver priority list.
+        </p>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            You may pick up an injured player and stash him on your IR even if you don't have the cap space right now. 
+        </p>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            If you make an invalid pickup, whether that be above the cap limit or an already-owned player, you must drop them and you would not be able to use that FA again - so make sure it's a valid pickup.
+        </p>
+      </div>
+    </div>
+        
+    <h2 id="accordion-collapse-heading-8">
+        <button type="button" (click)="toggle(8)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Draft Day</span>
+            <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[8] }">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+        </button>
+    </h2>
+    <div id="accordion-body-1" *ngIf="chapters[8]" aria-labelledby="accordion-collapse-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            Draft day consists of two drafts: General Draft and Rookie Draft. 
+        </p>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            You go into draft day with all protected players and called-up rookies having the new season’s cap hit in full effect. You must draft up to at least the minimum 9F, 5D, 2G (active). If you draft or already own a player who is a pending RFA/UFA, you must remember that once their contract is signed, the new cap hit immediately affects your team, thus please ensure you have enough cap space for them or you will be given a penalty. You may trade players or picks on draft day.
+        </p>
+        <h2 class="px-10 text-lg font-semibold text-green-400 dark:text-white">Draft Order</h2>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            The General Draft order is determined by the previous season’s regular season rankings. Last place in the regular season will draft first overall in the general draft, and so one. Standard draft order applies. 
+        </p>
+        <h2 class="mb-2 px-10 text-lg font-semibold text-green-400 dark:text-white">Regular Season Point Structure</h2>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            The first round of the Rookie Draft order is determined by lottery based on postseason standings. The rest of the rookie draft rounds is the regular order based on final postseason standings. For the lottery, we use a bingo cage with 30 balls. Bottom 6 teams are the only ones eligible to go into the lottery, and each team gets a designated number of balls. Whoever gets their ball first is 1st overall, 2nd is second overall. We will not have a 3rd place lottery pick. Odds as follows:
+        </p>
+        <ul class="ps-10 px-10 max-w-full p-4 space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+            <li>12th place = 10 numbers</li>
+            <li>11th place = 8 numbers</li>
+            <li>10th place = 6 numbers</li>
+            <li>9th place = 3 numbers</li>
+            <li>8th place = 2 numbers</li>
+            <li>7th place = 1 numbers</li>
+        </ul>
+        <h2 class="px-10 text-lg font-semibold text-green-400 dark:text-white">Rookie Draft</h2>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            We begin draft day with the Rookie Draft. This consists of four rounds. A rookie is any skater who has not played 30 games in the NHL. They must either have an NHL contract or have been drafted by an NHL team. You may not drop a rookie during the rookie draft, but you may trade a rookie pick during the draft. Any drafted rookie immediately goes into your rookie bank if you have room. If there is no room, you may not draft any more rookies.
+        </p>
+        <h2 class="px-10 text-lg font-semibold text-green-400 dark:text-white">General Draft</h2>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            The General Draft follows the Rookie Draft and consists of 10 rounds. As mentioned above, you must draft up to at least the minimum 9F, 5D, 2G (active). You also must stay within the season’s salary cap. IR players are not eligible for IR protection during the general draft and their cap hits are in full effect. You may trade or skip your picks if you do not want the pick, or are not able to make one.
+        </p>
+        <h2 class="px-10 text-lg font-semibold text-green-400 dark:text-white">Post-Draft</h2>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            During the period between the end of draft day and the beginning of pre-season, you may not make any free agent pick-ups. However, you’re permitted to make trades, make drops and place players on injured reserve. These need to be posted on Facebook/Discord if the Yahoo League is not up yet. Otherwise, there is no need to announce anything, Yahoo (and updating your Google Sheet) will suffice.
+        </p>
+      </div>
+    </div>
+        
+    <h2 id="accordion-collapse-heading-9">
+        <button type="button" (click)="toggle(9)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Playoffs</span>
+            <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[9] }">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+        </button>
+    </h2>
+    <div id="accordion-body-1" *ngIf="chapters[9]" aria-labelledby="accordion-collapse-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            The top 8 teams advance. Playoff seeding is based on regular season standings. Tiebreakers are determined by regular season ranking. Takes place throughout 3 weeks before the final week of the regular season (so T-4th until T-2nd to last week of season). Point allocation listed in “Money and Points System” section.
+        </p>
+      </div>
+    </div>
+        
+    <h2 id="accordion-collapse-heading-10">
+        <button type="button" (click)="toggle(10)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Penalties</span>
+            <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[10] }">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+        </button>
+    </h2>
+    <div id="accordion-body-1" *ngIf="chapters[10]" aria-labelledby="accordion-collapse-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            A penalty is given to anyone who breaks a rule. Leniency is given to new teams due to the complexity of the league. Penalty tally restarts at the beginning of each season. Penalties count as double in the playoffs.
+        </p>
+        <ol class="ps-10 px-10 p-4 space-y-1 list-decimal text-gray-500">
+            <li>First penalty: Following FA pick lost</li>
+            <li>Second penalty: 4th round General Draft pick lost (or next lowest pick)</li>
+            <li>Third penalty: 1st round General Draft pick lost (or 2nd rookie) + 3 pts lost</li>
+            <li>Fourth penalty: 1st round Rookie Draft pick lost (or next best rookie) + 6 pts lost</li>
+            <li>Fifth penalty: Kicked out of league with no refund</li>
+        </ol>
+      </div>
+    </div>
+        
+    <h2 id="accordion-collapse-heading-11">
+        <button type="button" (click)="toggle(11)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-1 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+            <span>Money & Points System</span>
+            <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[11] }">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+        </button>
+    </h2>
+    <div id="accordion-body-1" *ngIf="chapters[11]" aria-labelledby="accordion-collapse-heading-2">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            Each GM pays $150 per season. We have both an annual pot and a three-year pot. The annual pot goes to the winner and runner-up of the single season. The three-year pot goes to the team and the runner-up who have accumulated the most points over the three years. There are multiple ways to earn points, see as follows:
+        </p>
+        <h2 class="mb-2 px-10 text-lg font-semibold text-green-400 dark:text-white">Regular Season Point Structure</h2>
+        <p class="mb-4 px-10 text-gray-500 dark:text-gray-400">
+            You are awarded your season point total divided by 10 and rounded to the nearest whole number each season. You are also awarded bonus points if you finish top 4 in the regular season:
+        </p>
+        <ol class="ps-10 px-10 p-4 space-y-1 list-decimal text-gray-500 list-inside">
+            <li>Season 1st place: 20 pts</li>
+            <li>Season 2nd place: 16 pts</li>
+            <li>Season 3rd place: 12 pts</li>
+            <li>Season 4th place: 8 pts</li>
+        </ol>
+        <h2 class="px-10 text-lg font-semibold text-green-400 dark:text-white">Playoff Point Structure</h2>
+        <ol class="ps-10 px-10 p-4 space-y-1 list-decimal text-gray-500 list-inside">
+            <li>Playoff 1st place: 60 pts</li>
+            <li>Playoff 2nd place: 45 pts</li>
+            <li>Playoff 3rd place: 35 pts</li>
+            <li>Playoff 4th place: 25 pts</li>
+            <li>Playoff 5th place: 18 pts</li>
+            <li>Playoff 6th place: 12 pts</li>
+            <li>Playoff 7th place: 8 pts</li>
+            <li>Playoff 8th place: 5 pts</li>
+        </ol>
+        <h2 class="px-10 text-lg font-semibold text-green-400 dark:text-white">Annual Pot</h2>
+        <ul class="ps-10 px-10 max-w-full p-4 space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+            <li>Winner: $700</li>
+            <li>Runner-Up: $200</li>
+        </ul>
+        <h2 class="px-10 text-lg font-semibold text-green-400 dark:text-white">Three-Year Pot</h2>
+        <ul class="ps-10 px-10 max-w-full p-4 space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+            <li>Winner: $2000</li>
+            <li>Runner-Up: $700</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
