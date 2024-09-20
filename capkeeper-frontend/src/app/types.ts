@@ -5,6 +5,7 @@ export interface User {
     last_name: string,
     picture: string,
     email: string,
+    league_id: string,
 };
 
 export interface League {
@@ -24,6 +25,7 @@ export interface League {
 export interface Team {
     [key: string]: any; 
     team_id: string,
+    league_id: string,
     team_name: string,
     managed_by: string,
     picture: string,

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from '../../services/global.service';
 import { TeamService } from '../../services/team.service';
 import { SortingService } from '../../services/sorting.service';
+import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { Team, League, Player } from '../../types';
 
@@ -16,6 +17,7 @@ export class TeamRosterComponent {
   league_id!: string;
   team_id!: string;
   team!: Team;
+  selected!: Player;
   currentSeason: string = '2023-24'; 
   sortColumn: string | null = 'points';
   sortDirection: 'asc' | 'desc' = 'desc';
@@ -24,14 +26,14 @@ export class TeamRosterComponent {
     private teamService: TeamService,
     public globalService: GlobalService,
     private modalService: BsModalService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
       this.route.paramMap.subscribe(params => {
         this.league_id = params.get('league_id')!;
         this.team_id = params.get('team_id')!;
-        console.log(this.league_id, this.team_id)
 
         this.teamService.getRosterByTeam(this.league_id, this.team_id)
           .subscribe(response => {
@@ -65,16 +67,13 @@ export class TeamRosterComponent {
   }
 
   getContractSeasons(array: Player[]): string[] {
-    const maxContractLength = this.getMaxContractLength(array);
+    const maxContractLength = this.getMaxContractLength(array) + 1;
     let seasons: string[] = [];
     let next = this.currentSeason;
   
     for (let i = 0; i < maxContractLength; i++) {
       seasons.push(next);
-      console.log('Before increment', next);
       next = this.incrementSeason(next);
-      console.log('After increment', next);
-      console.log('Array:', seasons);
     }
     return seasons;
   }
@@ -99,7 +98,40 @@ export class TeamRosterComponent {
     return sum;
   }
 
-  openModal(template: TemplateRef<any>) {
+  dropPlayer(player: Player): void {
+    const payload = {
+      player_id: player.player_id,
+      league_id: this.league_id,
+      action: 'drop',
+      last_updated: this.globalService.getDate(),
+      updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name
+    }
+
+    this.http.post('api/players/add-drop', payload)
+    .subscribe({
+      next: (response) => {
+        console.log('Action recorded successfully:', response);
+        if (this.globalService.loggedInTeam && this.globalService.loggedInUser) {
+          this.globalService.updateTeamCap(this.globalService.loggedInTeam); 
+
+          let message = player.first_name + ' ' + player.last_name + ' dropped to waivers by ' + this.globalService.loggedInTeam.team_name;
+          let action = 'drop-player';
+          this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
+
+          this.ngOnInit();
+        }
+      },
+      error: (error) => {
+        console.error('Error recording action:', error);
+      }
+    });
+
+  }
+
+  openModal(template: TemplateRef<any>, player?: Player): void {
+    if (player) {
+      this.selected = player;
+    }
     this.modalRef = this.modalService.show(template);
   }
 

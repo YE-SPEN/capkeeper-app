@@ -5,7 +5,13 @@ import { GlobalService } from '../../services/global.service';
 import { PlayerService } from '../../services/player.service';
 import { SortingService } from '../../services/sorting.service';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
-import { Team, League, Player } from '../../types';
+import { Team, Player } from '../../types';
+
+interface Warning {
+  header: string,
+  message: string,
+  isRed: boolean
+}
 
 @Component({
   selector: 'app-player-database',
@@ -18,7 +24,7 @@ export class PlayerDatabaseComponent {
   league_id!: string;
   allPlayers!: Player[];
   filteredPlayers: Player[] = [];
-  toEdit!: Player;
+  selected!: Player;
   teams: Team[] = [];
   searchKey: string = '';
   currentPage = 1;
@@ -27,6 +33,7 @@ export class PlayerDatabaseComponent {
   statusFilter = 'all';
   positionFilter = 'all';
   teamFilter = 'all';
+  warnings: Warning[] = [];
   formSubmitted: boolean = false;
   formData = {
     first_name: '',
@@ -57,7 +64,6 @@ export class PlayerDatabaseComponent {
         .subscribe(response => {
           this.allPlayers = response.players;
           this.filterPlayers();
-          console.log(this.globalService.nhl_teams)
 
           this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
       });
@@ -91,7 +97,9 @@ export class PlayerDatabaseComponent {
     if (this.statusFilter === 'all') { return true; }
     if (this.statusFilter === 'available' && player.owned_by === null) { return true; }
     if (this.statusFilter === 'unsigned' && player.contract_status === 'Unsigned') { return true; }
+    if (this.statusFilter === 'active' && player.contract_status === 'Active') { return true; }
     if (this.statusFilter === 'owned' && player.owned_by !== null) { return true; }
+    if (this.globalService.loggedInTeam && player.owned_by === null && this.statusFilter === 'affordable' && player.aav_current <= this.globalService.loggedInTeam?.cap_space) { return true; }
     return false;
   }
 
@@ -131,7 +139,6 @@ export class PlayerDatabaseComponent {
     return Math.min((this.currentPage % this.pageSize * this.pageSize), this.filteredPlayers.length);
   }
   
-
   generatePageArray(): number[] {
     if (this.currentPage <= 3) {
       return [1, 2, 3, 4, 5];
@@ -159,19 +166,57 @@ export class PlayerDatabaseComponent {
     return id;
   }
 
-  getDate(): string {
-    const today = new Date();
-    const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
-    return formattedDate;    
+  validatePickup(player: Player): boolean {
+    return this.capIsValid(player) && this.contractIsValid();
   }
 
-  getTime(): string {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const seconds = now.getSeconds().toString().padStart(2, '0');
-    return `${hours}:${minutes}:${seconds}`;
-  }  
+  capIsValid(player: Player): boolean {
+    if (this.globalService.loggedInTeam?.cap_space && player.aav_current > this.globalService.loggedInTeam?.cap_space) {
+      return false;
+    }
+    return true;
+  }
+
+  contractIsValid(): boolean {
+    if (this.globalService.loggedInTeam?.roster_size && this.globalService.league?.max_roster_size) {
+      if (this.globalService.league?.max_roster_size <= this.globalService.loggedInTeam?.roster_size ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  addPlayer(player: Player, rookie: boolean): void {
+    const payload = {
+      player_id: player.player_id,
+      league_id: this.league_id,
+      team_id: this.globalService.loggedInTeam?.team_id,
+      isRookie: rookie,
+      action: 'add',
+      last_updated: this.globalService.getDate(),
+      updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name
+    }
+
+    this.http.post('api/players/add-drop', payload)
+    .subscribe({
+      next: (response) => {
+        console.log('Action recorded successfully:', response);
+        if (this.globalService.loggedInTeam && this.globalService.loggedInUser) {
+          this.globalService.updateTeamCap(this.globalService.loggedInTeam);
+
+          let message = player.first_name + ' ' + player.last_name + ' added from free agency by ' + this.globalService.loggedInTeam.team_name;
+          let action = 'add-player';
+          this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
+
+          this.ngOnInit; 
+        }
+      },
+      error: (error) => {
+        console.error('Error recording action:', error);
+      }
+    });
+
+  }
 
   playerFormSubmit(event: Event) {
       const formElement = event.target as HTMLFormElement;
@@ -179,12 +224,12 @@ export class PlayerDatabaseComponent {
 
       const submissionData = {
         action: action,
-        player_id: action === 'edit' ? this.toEdit.player_id : this.generateID(this.formData.first_name, this.formData.last_name),
+        player_id: action === 'edit' ? this.selected.player_id : this.generateID(this.formData.first_name, this.formData.last_name),
         first_name: this.formData.first_name,
         last_name: this.formData.last_name,
         position: this.formData.position,
         short_code: this.formData.short_code,
-        last_updated: this.getDate(),
+        last_updated: this.globalService.getDate(),
         updated_by: 'Eric Spensieri',
       };
 
@@ -218,42 +263,25 @@ export class PlayerDatabaseComponent {
           }
         });
 
-        const actionData = {
-          league_id: this.globalService.league?.league_id,
-          message: message,
-          date: this.getDate(),
-          time: this.getTime(),
-          user_id: 'e_spen',
-          action_type: action_type
+        if (this.globalService.loggedInUser) {
+          this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, 'edit-player', message);
         }
-
-        console.log(actionData)
-
-        this.http.post('api/record-action', actionData)
-          .subscribe({
-            next: (response) => {
-              console.log('Action recorded successfully:', response);
-            },
-            error: (error) => {
-              console.error('Error recording action:', error);
-            }
-          });
         
        this.closeModal();
        this.ngOnInit();
   }
 
   selectPlayer(player: Player) {
-    this.toEdit = player;
-    this.formData.first_name = this.toEdit.first_name;
-    this.formData.last_name = this.toEdit.last_name;
-    this.formData.short_code = this.toEdit.short_code;
-    this.formData.position = this.toEdit.position;
-    this.formData.years_left_current = this.toEdit.years_left_current;
-    this.formData.aav_current = this.toEdit.aav_current;
-    this.formData.years_left_next = this.toEdit.years_left_next;
-    this.formData.aav_next = this.toEdit.aav_next;
-    this.formData.expiry_status = this.toEdit.expiry_status;
+    this.selected = player;
+    this.formData.first_name = this.selected.first_name;
+    this.formData.last_name = this.selected.last_name;
+    this.formData.short_code = this.selected.short_code;
+    this.formData.position = this.selected.position;
+    this.formData.years_left_current = this.selected.years_left_current;
+    this.formData.aav_current = this.selected.aav_current;
+    this.formData.years_left_next = this.selected.years_left_next;
+    this.formData.aav_next = this.selected.aav_next;
+    this.formData.expiry_status = this.selected.expiry_status;
   }
 
   resetForm() {
@@ -272,14 +300,12 @@ export class PlayerDatabaseComponent {
     //this.actionCompleted.emit({ message, success });
   }
 
-
   openModal(template: TemplateRef<any>, player?: Player): void {
     if (player) {
       this.selectPlayer(player);
     }
     this.modalRef = this.modalService.show(template);
   }
-
 
   closeModal() {
     this.modalRef.hide();
