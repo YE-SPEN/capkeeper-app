@@ -1,15 +1,14 @@
 import path from 'path';
 import Hapi from '@hapi/hapi';
 import Inert from '@hapi/inert';
-import admin from 'firebase-admin';
 import routes from './routes/index.js';
 import { db } from './database.js';
 import fs from 'fs';
+import admin from 'firebase-admin';
 
 // Log to verify that the script is running
 console.log('Starting server initialization...');
 
-/*
 // Resolve the credentials path and read the credentials file
 const credentialsPath = path.resolve(process.cwd(), 'credentials.json');
 console.log(`Resolved credentials path: ${credentialsPath}`);
@@ -22,7 +21,6 @@ admin.initializeApp({
     credential: admin.credential.cert(credentials),
 });
 console.log('Firebase admin initialized');
-*/
 
 const distDir = fs.existsSync('./dist') ? './dist' : '../dist/capkeeper-app';
 
@@ -60,24 +58,23 @@ const start = async () => {
                 redirectToSlash: true
             }
         }
-    })
+    });
 
-    server.ext('onPreResponse', (request, reply) => {
-        const {response} = request;
-        if(fs.existsSync(distDir)) {
+    server.ext('onPreResponse', (request, h) => {
+        const { response } = request;
+        if (fs.existsSync(distDir)) {
         }
-        if(response.isBoom && response.output.statusCode === 404) {
+        if (response.isBoom && response.output.statusCode === 404) {
             try {
-                
-            return reply.file(`${distDir}/capkeeper-app/index.html`, {
-                confine: false
-            });
-        } catch(e) {
-            console.log(e);
+                return h.file(`${distDir}/capkeeper-app/index.html`, {
+                    confine: false
+                });
+            } catch (e) {
+                console.log(e);
+            }
         }
-        }
-        return reply.continue;
-    })
+        return h.continue;
+    });
 
     try {
         await db.connect();
