@@ -6,6 +6,8 @@ import { recordActionRoute } from "./record-action.js";
 import { recentActivityRoute } from "./recent-activity.js";
 import { loginRoute } from "./login.js";
 import { addDropRoute } from "./add-drop.js";
+import { uploadFileRoute } from "./upload-file.js";
+import { rosterMoveRoute } from "./roster-move.js";
 
 export default [
     leagueRoute,
@@ -15,5 +17,7 @@ export default [
     recordActionRoute,
     recentActivityRoute,
     loginRoute,
-    addDropRoute
+    addDropRoute, 
+    uploadFileRoute,
+    rosterMoveRoute
 ]
