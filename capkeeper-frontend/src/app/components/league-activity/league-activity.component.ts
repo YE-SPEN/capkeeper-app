@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { GlobalService } from '../../services/global.service';
+import { SortingService } from '../../services/sorting.service';
 import { User, Activity } from '../../types';
 import { ActivatedRoute } from '@angular/router';
 
@@ -19,6 +20,7 @@ export class LeagueActivityComponent {
   constructor(
     public globalService: GlobalService,
     private userService: UserService,
+    public sortingService: SortingService,
     private route: ActivatedRoute,
   ) { }
 

@@ -97,20 +97,20 @@
              <table class="w-full">
                 <tr>
                    <td class="items-left align-top">
-                      <h4 class="text-lg font-normal text-gray-500 lg:text-sm dark:text-gray-400">
+                      <h4 class="text-lg font-semibold text-gray-500 lg:text-sm dark:text-gray-400">
                          <ol class="ps-5 space-y-1 list-decimal">
-                            <li>League Overview</li>
-                            <li>Team Construction</li>
-                            <li>Rookie Bank</li>
-                            <li>Injured Reserve (IR)</li>
-                            <li>Protection Sheet</li>
-                            <li>Trading</li>
-                            <li>Salary Retention</li>
-                            <li>Free Agency</li>
-                            <li>Draft Day</li>
-                            <li>Playoffs</li>
-                            <li>Penalties</li>
-                            <li>Money & Points System</li>
+                            <li><a (click)="anchorScroll('overview'); toggle(0)" class="cursor-pointer hover:underline">League Overview</a></li>
+                            <li><a (click)="anchorScroll('team'); toggle(1)" class="cursor-pointer hover:underline">Team Construction</a></li>
+                            <li><a (click)="anchorScroll('rookie-bank'); toggle(2)" class="cursor-pointer hover:underline">Rookie Bank</a></li>
+                            <li><a (click)="anchorScroll('ir'); toggle(3)" class="cursor-pointer hover:underline">Injured Reserve (IR)</a></li>
+                            <li><a (click)="anchorScroll('protection'); toggle(4)" class="cursor-pointer hover:underline">Protection Sheet</a></li>
+                            <li><a (click)="anchorScroll('trading'); toggle(5)" class="cursor-pointer hover:underline">Trading</a></li>
+                            <li><a (click)="anchorScroll('salary-retention'); toggle(6)" class="cursor-pointer hover:underline">Salary Retention</a></li>
+                            <li><a (click)="anchorScroll('fa'); toggle(7)" class="cursor-pointer hover:underline">Free Agency</a></li>
+                            <li><a (click)="anchorScroll('draft'); toggle(8)" class="cursor-pointer hover:underline">Draft Day</a></li>
+                            <li><a (click)="anchorScroll('playoffs'); toggle(9)" class="cursor-pointer hover:underline">Playoffs</a></li>
+                            <li><a (click)="anchorScroll('penalties'); toggle(10)" class="cursor-pointer hover:underline">Penalties</a></li>
+                            <li><a (click)="anchorScroll('points'); toggle(11)" class="cursor-pointer hover:underline">Money & Points System</a></li>
                          </ol> 
                       </h4>
                    </td>
@@ -124,7 +124,7 @@
 
   <!-- Accordions Start -->
    
-<div id="accordion-collapse" data-accordion="collapse">
+<div id="overview" data-accordion="collapse">
     <h2 id="accordion-collapse-heading-1">
       <button type="button" (click)="toggle(0)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
         <span>League Overview</span>
@@ -150,7 +150,7 @@
       </div>
     </div>
 
-    <h2 id="accordion-collapse-heading-1">
+    <h2 id="team">
         <button type="button" (click)="toggle(1)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Team Construction</span>
             <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[1] }">
@@ -172,7 +172,7 @@
       </div>
     </div>
         
-    <h2 id="accordion-collapse-heading-2">
+    <h2 id="rookie-bank">
         <button type="button" (click)="toggle(2)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Rookie Bank</span>
             <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[2] }">
@@ -188,7 +188,7 @@
       </div>
     </div>
     
-    <h2 id="accordion-collapse-heading-3">
+    <h2 id="ir">
         <button type="button" (click)="toggle(3)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Injured Reserve (IR)</span>
             <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[3] }">
@@ -204,7 +204,7 @@
       </div>
     </div>
         
-    <h2 id="accordion-collapse-heading-4">
+    <h2 id="protection">
         <button type="button" (click)="toggle(4)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Protection Sheet</span>
             <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[4] }">
@@ -234,7 +234,7 @@
       </div>
     </div>
         
-    <h2 id="accordion-collapse-heading-5">
+    <h2 id="trading">
         <button type="button" (click)="toggle(5)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Trading</span>
             <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[5] }">
@@ -262,7 +262,7 @@
       </div>
     </div>
         
-    <h2 id="accordion-collapse-heading-6">
+    <h2 id="salary-retention">
         <button type="button" (click)="toggle(6)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Salary Retention</span>
             <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[6] }">
@@ -288,7 +288,7 @@
       </div>
     </div>
         
-    <h2 id="accordion-collapse-heading-7">
+    <h2 id="fa">
         <button type="button" (click)="toggle(7)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Free Agency</span>
             <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[7] }">
@@ -313,7 +313,7 @@
       </div>
     </div>
         
-    <h2 id="accordion-collapse-heading-8">
+    <h2 id="draft">
         <button type="button" (click)="toggle(8)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Draft Day</span>
             <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[8] }">
@@ -360,7 +360,7 @@
       </div>
     </div>
         
-    <h2 id="accordion-collapse-heading-9">
+    <h2 id="playoffs">
         <button type="button" (click)="toggle(9)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Playoffs</span>
             <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[9] }">
@@ -376,7 +376,7 @@
       </div>
     </div>
         
-    <h2 id="accordion-collapse-heading-10">
+    <h2 id="penalties">
         <button type="button" (click)="toggle(10)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Penalties</span>
             <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[10] }">
@@ -399,7 +399,7 @@
       </div>
     </div>
         
-    <h2 id="accordion-collapse-heading-11">
+    <h2 id="points">
         <button type="button" (click)="toggle(11)" class="flex items-center justify-between w-full px-10 py-5 font-medium rtl:text-right text-gray-500 border border-b-1 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
             <span>Money & Points System</span>
             <svg data-accordion-icon class="w-4 h-4 shrink-0 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" [ngClass]="{ 'rotate-180': chapters[11] }">

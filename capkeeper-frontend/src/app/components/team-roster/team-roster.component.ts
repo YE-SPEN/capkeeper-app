@@ -57,6 +57,10 @@ export class TeamRosterComponent {
       });
   }
 
+  getManagers(): string {
+    return '';
+  }
+
   getMaxContractLength(array: Player[]): number {
     let max = 0;
     for (let player of array) {

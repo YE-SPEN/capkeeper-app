@@ -27,4 +27,16 @@ export class RulesComponent {
     this.chapters[index] = !this.chapters[index];
   }
 
+  anchorScroll(id: string): void {
+    const element = document.getElementById(id);
+    const yOffset = -75;
+    
+    if (element) {
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }
+  
+  
+
 }
