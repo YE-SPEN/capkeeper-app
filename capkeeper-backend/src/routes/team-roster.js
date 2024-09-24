@@ -10,7 +10,7 @@ export const teamRosterRoute = {
 
         try {
             const { results: roster} = await db.query( 
-                `SELECT p.*, pob.isRookie, nl.logo 
+                `SELECT p.*, pob.isRookie, pob.onIR, pob.onTradeBlock, nl.logo 
                 FROM nhl_logos nl
                     JOIN players p ON
                         p.short_code = nl.short_code 
