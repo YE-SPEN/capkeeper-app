@@ -47,6 +47,10 @@
                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
                         ${{ team.goalie_salary | number:'1.0-0' }}
                      </span>
+                     <br>Injured Reserve:  &nbsp;&nbsp;&nbsp; 
+                     <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                        ${{ getTotalSalary(team.injured_reserve) | number:'1.0-0' }}
+                     </span>
    
                      <div class="py-2">
                         <hr class="border-0 border-t-2 border-gray-300">
@@ -56,7 +60,7 @@
                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
                         ${{ team.total_cap | number:'1.0-0' }}
                      </span>
-   
+
                      <br>League Salary Cap: &nbsp;&nbsp;&nbsp; 
                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
                         ${{ globalService.league?.salary_cap | number:'1.0-0' }}
@@ -108,6 +112,10 @@
                         <span class="mb-6 text-lg font-normal text-gray-500 lg:text-sm dark:text-gray-400">Goalies:</span> 
                         {{ team.goalies.length }}/{{ globalService.league?.min_goalies }}
                      </h4>
+                     <h4 class="font-semibold text-lg">
+                        <span class="mb-6 text-lg font-normal text-gray-500 lg:text-sm dark:text-gray-400">Injured Reserve:</span> 
+                        {{ team.injured_reserve.length }}/{{ globalService.league?.ir_slots }}
+                     </h4>
                      
                      <div class="py-2">
                         <hr class="border-0 border-t-2 border-gray-300">   
@@ -135,6 +143,143 @@
    
  </div>
 
+ <!-- 3 column layout with 2/3 merge -->
+ <div class="grid grid-cols-3 gap-4 mb-4">
+   
+   <!-- Trade Block card -->
+   <div class="flex h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
+      <div class="w-full">
+         <!-- Header Row with Dark Background -->
+         <div class="bg-green-400 text-white p-2 rounded-t-md">
+            <h3 class="font-semibold text-lg">Trade Block</h3>
+         </div>
+         
+         <!-- Content Area -->
+         <div class="p-4">
+            <table class="w-full">
+               <tr>
+                  <td class="items-left align-top">
+                  <h4 class="text-lg font-semibold text-gray-500 lg:text-sm dark:text-gray-400">
+                     <ol class="space-y-1 list-decimal">
+                        <li *ngFor="let playerOnBlock of [].constructor(6); let i = index" class="border-0 border-b border-gray-300 pb-2 flex justify-between items-center">
+                            <span class="block" style="min-height: 20px;">
+                                <span class="pr-3">{{ i+1 }}.</span> 
+                                {{ team.trade_block[i] ? (team.trade_block[i].first_name || '') + ' ' + (team.trade_block[i].last_name || '') : ' ' }}
+                            </span>
+                            <a *ngIf="team.trade_block[i]?.first_name || team.trade_block[i]?.last_name" 
+                               (click)="rosterMove(team.trade_block[i], 'trade-block')" 
+                               class="text-red-500 ml-auto cursor-pointer hover:text-red-600">Remove</a>
+                        </li>
+                    </ol>                    
+                  </h4>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </div>
+
+   <!-- Draft Capital Card -->
+   <div class="flex h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md col-span-2">
+      <div class="w-full">
+         <!-- Header Row with Dark Background -->
+         <div class="bg-green-400 text-white p-2 rounded-t-md flex justify-between items-center">
+            <!-- Title -->
+            <h3 class="font-semibold text-lg">Draft Capital</h3>
+        
+            <!-- Buttons -->
+            <div class="inline-flex rounded-md shadow-sm">
+                <a aria-current="page" class="px-4 py-1 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:text-green-500 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-gray-800 focus:text-gray-800 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-green-500 dark:focus:text-white">
+                    General Draft
+                </a>
+                <a class="px-4 py-1 text-xs font-semibold text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-green-500 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                    Rookie Draft
+                </a>
+                <a class="px-4 py-1 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-green-500 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                    FA Picks
+                </a>
+            </div>
+        </div>
+        
+         
+         <!-- Content Area -->
+         <div class="p-4">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md border-2">
+               <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                 <tr class="border-b-2">
+                   <th class="py-2 text-center max-w-[4%] border-r-2">Round</th>
+                   <th class="px-4 py-2 text-center border-r-2">1</th>
+                   <th class="px-4 py-2 text-center border-r-2">2</th>
+                   <th class="px-4 py-2 text-center border-r-2">3</th>
+                   <th class="px-4 py-2 text-center border-r-2">4</th>
+                   <th class="px-4 py-2 text-center border-r-2">5</th>
+                   <th class="px-4 py-2 text-center border-r-2">6</th>
+                   <th class="px-4 py-2 text-center border-r-2">7</th>
+                   <th class="px-4 py-2 text-center border-r-2">8</th>
+                   <th class="px-4 py-2 text-center border-r-2">9</th>
+                   <th class="px-4 py-2 text-center border-r-2">10</th>
+                 </tr>
+               </thead>
+                <tbody>
+                  <tr class="border-b-2">
+                     <td class="py-2 text-center border-r-2">
+                        <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                           2024
+                        </span>
+                     </td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                  </tr>
+                  <tr class="border-b-2">
+                     <td class="py-2 text-center border-r-2">
+                        <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                           2025
+                        </span>
+                     </td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                  </tr>
+                  <tr>
+                     <td class="py-2 text-center border-r-2">
+                        <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                           2026
+                        </span>
+                     </td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                        <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
+                  </tr>
+               </tbody>
+             </table>
+             
+         </div>
+      </div>
+   </div>
+</div>
+ 
  <!-- Forwards Section -->
  <div class="bg-gray-50 dark:bg-gray-800 relative overflow-x-auto">
       <div class="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
@@ -196,12 +341,12 @@
 
                <!-- Action Column -->
                <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
-                  <select class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
-                     <option value="7">Action</option>
-                     <option value="7">Place on IR</option>
-                     <option value="30">Add to Trade Block</option>
-                     <option value="90">Call-Up</option>         
-               </select> 
+                  <select (change)="rosterMove(forward, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                     <option value="">Action</option>
+                     <option value="ir">Place on IR</option>
+                     <option *ngIf="!forward.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                     <option *ngIf="forward.onTradeBlock" value="trade-block">Remove from Trade Block</option>         
+                  </select> 
                </td>
        
                <!-- Salary Columns -->
@@ -295,15 +440,14 @@
             </td>
 
             <!-- Action Column -->
-               <!-- Action Column -->
-               <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
-                  <select class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
-                     <option value="7">Action</option>
-                     <option value="7">Place on IR</option>
-                     <option value="30">Add to Trade Block</option>
-                     <option value="90">Call-Up</option>         
+            <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
+               <select (change)="rosterMove(defensemen, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                  <option value="">Action</option>
+                  <option value="ir">Place on IR</option>
+                  <option *ngIf="!defensemen.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                  <option *ngIf="defensemen.onTradeBlock" value="trade-block">Remove from Trade Block</option>         
                </select> 
-               </td>
+            </td>
     
             <!-- Salary Columns -->
             <ng-container *ngIf="defensemen.years_left_current">
@@ -395,15 +539,14 @@
             </td>
 
             <!-- Action Column -->
-               <!-- Action Column -->
-               <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
-                  <select class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
-                     <option value="7">Action</option>
-                     <option value="7">Place on IR</option>
-                     <option value="30">Add to Trade Block</option>
-                     <option value="90">Call-Up</option>         
+            <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
+               <select (change)="rosterMove(goalie, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                  <option value="">Action</option>
+                  <option value="ir">Place on IR</option>
+                  <option *ngIf="!goalie.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                  <option *ngIf="goalie.onTradeBlock" value="trade-block">Remove from Trade Block</option>       
                </select> 
-               </td>
+            </td>
     
             <!-- Salary Columns -->
             <ng-container *ngIf="goalie.years_left_current">
@@ -425,6 +568,206 @@
                      'bg-blue-600': goalie.expiry_status === 'RFA'
                      }">
                   {{ goalie.expiry_status }}
+               </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>       
+</div>
+
+
+<!-- IR Section -->
+<div class="bg-gray-50 dark:bg-gray-800 relative overflow-x-auto">
+   <div class="pt-8 flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+      <div class="relative">
+         <h4 class="font-bold text-2xl">
+            Injured Reserve
+            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.injured_reserve.length }}/3</span>  
+        </h4>
+      </div>
+</div>
+
+   <!-- IR Table -->
+   <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr class="border-b-2">
+            <!-- Checkbox Column -->
+            <th scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
+
+            </th>
+    
+            <!-- Player Column -->
+            <th scope="col" class="p-4 sticky left-12 bg-gray-50 dark:bg-gray-700 z-10">
+              Player
+            </th>
+    
+            <!-- Action Column -->
+            <th scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
+              
+            </th>
+    
+            <!-- Dynamic Columns -->
+            <th *ngFor="let year of getContractSeasons(team.injured_reserve)" scope="col" class="px-6 py-3">
+              {{ year }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let player of team.injured_reserve" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <!-- Checkbox Column -->
+            <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
+               <div (click)="openModal(dropPlayerModal, player)" class="flex items-center">
+                  <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
+                           stroke-width="2" 
+                           d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                  </svg>
+               </div>                    
+            </td>
+
+            <!-- Player Column -->
+            <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
+               <img class="w-10 h-10 rounded-full" src="{{player.logo}}" alt="Player image">
+               <div class="ps-3 bg-white">
+               <div class="text-sm font-semibold">{{ player.first_name }} {{ player.last_name }}</div>
+               <div class="font-normal text-xs text-gray-500">{{ player.position }} - {{ player.short_code }} <span class="bg-red-100 text-red-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">IR</span></div>
+               </div>
+            </td>
+
+            <!-- Action Column -->
+            <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
+               <select (change)="rosterMove(player, $event, callUpModal)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                  <option value="">Action</option>
+                  <option value="ir">Activate to Main Roster </option>
+                  <option *ngIf="!player.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                  <option *ngIf="player.onTradeBlock" value="trade-block">Remove from Trade Block</option>         
+               </select> 
+            </td>
+    
+            <!-- Salary Columns -->
+            <ng-container *ngIf="player.years_left_current">
+               <td *ngFor="let aav of generateRange(player.years_left_current)" class="px-6 py-2">
+                  {{ player.aav_current | number:'1.0-0' }}
+               </td>
+            </ng-container>
+
+            <ng-container *ngIf="player.years_left_next">
+               <td *ngFor="let aav of generateRange(player.years_left_next)" class="px-6 py-2">
+                  {{ player.aav_next | number:'1.0-0' }}
+               </td>
+            </ng-container>
+
+            <td class="px-6 py-2">
+               <span class="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                     [ngClass]="{
+                     'bg-red-600': player.expiry_status === 'UFA',
+                     'bg-blue-600': player.expiry_status === 'RFA'
+                     }">
+                  {{ player.expiry_status }}
+               </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>       
+</div>
+
+
+<!-- Rookie Section -->
+<div class="bg-gray-50 dark:bg-gray-800 relative overflow-x-auto">
+   <div class="pt-8 flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+      <div class="relative">
+         <h4 class="font-bold text-2xl">
+            Rookie Bank
+            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.rookie_bank.length }}/10</span>  
+        </h4>
+      </div>
+</div>
+
+   <!-- Rookie Salary Table -->
+   <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr class="border-b-2">
+            <!-- Checkbox Column -->
+            <th scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
+
+            </th>
+    
+            <!-- Player Column -->
+            <th scope="col" class="p-4 sticky left-12 bg-gray-50 dark:bg-gray-700 z-10">
+              Player
+            </th>
+    
+            <!-- Action Column -->
+            <th scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
+              
+            </th>
+    
+            <!-- Dynamic Columns -->
+            <th *ngFor="let year of getContractSeasons(team.rookie_bank)" scope="col" class="px-6 py-3">
+              {{ year }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rookie of team.rookie_bank" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <!-- Checkbox Column -->
+            <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
+               <div (click)="openModal(dropPlayerModal, rookie)" class="flex items-center">
+                  <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
+                           stroke-width="2" 
+                           d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                  </svg>
+               </div>                    
+            </td>
+
+            <!-- Player Column -->
+            <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
+               <img class="w-10 h-10 rounded-full" src="{{rookie.logo}}" alt="Player image">
+               <div class="ps-3 bg-white">
+               <div class="text-sm font-semibold">{{ rookie.first_name }} {{ rookie.last_name }}</div>
+               <div class="font-normal text-xs text-gray-500">{{ rookie.position }} - {{ rookie.short_code }}</div>
+               </div>
+            </td>
+
+            <!-- Action Column -->
+            <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
+               <select (change)="rosterMove(rookie, $event, callUpModal)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                  <option value="">Action</option>
+                  <option *ngIf="!rookie.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                  <option *ngIf="rookie.onTradeBlock" value="trade-block">Remove from Trade Block</option>
+                  <option value="callup">Call-Up</option>           
+               </select> 
+            </td>
+    
+            <!-- Salary Columns -->
+            <ng-container *ngIf="rookie.years_left_current">
+               <td *ngFor="let aav of generateRange(rookie.years_left_current)" class="px-6 py-2">
+                  {{ rookie.aav_current | number:'1.0-0' }}
+               </td>
+            </ng-container>
+
+            <ng-container *ngIf="rookie.years_left_next">
+               <td *ngFor="let aav of generateRange(rookie.years_left_next)" class="px-6 py-2">
+                  {{ rookie.aav_next | number:'1.0-0' }}
+               </td>
+            </ng-container>
+
+            <td class="px-6 py-2">
+               <span class="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                     [ngClass]="{
+                     'bg-red-600': rookie.expiry_status === 'UFA',
+                     'bg-blue-600': rookie.expiry_status === 'RFA'
+                     }">
+                  {{ rookie.expiry_status }}
                </span>
             </td>
           </tr>
@@ -481,15 +824,41 @@
 </ng-template>
 
 <!-- Drop From Roster Modal -->
-<ng-template #dropPlayerModal id="addPlayerModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+<ng-template #dropPlayerModal id="dropPlayerModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] max-h-full">
+   <div id="popup-modal" tabindex="-1" class="relative p-4 w-full max-w-md max-h-full">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+         <button (click)="closeModal()" type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+         </button>
+         <div class="p-4 md:p-5 text-center">
+            <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            </svg>
+            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Drop <b>{{selected.first_name }} {{ selected.last_name }}</b> from your roster?</h3>
+            <button type="submit" (click)="dropPlayer(selected); closeModal()" class="mr-3 text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+               Drop Player
+            </button>
+            <button type="submit" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+               Cancel
+            </button>
+         </div>
+      </div>
+   </div>
+</ng-template>
+
+<!-- Call-Up Player Modal -->
+<ng-template #callUpModal id="callUpModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
    <div class="relative w-full max-w-2xl max-h-full">
-         <form class="relative bg-white dark:bg-gray-700">
+         <form class="relative bg-white rounded-lg shadow dark:bg-gray-700">
 
             <div class="flex items-start justify-between p-4 rounded-t">
                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                  Drop <span class="italic bg-gray-100 text-gray-600 font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{{selected.first_name }} {{ selected.last_name }}</span>from your roster?
+                  Promote <span class="bg-gray-100 text-gray-600 font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{{selected.first_name }} {{ selected.last_name }}</span>to your active roster?
                </h3>
-               <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
+               <button type="button" (click)="closeModal(); ngOnInit()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                </svg>
@@ -499,12 +868,12 @@
 
             <div class="p-6 space-y-6">
                <div class="items-center justify-center">
-                  <!--<ol class="flex items-center justify-center">
+                  <ol class="flex items-center justify-center">
                      <li class="relative w-full mb-6">
                         <div class="flex items-center">
                            <div 
                               class="z-10 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0"
-                              [ngClass]="{'bg-green-400': contractIsValid(), 'bg-red-500': !contractIsValid()}">
+                              [ngClass]="{'bg-green-400': contractIsValid(), 'bg-red-500': !contractIsValid() || !hasContract(selected)}">
                               <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 3v4a1 1 0 0 1-1 1H5m4 8h6m-6-4h6m4-8v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z"/>
                               </svg>
@@ -522,41 +891,119 @@
                            [ngClass]="{'bg-green-400': capIsValid(selected), 'bg-red-500': !capIsValid(selected)}">
                            <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
-                              </svg>                               
-                           </div>
-                           <div class="flex w-[50%] bg-gray-200 h-0.5 dark:bg-gray-700"></div>
+                            </svg>                               
+                         </div>
+                         <div class="flex w-[50%] bg-gray-200 h-0.5 dark:bg-gray-700"></div>
                      </div>
                      <div class="mt-3">
-                           <h3 class="font-medium text-center text-gray-900 dark:text-white">Cap space</h3>
+                         <h3 class="font-medium text-center text-gray-900 dark:text-white">Cap space</h3>
                      </div>
-                  </li>
+                 </li>
                   <li class="relative w-full mb-6">
                      <div class="flex items-center">
                            <div class="flex w-full bg-gray-200 h-0.5 dark:bg-gray-700"></div>
-                           <div *ngIf="validatePickup(selected)" class="z-10 gr-green-400 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0">
-                                 <svg class="w-5 h-5 text-blue-100 dark:text-blue-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                           <div *ngIf="validateCallup(selected)" class="z-10 bg-green-400 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0">
+                                 <svg class="w-5 h-5 text-white dark:text-blue-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
                                  </svg>
                            </div>
-                           <div *ngIf="!validatePickup(selected)" class="z-10 bg-red-500 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0">
+                           <div *ngIf="!validateCallup(selected)" class="z-10 bg-red-500 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0">
                               <svg class="w-5 h-5 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
-                                 </svg>                                  
+                               </svg>                                  
                         </div>
                      </div>
                      <div class="mt-3 text-right justify-end">
-                        <h3 *ngIf="validatePickup(selected)" class="font-medium text-gray-900 dark:text-white">Pickup is Valid</h3>
-                        <h3 *ngIf="!validatePickup(selected)" class="font-medium text-gray-900 dark:text-white">Pickup is Invalid</h3>
+                        <h3 *ngIf="validateCallup(selected)" class="font-medium text-gray-900 dark:text-white">Callup is Valid</h3>
+                        <h3 *ngIf="!validateCallup(selected)" class="font-medium text-gray-900 dark:text-white">Callup is Invalid</h3>
                      </div>
                   </li>
-               </ol>-->
+               </ol>
+               <div *ngIf="!contractIsValid()">
+                  <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                           <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only">Info</span>
+                        <div>
+                           <span class="font-bold">Roster is Full!</span><br> You can't carry any more contracts. Please make a roster move before proceeding.
+                        </div>
+                   </div>
+               </div>
+
+               <div *ngIf="!capIsValid(selected)">
+                  <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                     <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                       <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                     </svg>
+                     <span class="sr-only">Info</span>
+                     <div>
+                       <span class="font-bold">Not enough cap space! (${{ globalService.loggedInTeam?.cap_space | number:'1.0-0' }}) </span><br> You don't have the cap space to call up this player. Please make a roster move before proceeding.
+                     </div>
+                  </div>
+               </div>
+
+               <div *ngIf="!hasContract(selected)">
+                  <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                     <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                       <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                     </svg>
+                     <span class="sr-only">Info</span>
+                     <div>
+                       <span class="font-bold">This player is unsigned!</span><br> There is no contract associated to this player in the database. You must edit the player contract details from the <a class="underline cursor-pointer hover:font-semibold" [routerLink]="['/', globalService.league?.league_id, 'players']" (click)="closeModal()">player database</a> before adding them to your roster
+                     </div>
+                  </div>
+               </div>
+
+               <div *ngIf="validateCallup(selected) && selected.isRookie">
+                  <div class="flex items-center p-4 mb-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800" role="alert">
+                     <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                       <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                     </svg>
+                     <span class="sr-only">Info</span>
+                     <div>
+                       <span class="font-bold">This action cannot be undone!</span><br>Once a rookie is called up to your active roster, they cannot be sent back down and will need to be protected in the offseason.
+                     </div>
+                  </div>
+               </div>
+
             </div>
          </div>
 
          <div class="flex items-center px-6 pb-6 space-x-3 rtl:space-x-reverse rounded-b">
-            <button type="submit" (click)="dropPlayer(selected); closeModal()" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Drop Player</button>
-            <button type="submit" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+            <button 
+               type="submit" 
+               (click)="selected.isRookie ? callupPlayer(selected) : selected.onIR ? toggleIR(selected) : null; closeModal()" 
+               class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+               Call Up Player
+            </button>
+            <button type="submit" (click)="closeModal(); ngOnInit()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
          </div>
       </form>
    </div>
 </ng-template>
+
+<!-- Toast HTML 
+<div id="toast" class="toast hidden items-center justify-center w-full max-w-sm p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
+   <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+       <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+     </svg>
+     <span class="sr-only">Check icon</span>
+   </div>
+   <div class="toast-message ms-3 text-sm font-normal">Default Message</div>
+   <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" aria-label="Close" (click)="dismissToast()">
+     <span class="sr-only">Close</span>
+     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+     </svg>
+   </button>
+ </div>
+-->
+ 
+
+
+
+   
+
+   

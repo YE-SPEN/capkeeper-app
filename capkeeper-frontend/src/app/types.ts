@@ -20,6 +20,7 @@ export interface League {
     min_forwards: number,
     min_defense: number,
     min_goalies: number,
+    ir_slots: number,
 };
 
 export interface Team {
@@ -42,7 +43,8 @@ export interface Team {
     num_goalies: number,
     goalie_salary: number,
     injured_reserve: Player[],
-    rookie_bank: Player[]
+    rookie_bank: Player[],
+    trade_block: Player[]
 };
 
 export interface Player {
@@ -54,6 +56,8 @@ export interface Player {
     logo: string,
     position: string,
     isRookie: boolean,
+    onIR: boolean,
+    onTradeBlock: boolean,
     contract_status: string,
     contract_end: string,
     expiry_status: string, 

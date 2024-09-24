@@ -8,7 +8,7 @@ import { Team, Player } from '../types';
 })
 export class SortingService {
   sortColumn: string | null = 'last_name';
-  sortDirection: 'asc' | 'desc' = 'desc';  
+  sortDirection: 'asc' | 'desc' = 'asc';  
 
   constructor(
     private http: HttpClient,

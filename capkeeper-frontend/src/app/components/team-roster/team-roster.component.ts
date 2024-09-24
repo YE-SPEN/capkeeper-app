@@ -39,10 +39,15 @@ export class TeamRosterComponent {
           .subscribe(response => {
             this.team = response.team;
             this.team.rookie_bank = response.roster.filter(player => player.isRookie);
-            this.team.forwards = response.roster.filter(player => player.position === 'F' && !player.isRookie);
-            this.team.defense = response.roster.filter(player => player.position === 'D' && !player.isRookie);
-            this.team.goalies = response.roster.filter(player => player.position === 'G' && !player.isRookie);
+            this.team.forwards = response.roster.filter(player => player.position === 'F' && !player.isRookie && !player.onIR);
+            this.team.defense = response.roster.filter(player => player.position === 'D' && !player.isRookie && !player.onIR);
+            this.team.goalies = response.roster.filter(player => player.position === 'G' && !player.isRookie && !player.onIR);
+            this.team.trade_block = response.roster.filter(player => player.onTradeBlock);
+            this.team.injured_reserve = response.roster.filter(player => player.onIR);
             
+            console.log('Response: ', response)
+            console.log('Trade block: ', this.team.trade_block)
+
             this.team.roster_size = this.team.forwards.length + this.team.defense.length + this.team.goalies.length;
 
             this.team.forward_salary = this.getTotalSalary(this.team.forwards);
@@ -67,7 +72,7 @@ export class TeamRosterComponent {
       let sum  = player.years_left_current + player.years_left_next;
       if (sum > max) { max = sum }; 
     }
-    return max;
+    return Math.max(max, 6);
   }
 
   getContractSeasons(array: Player[]): string[] {
@@ -118,7 +123,7 @@ export class TeamRosterComponent {
         if (this.globalService.loggedInTeam && this.globalService.loggedInUser) {
           this.globalService.updateTeamCap(this.globalService.loggedInTeam); 
 
-          let message = player.first_name + ' ' + player.last_name + ' dropped to waivers by ' + this.globalService.loggedInTeam.team_name;
+          let message = player.first_name + ' ' + player.last_name + ' dropped to waivers by ' + this.team.team_name;
           let action = 'drop-player';
           this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
 
@@ -130,6 +135,160 @@ export class TeamRosterComponent {
       }
     });
 
+  }
+
+  rosterMove(player: Player, event?: Event | string, template?: TemplateRef<any>): void {
+    let action: string | undefined;
+
+    if (typeof event === 'string') {
+      action = event;
+    } else if (event) {
+      action = (event.target as HTMLSelectElement).value;
+    }
+
+    switch (action) {
+      case 'ir':
+        if (player.onIR) {
+          if (template) {
+            this.openModal(template, player);
+          }
+        }
+        else {
+          this.toggleIR(player);
+        }
+        break;
+      case 'trade-block':
+        this.toggleTradeBlock(player);
+        break;
+      case 'callup':
+        if (template) {
+          this.openModal(template, player);
+        }
+        break;
+      default:
+        console.log('No action selected');
+    }
+  }
+
+  toggleIR(player: Player): boolean {
+    let message = '';
+    
+    if (player.onIR) {
+      if (player.aav_current > this.team.cap_space) {
+        this.ngOnInit();
+        return false;
+      }
+      message = player.first_name + ' ' + player.last_name + ' activate from IR by ' + this.team.team_name; 
+    } 
+    if (!player.onIR) {
+      if (this.team.injured_reserve.length >= 3) {
+        this.ngOnInit();
+        return false;
+      }
+      message = player.first_name + ' ' + player.last_name + ' placed on IR by ' + this.team.team_name; 
+    }
+
+    const payload = {
+      player_id: player.player_id,
+      league_id: this.league_id,
+      action: 'ir',
+    }
+
+    this.http.post('api/players/roster-move', payload)
+    .subscribe({
+      next: (response) => {
+        if (this.globalService.loggedInTeam && this.globalService.loggedInUser) {
+          this.globalService.updateTeamCap(this.globalService.loggedInTeam); 
+   
+          let action = 'ir';
+          this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
+          this.ngOnInit();
+        }
+      },
+      error: (error) => {
+        console.error('Error recording action:', error);
+      }
+    });
+
+    return true;
+  }
+  
+  toggleTradeBlock(player: Player): void {
+    const payload = {
+      player_id: player.player_id,
+      league_id: this.league_id,
+      action: 'trade-block',
+    }
+
+    this.http.post('api/players/roster-move', payload)
+    .subscribe({
+      next: (response) => {
+        if (this.globalService.loggedInTeam && this.globalService.loggedInUser) {
+
+          if (!player.onTradeBlock) {
+            let message = player.first_name + ' ' + player.last_name + ' added to the trade block by ' + this.team.team_name;
+            let action = 'trade-block';
+            this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
+          }
+
+          this.ngOnInit();
+        }
+      },
+      error: (error) => {
+        console.error('Error recording action:', error);
+      }
+    });
+  }
+
+  validateCallup(player: Player): boolean {
+    return this.capIsValid(player) && this.contractIsValid() && this.hasContract(player);
+  }
+
+  capIsValid(player: Player): boolean {
+    if (this.team.cap_space && player.aav_current > this.team.cap_space) {
+      return false;
+    }
+    return true;
+  }
+
+  contractIsValid(): boolean {
+    if (this.team.roster_size && this.globalService.league?.max_roster_size) {
+      if (this.globalService.league?.max_roster_size <= this.team.roster_size) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  hasContract(player: Player): boolean {
+    return player.aav_current > 0;
+  }
+
+  callupPlayer(player: Player): void {
+    const payload = {
+      player_id: player.player_id,
+      league_id: this.league_id,
+      action: 'callup',
+    }
+
+    this.http.post('api/players/roster-move', payload)
+    .subscribe({
+      next: (response) => {
+        if (this.globalService.loggedInTeam && this.globalService.loggedInUser) {
+
+          if (!player.onTradeBlock) {
+            let message = player.first_name + ' ' + player.last_name + ' called up from the rookie bank by ' + this.team.team_name;
+            let action = 'callup';
+            this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
+          }
+
+          this.ngOnInit();
+        }
+      },
+      error: (error) => {
+        console.error('Error recording action:', error);
+      }
+    });
   }
 
   openModal(template: TemplateRef<any>, player?: Player): void {

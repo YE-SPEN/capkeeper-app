@@ -15,7 +15,9 @@ export class LeagueActivityComponent {
   league_id!: string;
   searchRangeInDays: number = 7;
   activity_log: Activity[] = [];
+  filtered_activity_log: Activity[] = [];
   users: User[] = [];
+  activityFilter = 'all'
 
   constructor(
     public globalService: GlobalService,
@@ -25,6 +27,8 @@ export class LeagueActivityComponent {
   ) { }
 
   ngOnInit(): void {
+    this.sortingService.sortColumn = 'date';
+      this.sortingService.sortDirection = 'desc';
     this.route.paramMap.subscribe(params => {
       this.league_id = params.get('league_id')!;
     });
@@ -48,7 +52,7 @@ export class LeagueActivityComponent {
       .subscribe(response => {
         this.users = response.users;
         this.activity_log = response.action_log;
-        console.log(this.activity_log);
+        this.filtered_activity_log = this.activity_log;
       });
     }
   }
@@ -60,6 +64,15 @@ export class LeagueActivityComponent {
       }
     }
     return '';
+  }
+
+  formatActionType(action: string): string {
+    if (action === 'ir' || action === 'callup') { return 'Roster Move'}
+    if (action === 'create-player' || action === 'edit-player') { return 'Database Update'}
+    if (action === 'add-player' || action === 'drop-player') { return 'Add/Drop' }
+    if (action === 'trade') { return 'Trade' }
+    if (action === 'trade-block') { return 'Trade Block' }
+    return ''
   }
 
   formatDateTime(dateString: string, timeString: string): string {
@@ -79,6 +92,15 @@ export class LeagueActivityComponent {
     };
   
     return new Intl.DateTimeFormat('en-US', options).format(date);
+  }
+
+  filterActivities(): void {
+    if (this.activityFilter === 'all') {
+      this.filtered_activity_log = this.activity_log;
+      return;
+    }
+    this.filtered_activity_log = this.activity_log.filter(activity => this.formatActionType(activity.action_type) === this.activityFilter);
+    this.sortingService.sort(this.filtered_activity_log, this.sortingService.sortColumn, this.sortingService.sortDirection);
   }
   
 

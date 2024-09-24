@@ -40,10 +40,8 @@
   }
   
   .modal-content {
-    background-color: #fff;
     padding: 15px;
     border-radius: 5px;
-    width: 100%;
     max-width: 700px;
   }
   
@@ -143,7 +141,11 @@ input[type=checkbox], input[type=radio] {
 .select-dropdown {
   position: relative;
   margin-top: 8px;
-  max-height: 96px; 
+  max-height: 200px; 
   overflow-y: auto;
+  
+  /* Optional: Ensure it occupies full width */
   width: 100%;
 }
+
+

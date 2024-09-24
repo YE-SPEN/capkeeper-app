@@ -58,6 +58,8 @@ export class PlayerDatabaseComponent {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
+      this.sortingService.sortColumn = 'last_name';
+      this.sortingService.sortDirection = 'asc';
       this.league_id = params.get('league_id')!;
 
       this.playerService.getAllPlayers(this.league_id)
@@ -264,7 +266,7 @@ export class PlayerDatabaseComponent {
         });
 
         if (this.globalService.loggedInUser) {
-          this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, 'edit-player', message);
+          this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action_type, message);
         }
         
        this.closeModal();

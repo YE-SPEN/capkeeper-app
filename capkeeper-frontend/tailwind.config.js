@@ -7,12 +7,17 @@ module.exports = {
     'node_modules/flowbite/**/*.js'
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#4ade80',
+        }
+      }
+    },
   },
   plugins: [
     require('flowbite/plugin'),
     require('@tailwindcss/forms'),
   ],
   important: true,
-
 }
