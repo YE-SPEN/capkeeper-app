@@ -28,12 +28,12 @@ export const teamRosterRoute = {
 
             const { results: teamInfo } = await db.query( 
                 `SELECT t.team_id, t.team_name, t.picture, t.league_id, GROUP_CONCAT(CONCAT(u.first_name, ' ', u.last_name) SEPARATOR ', ') AS managed_by
-                FROM teams t JOIN users u 
-                    ON t.managed_by LIKE CONCAT('%', u.user_name, '%')
+                FROM teams t JOIN team_managed_by tmb
+                    ON t.team_id = tmb.team_id
+                    JOIN users u ON
+                    tmb.user_name = u.user_name
                 WHERE t.league_id = ?
-                    AND t.team_id = ?
-                GROUP BY 
-                    t.team_id`,
+                    AND t.team_id = ?`,
                 [league_id, team_id]
             );
 

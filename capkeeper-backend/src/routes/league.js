@@ -9,7 +9,9 @@ export const leagueRoute = {
 
         try {
             const { results: leagueInfo } = await db.query( 
-                `SELECT * from leagues
+                `SELECT l.*, CONCAT(u.first_name, ' ', u.last_name) AS commissioner
+                FROM leagues l JOIN users u ON
+                    l.commissioner_id = u.user_name
                 WHERE league_id = ?`,
                  [league_id]
             );

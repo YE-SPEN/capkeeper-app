@@ -11,9 +11,9 @@ export const loginRoute = {
 
         try {
             const { results: userInfo } = await db.query( 
-                `SELECT u.*, t.league_id
-                FROM users u JOIN teams t
-                    ON t.managed_by LIKE CONCAT('%', u.user_name, '%')
+                `SELECT u.*, tmb.league_id
+                FROM users u JOIN team_managed_by tmb
+                    ON u.user_name = tmb.user_name
                 WHERE u.email = ?`,
                  [email]
             );

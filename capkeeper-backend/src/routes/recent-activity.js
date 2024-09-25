@@ -6,22 +6,26 @@ export const recentActivityRoute = {
     path: '/api/{league_id}/activity-log',
     handler: async (req, h) => {
         const league_id = req.params.league_id;
-        const date = req.query.date;
+        const { start, end } = req.query;
+
+        if (!start || !end) {
+            throw Boom.badRequest('Both start and end date parameters are required.');
+        }
 
         try {
             const { results: action_log } = await db.query( 
                 `SELECT * FROM recent_activity
                 WHERE league_id = ?
-                    AND date >= ?
+                    AND date BETWEEN ? AND ?
                 ORDER BY date DESC, time DESC`,
-                 [league_id, date]
+                 [league_id, start, end]
             );
 
             const { results: users } = await db.query( 
-                `SELECT first_name, last_name, user_name 
-                FROM users u
-                    JOIN teams t ON FIND_IN_SET(u.user_name, t.managed_by) > 0
-                WHERE t.league_id = ?`,
+                `SELECT first_name, last_name, u.user_name 
+                FROM users u JOIN team_managed_by tmb
+                    ON u.user_name = tmb.user_name
+                WHERE tmb.league_id = ?`,
                 [league_id]
             );
 
