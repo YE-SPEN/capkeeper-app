@@ -11,8 +11,8 @@ export const createPlayerRoute = {
             
             if (action === 'add') {
                 const query = `
-                INSERT INTO players (player_id, first_name, last_name, short_code, position, contract_status, years_left_current, aav_current, last_updated, updated_by)
-                VALUES (?, ?, ?, ?, ?, 'Unsigned', 0, 0, ?, ?)
+                INSERT INTO players (player_id, first_name, last_name, short_code, position, years_left_current, aav_current, last_updated, updated_by)
+                VALUES (?, ?, ?, ?, ?, 0, 0, ?, ?)
                 `;
                 result = await db.query(query, [player_id, first_name, last_name, short_code, position, last_updated, updated_by]);
                 return h.response(result).code(201);

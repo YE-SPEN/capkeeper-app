@@ -8,6 +8,7 @@ import { loginRoute } from "./login.js";
 import { addDropRoute } from "./add-drop.js";
 import { uploadFileRoute } from "./upload-file.js";
 import { rosterMoveRoute } from "./roster-move.js";
+import { editContractRoute } from "./edit-contract.js";
 
 export default [
     leagueRoute,
@@ -19,5 +20,6 @@ export default [
     loginRoute,
     addDropRoute, 
     uploadFileRoute,
-    rosterMoveRoute
+    rosterMoveRoute,
+    editContractRoute
 ]

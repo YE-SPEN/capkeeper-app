@@ -67,7 +67,7 @@ export const uploadFileRoute = {
 
             console.log('File uploaded successfully:', uploadResult);
 
-            const fileUrl = `${process.env.DO_SPACES_ENDPOINT}/${process.env.DO_SPACES_BUCKET}/player_pics/${fileName}`;
+            const fileUrl = `${process.env.DO_SPACES_ENDPOINT}/${process.env.DO_SPACES_BUCKET}/keeper_team_pics/${fileName}`;
             return h.response({ fileUrl }).code(201);
         
         } catch (error) {
