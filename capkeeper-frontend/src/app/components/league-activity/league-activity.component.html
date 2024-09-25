@@ -5,10 +5,56 @@
         </h1>
         <!-- Control Panel -->
         <div class="flex flex-wrap items-start pt-6 space-y-4 md:space-y-0 md:space-x-4">
+
+            <!-- User Multi-Select -->
+            <div class="flex flex-col w-full md:w-auto">
+                <label for="dateFilter" class="text-left block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">&nbsp;</label>
+                <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-300" type="button">
+                    Select Users
+                    <span class="inline-flex items-center justify-center w-5 h-5 ms-2 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                        {{ selected_users.length }}
+                    </span>
+                    <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                </button>
+        
+                <!-- Dropdown menu -->
+                <div id="dropdownBgHover" class="z-10 inset-x-10 hidden w-64 bg-white rounded-lg shadow dark:bg-gray-700">
+                    <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBgHoverButton">
+                        <li>
+                            <a *ngIf="selected_users.length > 0" (click)="deselectAllUsers()" class="cursor-pointer font-medium text-green-500 dark:text-green-500 hover:underline">
+                                Deselect All
+                            </a>
+                            <a *ngIf="selected_users.length === 0" (click)="selectAllUsers()" class="cursor-pointer font-medium text-green-500 dark:text-green-500 hover:underline">
+                                Select All
+                            </a>
+                            <div class="py-1">
+                                <hr class="border-0 border-t-2 border-gray-300">   
+                                </div>
+                        </li>  
+                        <li *ngFor="let user of users">
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                <input             
+                                    id="user-checkbox-{{ user.user_name }}"
+                                    type="checkbox" 
+                                    [checked]="isSelected(user)"
+                                    (change)="toggleUserSelect($event, user)"
+                                    class="w-4 h-4 text-green-400 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-500 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                                <label for="user-checkbox-{{ user.user_name }}" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
+                                    {{ user.first_name }} {{ user.last_name }}
+                                </label>
+                            </div>
+                        </li>                                                                              
+                    </ul>
+                </div>
+            </div>
+            
             <!-- Action Filter with Label -->
             <div class="flex flex-col w-full md:w-auto">
                 <label for="actionFilter" class="text-left block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Filter by Action</label>
-                <select id="actionFilter" [(ngModel)]="activityFilter" (ngModelChange)="filterActivities()" class="bg-gray-50 border border-green-400 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400 min-w-[140px]">
+                <select id="actionFilter" [(ngModel)]="activityFilter" (ngModelChange)="filterActivities()" class="bg-gray-50 border border-green-400 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400 min-w-[160px]">
                     <option value="all">All Types</option>
                     <option value="Add/Drop">Add/Drops</option>
                     <option value="Roster Move">Roster Moves</option>
@@ -21,62 +67,43 @@
             <!-- Date Filter with Label -->
             <div class="flex flex-col w-full md:w-auto">
                 <label for="dateFilter" class="text-left block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Filter by Date</label>
-                <select id="dateFilter" [(ngModel)]="searchRangeInDays" (ngModelChange)="getActivitiesByDate()" class="bg-gray-50 border border-green-400 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400 min-w-[140px]">
+                <select id="dateFilter" (ngModelChange)="setDateRange($event)" class="bg-gray-50 border border-green-400 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400 min-w-[160px]">
                     <option value="7">This Week</option>
                     <option value="30">Last 30 days</option>
                     <option value="90">Last 3 months</option>
-                    <option value="365">Last 12 months</option>          
+                    <option value="365">Last 12 months</option>
+                    <option value="0">Custom</option>          
                 </select>
             </div>
         
-            <!-- User Multi-Select -->
-            <div class="flex flex-col w-full md:w-auto">
-                <label for="dateFilter" class="text-left block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">&nbsp;</label>
-                <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-300" type="button">Select Users
-                    <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                    </svg>
-                </button>
-        
-                <!-- Dropdown menu -->
-                <div id="dropdownBgHover" class="z-10 hidden w-48 bg-white rounded-lg shadow dark:bg-gray-700">
-                    <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBgHoverButton">
-                        <li *ngFor="let user of users">
-                            <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                                <input id="checkbox-item-4" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                <label for="checkbox-item-4" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{ user.first_name }} {{ user.last_name }}</label>
-                            </div>
-                        </li>                                                                        
-                    </ul>
-                </div>
-            </div>
-        
             <!-- Custom Date Range -->
-            <div class="flex flex-col w-full md:justify-end md:w-auto ml-auto md:ml-0">
-                <label for="date-range-picker" class="text-left block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Custom Date Range</label>
-                
-                <!-- Date Range Picker -->
-                <div id="date-range-picker" date-rangepicker class="relative flex items-center">
-                    <!-- Start Date -->
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                            </svg>
+            <div>
+                <div class="flex flex-col w-full md:w-auto ml-auto md:ml-0">
+                    <label for="date-range-picker" class="text-left block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Custom Date Range</label>
+                    
+                    <!-- Date Range Picker -->     
+                    <div id="date-range-picker" date-rangepicker class="relative flex items-center">
+                        <!-- Start Date -->
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                </svg>
+                            </div>
+                            <input (change)="setStartDate($event)" id="datepicker-range-start" name="start" type="text" datepicker-format="yyyy-mm-dd" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400" placeholder="Select date start">
                         </div>
-                        <input id="datepicker-range-start" name="start" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">
-                    </div>
-        
-                    <span class="mx-2 text-gray-500">to</span>
-        
-                    <!-- End Date -->
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                            </svg>
+            
+                        <span class="mx-2 text-gray-500">to</span>
+            
+                        <!-- End Date -->
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                </svg>
+                            </div>
+                            <input (change)="setEndDate($event)" id="datepicker-range-end" name="end" type="text" datepicker-format="yyyy-mm-dd" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400" placeholder="Select date end">
                         </div>
-                        <input id="datepicker-range-end" name="end" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">
                     </div>
                 </div>
             </div>
@@ -139,7 +166,7 @@
                         'text-green-400': activity.action_type === 'add-player' || activity.action_type === 'create-player',
                         'text-red-400': activity.action_type === 'drop-player' || activity.action_type === 'ir',
                         'text-blue-700': activity.action_type === 'trade' || activity.action_type === 'callup',
-                        'text-gray-800': activity.action_type === 'edit-player',
+                        'text-gray-800': activity.action_type === 'edit-player' || activity.action_type === 'edit-contract',
                         'text-yellow-300': activity.action_type === 'trade-block',
                     }" 
                     aria-hidden="true" 
@@ -156,6 +183,8 @@
                         <path *ngIf="activity.action_type === 'trade'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16h13M4 16l4-4m-4 4 4 4M20 8H7m13 0-4 4m4-4-4-4"/>
                         <path *ngIf="activity.action_type === 'ir'" stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                         <path *ngIf="activity.action_type === 'callup'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 20V10m0 10-3-3m3 3 3-3m5-13v10m0-10 3 3m-3-3-3 3"/>
+                        <path *ngIf="activity.action_type === 'edit-contract'"stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 3v4a1 1 0 0 1-1 1H5m4 8h6m-6-4h6m4-8v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z"/>
+                          
                             
                     </svg>        
                 </div>

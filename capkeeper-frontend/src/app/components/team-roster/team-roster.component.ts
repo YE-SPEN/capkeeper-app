@@ -21,6 +21,11 @@ export class TeamRosterComponent {
   currentSeason: string = '2023-24'; 
   sortColumn: string | null = 'points';
   sortDirection: 'asc' | 'desc' = 'desc';
+  formData = {
+    oldName: '',
+    name: '',
+    picture: '',
+  };
 
   constructor(
     private teamService: TeamService,
@@ -44,9 +49,6 @@ export class TeamRosterComponent {
             this.team.goalies = response.roster.filter(player => player.position === 'G' && !player.isRookie && !player.onIR);
             this.team.trade_block = response.roster.filter(player => player.onTradeBlock);
             this.team.injured_reserve = response.roster.filter(player => player.onIR);
-            
-            console.log('Response: ', response)
-            console.log('Trade block: ', this.team.trade_block)
 
             this.team.roster_size = this.team.forwards.length + this.team.defense.length + this.team.goalies.length;
 
@@ -178,7 +180,7 @@ export class TeamRosterComponent {
         this.ngOnInit();
         return false;
       }
-      message = player.first_name + ' ' + player.last_name + ' activate from IR by ' + this.team.team_name; 
+      message = player.first_name + ' ' + player.last_name + ' activated from IR by ' + this.team.team_name; 
     } 
     if (!player.onIR) {
       if (this.team.injured_reserve.length >= 3) {
@@ -290,6 +292,33 @@ export class TeamRosterComponent {
       }
     });
   }
+
+  uploadFile(event: any): boolean {
+    const file: File = event.target.files[0];
+  
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      console.log('FormData contents:', formData.get('file')); 
+  
+      this.http.post('/api/upload', formData).subscribe({
+        next: (response: any) => {
+          console.log('File uploaded successfully:', response.fileUrl);
+          this.formData.picture = response.fileUrl;
+          return true;
+        },
+        error: (error) => {
+          console.error('File upload failed:', error);
+          return false;
+        },
+        complete: () => {
+          console.log('File upload process completed.');
+        }
+      });
+    }
+    return false;
+  } 
 
   openModal(template: TemplateRef<any>, player?: Player): void {
     if (player) {

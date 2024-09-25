@@ -782,7 +782,7 @@
       <div class="relative w-full max-w-2xl max-h-full">
             <form class="relative bg-white rounded-lg shadow dark:bg-gray-700">
    
-               <div class="flex items-start justify-between p-4 rounded-t">
+               <div class="flex items-start justify-between p-4 rounded-t md:w-[400px]">
                   <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                      Edit Team Info
                   </h3>
@@ -795,24 +795,15 @@
                </div>
    
                <div class="p-6 space-y-6">
-                  <div class="grid grid-cols-6 gap-6">
-                     <div class="col-span-6 sm:col-span-3">
-                           <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
-                           <input type="text" name="first-name" id="first-name" class="shadow-sm bg-gray-50  text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Bonnie" required="">
-                     </div>
-                     <div class="col-span-6 sm:col-span-3">
-                           <label for="last-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
-                           <input type="text" name="last-name" id="last-name" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Green" required="">
-                     </div>
-                     <div class="col-span-6 sm:col-span-3">
-                           <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                           <input type="email" name="email" id="email" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="example@company.com" required="">
-                     </div>
-                     <div class="col-span-6 sm:col-span-3">
-                           <label for="phone-number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
-                           <input type="number" name="phone-number" id="phone-number" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-blue-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="e.g. +(12)3456 789" required="">
-                     </div>
+                  <div class="col-span-6 sm:col-span-3">
+                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Team Name</label>
+                        <input type="text" name="first-name" id="first-name" class="shadow-sm bg-gray-50  text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [placeholder]="team.team_name" required="">
                   </div>
+                  <div>
+                     <label for="picture" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Picture</label>
+                     <input (change)="uploadFile($event)" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
+                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PNG, JPG (MAX. 1MB)</p>          
+                 </div>
                </div>
    
                <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse rounded-b">
@@ -866,7 +857,8 @@
             </button>
             </div>
 
-            <div class="p-6 space-y-6">
+            <!-- Validation Timeline -->
+            <div class="p-6 space-y-6 md:w-[600px]">
                <div class="items-center justify-center">
                   <ol class="flex items-center justify-center">
                      <li class="relative w-full mb-6">
@@ -919,6 +911,8 @@
                      </div>
                   </li>
                </ol>
+
+               <!-- Warnings -->
                <div *ngIf="!contractIsValid()">
                   <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
                         <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -974,7 +968,13 @@
             <button 
                type="submit" 
                (click)="selected.isRookie ? callupPlayer(selected) : selected.onIR ? toggleIR(selected) : null; closeModal()" 
-               class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+               class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800"
+               [disabled]="!validateCallup(selected)"
+               [ngClass]="{
+                  'bg-green-400 hover:bg-green-500 focus:ring-green-300': validateCallup(selected),
+                  'bg-green-300 cursor-not-allowed': !validateCallup(selected)
+               }" 
+               >
                Call Up Player
             </button>
             <button type="submit" (click)="closeModal(); ngOnInit()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>

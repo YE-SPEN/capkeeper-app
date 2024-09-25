@@ -14,6 +14,7 @@ export interface League {
     league_name: string,
     picture: string,
     commissioner_id: string,
+    commissioner: string,
     salary_cap: number,
     max_roster_size: number, 
     rookie_bank_size: number,

@@ -33,19 +33,22 @@ export class PlayerDatabaseComponent {
   statusFilter = 'all';
   positionFilter = 'all';
   teamFilter = 'all';
+  maxSalary: number = 15000000;
   warnings: Warning[] = [];
   formSubmitted: boolean = false;
+  addNextContract: boolean = false;
   formData = {
     first_name: '',
     last_name: '',
     short_code: '',
     position: '',
-    years_left_current: 0,
-    aav_current: 0,
-    years_left_next: 0,
-    aav_next: 0,
+    years_left_current: null as number | null,
+    aav_current: null as number | null,
+    years_left_next: null as number | null,
+    aav_next: null as number | null,
     expiry_status: '',
-  };
+};
+
 
   constructor(
     private playerService: PlayerService,
@@ -78,10 +81,11 @@ export class PlayerDatabaseComponent {
       player.first_name.toLowerCase().includes(this.searchKey.toLowerCase()) || player.last_name.toLowerCase().includes(this.searchKey.toLowerCase())
     );
     this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
+    this.setPage(1);
   }
 
   filterPlayers(): void {
-    this.filteredPlayers = this.allPlayers.filter(player => this.inPosFilter(player) && this.inStatusFilter(player) && this.inTeamFilter(player));
+    this.filteredPlayers = this.allPlayers.filter(player => this.inPosFilter(player) && this.inStatusFilter(player) && this.inTeamFilter(player) && this.inSalaryFilter(player));
     this.sortingService.sort(this.filteredPlayers, this.sortingService.sortColumn, this.sortingService.sortDirection);
   }
 
@@ -109,9 +113,14 @@ export class PlayerDatabaseComponent {
     return player.owned_by === this.teamFilter || this.teamFilter === 'all';
   }
 
+  inSalaryFilter(player: Player): boolean {
+    return player.aav_current < this.maxSalary || player.contract_status === 'Unsigned';
+  }
+
   resetSearch(): void {
     this.searchKey = '';
     this.filterPlayers();
+    this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
   }
 
   previousPage(): void {
@@ -142,20 +151,31 @@ export class PlayerDatabaseComponent {
   }
   
   generatePageArray(): number[] {
+    let array = [];
+  
     if (this.currentPage <= 3) {
-      return [1, 2, 3, 4, 5];
+      const maxPage = Math.min(5, this.totalPages);
+      for (let i = 1; i <= maxPage; i++) {
+        array.push(i);
+      }
+      return array;
+    }
+  
+    if (this.currentPage >= this.totalPages - 2) {
+      const startPage = Math.max(this.totalPages - 4, 1); 
+      for (let i = startPage; i <= this.totalPages; i++) {
+        array.push(i);
+      }
+      return array;
     }
 
-    let numArray = [];
-    if (this.currentPage <= this.totalPages - 2) {
-      for (let i = this.currentPage - 2; i <= this.currentPage + 2; ++i) { numArray.push(i); }
-      return numArray;
+    for (let i = this.currentPage - 2; i <= this.currentPage + 2; i++) {
+      array.push(i);
     }
-
-    for (let i = this.totalPages - 4; i <= this.totalPages; ++i) { numArray.push(i) }
-    return numArray;
+  
+    return array;
   }
-
+  
   setPageSize(size: number): void {
     this.pageSize = size;
     this.currentPage = 1;
@@ -232,7 +252,7 @@ export class PlayerDatabaseComponent {
         position: this.formData.position,
         short_code: this.formData.short_code,
         last_updated: this.globalService.getDate(),
-        updated_by: 'Eric Spensieri',
+        updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name,
       };
 
       let message;
@@ -273,6 +293,58 @@ export class PlayerDatabaseComponent {
        this.ngOnInit();
   }
 
+  contractFormSubmit(event: Event) {
+    const submissionData = {
+      player_id: this.selected.player_id,
+      aav_current: this.formData.aav_current,
+      years_left_current: this.formData.years_left_current,
+      aav_next: this.formData.aav_next,
+      years_left_next: this.formData.years_left_next,
+      expiry_status: this.formData.expiry_status,
+      last_updated: this.globalService.getDate(),
+      updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name,
+    };
+
+    console.log(submissionData);
+
+    let message = '';
+    if (this.selected) {
+      message = 'Player contract information updated for ' + this.selected.first_name + ' ' + this.selected.last_name + '.';
+    }
+    
+    let action_type = 'edit-contract';
+    
+    this.http.post('/api/players/edit-contract', submissionData)
+      .subscribe({
+        next: (response) => {
+          
+          this.completeAction(message, true);
+          console.log('Changes saved.', response);
+
+          this.formSubmitted = true;
+          setTimeout(() => {
+            this.formSubmitted = false;
+          }, 3000);
+          this.resetForm();
+        },
+        error: (error) => {
+          console.error('Error submitting form', error, submissionData);
+          this.completeAction('Error Submitting Player Form', false);
+        }
+      });
+
+      if (this.globalService.loggedInUser) {
+        this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action_type, message);
+      }
+      
+     this.closeModal();
+     this.ngOnInit();
+  }
+
+  addContract(): void {
+    this.addNextContract = !this.addNextContract;
+  }
+
   selectPlayer(player: Player) {
     this.selected = player;
     this.formData.first_name = this.selected.first_name;
@@ -284,6 +356,7 @@ export class PlayerDatabaseComponent {
     this.formData.years_left_next = this.selected.years_left_next;
     this.formData.aav_next = this.selected.aav_next;
     this.formData.expiry_status = this.selected.expiry_status;
+    console.log(this.formData)
   }
 
   resetForm() {
@@ -291,15 +364,19 @@ export class PlayerDatabaseComponent {
     this.formData.last_name = '';
     this.formData.short_code = '';
     this.formData.position = '';
-    this.formData.years_left_current = 0;
-    this.formData.aav_current = 0;
-    this.formData.years_left_next = 0;
-    this.formData.aav_next = 0;
+    this.formData.years_left_current = null;
+    this.formData.aav_current = null;
+    this.formData.years_left_next = null;
+    this.formData.aav_next = null;
     this.formData.expiry_status = '';
   }
 
   completeAction(message: string, success: boolean): void {
     //this.actionCompleted.emit({ message, success });
+  }
+
+  isButtonDisabled(): boolean {
+    return this.formData.first_name === '' || this.formData.last_name === '' || this.formData.position === '' || this.formData.short_code === '';
   }
 
   openModal(template: TemplateRef<any>, player?: Player): void {
@@ -312,6 +389,8 @@ export class PlayerDatabaseComponent {
   closeModal() {
     this.modalRef.hide();
     this.resetForm();
+    this.resetSearch();
+    this.addNextContract = false;
   }
 
 }

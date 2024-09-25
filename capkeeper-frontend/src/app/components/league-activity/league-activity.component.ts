@@ -14,8 +14,12 @@ import { ActivatedRoute } from '@angular/router';
 export class LeagueActivityComponent {
   league_id!: string;
   searchRangeInDays: number = 7;
+  start_date: string = this.getSearchDate(7);
+  end_date: string = this.getSearchDate(0);
+  rangeIsCustom: boolean = false;
   activity_log: Activity[] = [];
   filtered_activity_log: Activity[] = [];
+  selected_users: User[] = [];
   users: User[] = [];
   activityFilter = 'all'
 
@@ -41,16 +45,48 @@ export class LeagueActivityComponent {
       const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
 
       return formattedDate;
+  }
+
+  setDateRange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const days = parseInt(selectElement.value, 10);
+    
+    if (days === 0) { 
+      this.rangeIsCustom = true; 
+      return; 
     }
+    else {
+      this.start_date = this.getSearchDate(days);
+      this.end_date = this.getSearchDate(0);
+      this.getActivitiesByDate();
+    }
+  }
+
+  setStartDate(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const start = inputElement.value;
+    
+    this.start_date = start;
+    console.log("Start Date:", this.start_date); 
+  }
+
+  setEndDate(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const end = inputElement.value;
+    
+    this.end_date = end
+    console.log("End Date:", this.end_date); 
+  }
+
 
   getActivitiesByDate(): void {
     const league_id = this.league_id;
-    const date = this.getSearchDate(this.searchRangeInDays);
 
     if (league_id) {
-      this.userService.getActivitiesByLeague(league_id, date)
+      this.userService.getActivitiesByLeague(league_id, this.start_date, this.end_date)
       .subscribe(response => {
         this.users = response.users;
+        this.selected_users = this.users;
         this.activity_log = response.action_log;
         this.filtered_activity_log = this.activity_log;
       });
@@ -68,7 +104,7 @@ export class LeagueActivityComponent {
 
   formatActionType(action: string): string {
     if (action === 'ir' || action === 'callup') { return 'Roster Move'}
-    if (action === 'create-player' || action === 'edit-player') { return 'Database Update'}
+    if (action === 'create-player' || action === 'edit-player' || action === 'edit-contract') { return 'Database Update'}
     if (action === 'add-player' || action === 'drop-player') { return 'Add/Drop' }
     if (action === 'trade') { return 'Trade' }
     if (action === 'trade-block') { return 'Trade Block' }
@@ -95,13 +131,56 @@ export class LeagueActivityComponent {
   }
 
   filterActivities(): void {
-    if (this.activityFilter === 'all') {
-      this.filtered_activity_log = this.activity_log;
-      return;
-    }
-    this.filtered_activity_log = this.activity_log.filter(activity => this.formatActionType(activity.action_type) === this.activityFilter);
+    this.filtered_activity_log = this.activity_log.filter(activity => this.inActivityTypeFilter(activity) && this.inUserFilter(activity));
     this.sortingService.sort(this.filtered_activity_log, this.sortingService.sortColumn, this.sortingService.sortDirection);
   }
+
+  inActivityTypeFilter(activity: Activity): boolean {
+    if (this.activityFilter === 'all' || this.formatActionType(activity.action_type) === this.activityFilter) { return true }
+    return false;
+  }
+
+  inUserFilter(activity: Activity): boolean {
+    for (let user of this.selected_users) {
+      if (activity.user_id === user.user_name) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  toggleUserSelect(event: Event, user: User): void {
+    const checkbox = event.target as HTMLInputElement;
+  
+    if (checkbox.checked) {
+      this.selected_users.push(user);
+    } else {
+      this.selected_users = this.selected_users.filter(selectedUser => selectedUser.user_name !== user.user_name);
+    }
+    this.filterActivities();
+  }
+
+  isSelected(user: User): boolean {
+    for (let selectedUser of this.selected_users) {
+      if (selectedUser.user_name === user.user_name) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  deselectAllUsers(): void {
+    this.selected_users = [];
+    this.filterActivities();
+  }
+
+  selectAllUsers(): void {
+    this.selected_users = this.users;
+    this.filterActivities();
+  }
+
+
+  
   
 
 }

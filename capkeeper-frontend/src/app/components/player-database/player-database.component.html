@@ -11,70 +11,71 @@
    </div>
    
    <div class="relative">
-      <div class="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
-         <div>
-            <!-- Control Panel -->
-            <ul class="flex flex-col items-center md:flex-row md:items-center gap-4 py-4">
-               <!-- Search Bar -->
-               <li class="w-full md:w-auto flex flex-col md:flex-row items-center justify-center md:justify-start">
-                  <label for="table-search" class="sr-only">Search</label>
-                  <div class="relative">
-                     <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                        </svg>
-                     </div>
-                     <input type="text" [(ngModel)]="searchKey" (input)="searchPlayers()" id="table-search-users" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-green-400 focus:border-green-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400" placeholder="Search players...">
-                  </div>
-               </li>
-
-               <!-- Ownership Filter -->
-               <li class="w-full md:w-auto flex flex-col md:flex-row items-center justify-center md:justify-start">
-                  <select 
-                     [(ngModel)]="statusFilter" (ngModelChange)="filterPlayers()"
-                     class="bg-gray-50 border border-green-400 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400 min-w-[175px]">         
-                     <option value="all">All Players</option>
-                     <option value="available">All Available</option>
-                     <option value="affordable">All Affordable</option>
-                     <option value="owned">All Owned</option>
-                     <option value="active">Active Players</option>  
-                     <option value="unsigned">Unsigned</option>         
-               </select>        
-               </li>
-
-               <!-- Position Filter -->
-               <li class="w-full md:w-auto flex flex-col md:flex-row items-center justify-center md:justify-start">
-                  <select 
-                     [(ngModel)]="positionFilter" (ngModelChange)="filterPlayers()"
-                     class="bg-gray-50 border border-green-400 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400 min-w-[175px]">         
-                     <option value="all">Any Position</option>
-                     <option value="skater">All Skaters</option>
-                     <option value="F">Forwards</option>
-                     <option value="D">Defensemen</option>
-                     <option value="G">Goalies</option>         
-               </select>        
-               </li>
-
-               <!-- Team Filter -->
-               <li class="w-full md:w-auto flex flex-col md:flex-row items-center justify-center md:justify-start">
-                  <select [(ngModel)]="teamFilter" (ngModelChange)="filterPlayers()" class="bg-gray-50 border border-green-400 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400 min-w-[175px]">
-                     <option value="all">All Teams</option>
-                     <option *ngFor="let team of globalService.teams" [value]="team.team_name">
-                           {{ team.team_name }}
-                     </option>
-                  </select>
-               </li>
-
-               <!-- Salary Range -->
-               <li class="w-full flex flex-col items-left md:justify-start">
-                  <label for="minmax-range" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Maximum Salary</label>
-                  <input class="w-full" id="minmax-range" type="range" min="800000" max="15000000" value="15000000" 
-                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 range-slider">
-               </li>
-
-            </ul>         
+      <div class="flex flex-wrap items-start pt-4 pb-2 space-y-4 md:space-y-0 md:space-x-4">
+         <!-- Search Bar -->
+         <div class="w-full md:w-auto flex flex-col">
+           <label for="table-search" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">&nbsp;</label>
+           <div class="relative">
+             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+               <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+               </svg>
+             </div>
+             <input type="text" [(ngModel)]="searchKey" (input)="searchPlayers()" id="table-search-users" class="block p-2.5 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-full md:w-80 bg-gray-50 focus:ring-green-400 focus:border-green-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400" placeholder="Search players...">
+           </div>
          </div>
-      </div>
+       
+         <!-- Ownership Filter -->
+         <div class="w-full md:w-auto flex flex-col">
+           <label for="ownership-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Filter by Status</label>
+           <select id="ownership-filter" [(ngModel)]="statusFilter" (ngModelChange)="filterPlayers()" class="bg-gray-50 border border-green-400 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400 min-w-[150px]">
+             <option value="all">All Players</option>
+             <option value="available">All Available</option>
+             <option value="affordable">All Affordable</option>
+             <option value="owned">All Owned</option>
+             <option value="active">Active Players</option>
+             <option value="unsigned">Unsigned</option>
+           </select>
+         </div>
+       
+         <!-- Position Filter -->
+         <div class="w-full md:w-auto flex flex-col">
+           <label for="position-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Filter by Position</label>
+           <select id="position-filter" [(ngModel)]="positionFilter" (ngModelChange)="filterPlayers()" class="bg-gray-50 border border-green-400 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400 min-w-[150px]">
+             <option value="all">Any Position</option>
+             <option value="skater">All Skaters</option>
+             <option value="F">Forwards</option>
+             <option value="D">Defensemen</option>
+             <option value="G">Goalies</option>
+           </select>
+         </div>
+       
+         <!-- Team Filter -->
+         <div class="w-full md:w-auto flex flex-col">
+           <label for="team-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Filter by Team</label>
+           <select id="team-filter" [(ngModel)]="teamFilter" (ngModelChange)="filterPlayers()" class="bg-gray-50 border border-green-400 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400 min-w-[150px]">
+             <option value="all">All Teams</option>
+             <option *ngFor="let team of globalService.teams" [value]="team.team_name">{{ team.team_name }}</option>
+           </select>
+         </div>
+       
+         <!-- Salary Range -->
+         <div class="w-full max-w-60 flex flex-col">
+            <div class="relative mb-6">
+               <label for="labels-range-input" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Maximum Salary</label>
+               
+               <input id="labels-range-input" type="range" [(ngModel)]="maxSalary" min="700000" max="15000000"
+                        (change)="filterPlayers()"
+                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 range-slider">
+               
+               <span class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">
+                  ${{ maxSalary | number:'1.0-0' }}
+               </span>
+            </div>
+         </div>
+
+       </div>
+       
 
     <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[800px]">
        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -317,7 +318,17 @@
                </div>
 
                <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse rounded-b">
-                  <button type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Create Player</button>
+                  <button 
+                     type="submit" 
+                     [disabled]="isButtonDisabled()"
+                     class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800"
+                     [ngClass]="{
+                        'bg-green-400 hover:bg-green-500 focus:ring-green-300': !isButtonDisabled(),
+                        'bg-green-300 cursor-not-allowed': isButtonDisabled()
+                     }" 
+                     >
+                     Create Player
+                  </button>
                   <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
                </div>
          </form>
@@ -393,7 +404,8 @@
                </button>
                </div>
 
-               <div class="p-6 space-y-6">
+               <!-- Validation Timeline -->
+               <div class="p-6 space-y-6 md:w-[600px]">
                   <div class="items-center justify-center">
                      <ol class="flex items-center justify-center">
                         <li class="relative w-full mb-6">
@@ -429,7 +441,7 @@
                      <li class="relative w-full mb-6">
                         <div class="flex items-center">
                               <div class="flex w-full bg-gray-200 h-0.5 dark:bg-gray-700"></div>
-                              <div *ngIf="validatePickup(selected)" class="z-10 br-green-400 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0">
+                              <div *ngIf="validatePickup(selected)" class="z-10 bg-green-400 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0">
                                     <svg class="w-5 h-5 text-white dark:text-blue-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
                                     </svg>
@@ -446,6 +458,8 @@
                         </div>
                      </li>
                   </ol>
+
+                  <!-- Warnings -->
                   <div *ngIf="!contractIsValid()">
                      <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
                            <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -473,7 +487,17 @@
             </div>
 
             <div class="flex items-center px-6 pb-6 space-x-3 rtl:space-x-reverse rounded-b">
-               <button type="submit" (click)="addPlayer(selected, false); closeModal()" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Add Player</button>
+               <button 
+                  type="submit" 
+                  (click)="addPlayer(selected, false); closeModal()" 
+                  class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800"
+                  [ngClass]="{
+                     'bg-green-400 hover:bg-green-500 focus:ring-green-300': validatePickup(selected),
+                     'bg-green-300 cursor-not-allowed': !validatePickup(selected)
+                 }" 
+                 [disabled]="!validatePickup(selected)">
+                     Add Player
+               </button>
                <button type="submit" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
             </div>
          </form>
@@ -483,7 +507,7 @@
 <!-- Edit Contract Modal -->
 <ng-template #editContractModal id="editContractModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
    <div class="relative w-full max-w-2xl max-h-full">
-         <form class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+         <form (ngSubmit)="contractFormSubmit($event)" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
 
             <div class="flex items-start justify-between p-4 rounded-t">
                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
@@ -498,40 +522,59 @@
             </div>
 
             <div class="p-6 space-y-6">
+               
+               <!-- Current Contract Fields -->
                <h3 class="text-lg font-semibold text-green-400">Current Contract</h3>
                <div class="grid grid-cols-6 gap-6">
                   <div class="col-span-6 sm:col-span-3">
                         <label for="aav_current" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">AAV</label>
-                        <input type="number" [(ngModel)]="formData.aav_current" name="first-name" id="first-name" class="shadow-sm bg-gray-50  text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [placeholder]="selected.aav_current" required="">
+                        <input type="number" [(ngModel)]="formData.aav_current" autocomplete="off" name="aav_current" id="aav_current" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [placeholder]="selected.aav_current | number:'1.0-0'" required="">
+                        <div *ngIf="!selected.aav_next && !addNextContract" class="py-4">
+                           <a (click)="addContract()" class="inline-flex items-center font-medium text-gray-400 dark:text-gray-400 hover:underline">
+                              <svg class="w-4 h-4 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
+                              </svg>
+                              <span class="ml-1">Add New</span>
+                          </a>                          
+                        </div>
                   </div>
                   <div class="col-span-6 sm:col-span-3">
                         <label for="years_left_current" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Years Left</label>
-                        <input type="number" [(ngModel)]="formData.years_left_current" name="last-name" id="last-name" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [placeholder]="selected.years_left_current" required="">
+                        <input type="number" max="8" min="0" autocomplete="off" [(ngModel)]="formData.years_left_current" name="years_left_current" id="years_left_current" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
                   </div>
                </div>
-               <h3 class="text-lg font-semibold text-green-400">Next Contract</h3>
+
+               <!-- Next Contract Fields -->
+               <div *ngIf="addNextContract || selected.aav_next > 0">
+                  <h3 class="text-lg font-semibold text-green-400">Next Contract</h3>
+                  <div class="grid grid-cols-6 gap-6">
+                     <div class="col-span-6 sm:col-span-3">
+                        <label for="aav_next" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">AAV</label>
+                        <input type="number" autocomplete="off" [(ngModel)]="formData.aav_next" name="aav_next" id="aav_next" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
+                     </div>
+                     <div class="col-span-6 sm:col-span-3">
+                        <label for="years_left_next" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Years Left</label>
+                        <input type="number" max="8" min="0" autocomplete="off" [(ngModel)]="formData.years_left_next" name="years_left_next" id="years_left_next" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [placeholder]="selected.years_left_next" required="">
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Expiry Status -->
                <div class="grid grid-cols-6 gap-6">
                   <div class="col-span-6 sm:col-span-3">
-                     <label for="aav_next" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">AAV</label>
-                     <input type="number" [(ngModel)]="formData.aav_next" name="last-name" id="last-name" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [placeholder]="selected.aav_next" required="">
-                  </div>
-                  <div class="col-span-6 sm:col-span-3">
-                     <label for="years_left_next" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Years Left</label>
-                     <input type="text" [(ngModel)]="formData.years_left_next" name="last-name" id="last-name" class="shadow-sm bg-gray-50 text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [placeholder]="selected.years_left_next" required="">
-                  </div>
-                  <div class="col-span-6 sm:col-span-3">
-                        <label for="expiry_status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expiry Status</label>
-                        <select name="expiry_status" [(ngModel)]="formData.expiry_status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                           <option value="UFA">UFA</option>
-                           <option value="RFA">RFA</option>
-                         </select>
+                     <label for="expiry_status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expiry Status</label>
+                     <select name="expiry_status" [(ngModel)]="formData.expiry_status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option value="UFA">UFA</option>
+                        <option value="RFA">RFA</option>
+                     </select>
                   </div>
                </div>
+
             </div>
 
             <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse rounded-b">
                <button type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Save Changes</button>
-               <button type="submit" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+               <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
             </div>
       </form>
    </div>

@@ -143,9 +143,52 @@ input[type=checkbox], input[type=radio] {
   margin-top: 8px;
   max-height: 200px; 
   overflow-y: auto;
-  
-  /* Optional: Ensure it occupies full width */
+
   width: 100%;
 }
 
 
+/* Salary slider */
+
+input[type="range"].range-slider {
+  background: linear-gradient(to right, #22c55e 0%, #22c55e var(--value), #e5e7eb var(--value), #e5e7eb 100%);
+}
+
+input[type="range"].range-slider::-webkit-slider-thumb {
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #31C48D; 
+  cursor: pointer;
+}
+
+input[type="range"].range-slider::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #31C48D; 
+  cursor: pointer;
+}
+
+input[type="range"].range-slider::-ms-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #31C48D; 
+  cursor: pointer;
+}
+
+input[type="range"].range-slider {
+  --value: 0%;
+}
+
+input[type="range"].range-slider::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #31C48D; /* Green color */
+  border-radius: 9999px;
+}
