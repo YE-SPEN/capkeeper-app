@@ -39,7 +39,16 @@ export const teamRosterRoute = {
 
             const team = teamInfo[0];
 
-            return { roster, team };
+            const { results: draft_picks } = await db.query(
+                `SELECT * FROM draft_picks
+                WHERE league_id = ?
+                    AND owned_by = ?
+                    AND player_taken IS NULL
+                `,
+                [league_id, team_id]
+            )
+
+            return { roster, team, draft_picks };
 
         } catch (err) {
             console.error(err);
