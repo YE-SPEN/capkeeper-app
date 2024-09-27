@@ -14,15 +14,19 @@ import { TeamRosterComponent } from './components/team-roster/team-roster.compon
 import { PlayerDatabaseComponent } from './components/player-database/player-database.component';
 import { LeagueActivityComponent } from './components/league-activity/league-activity.component';
 import { RulesComponent } from './components/rules/rules.component';
+import { HomeComponent } from './components/home/home.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
+    HomeComponent,
     TeamRosterComponent,
     PlayerDatabaseComponent,
     LeagueActivityComponent,
-    RulesComponent
+    RulesComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule,

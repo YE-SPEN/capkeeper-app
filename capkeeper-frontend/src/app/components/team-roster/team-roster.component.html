@@ -20,7 +20,7 @@
              </td>
          </tr>
      </table>
-    </div>
+   </div>
 
     <!-- Cap summary tab -->
     <div class="flex flex-col h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
@@ -189,93 +189,109 @@
         
             <!-- Buttons -->
             <div class="inline-flex rounded-md shadow-sm">
-                <a aria-current="page" class="px-4 py-1 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:text-green-500 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-gray-800 focus:text-gray-800 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-green-500 dark:focus:text-white">
+                <a (click)="setDisplay('general')" aria-current="page" 
+                  class="cursor-pointer px-4 py-1 text-xs font-medium text-gray-900 border border-gray-200 rounded-s-lg hover:text-green-500 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-gray-800 focus:text-gray-800 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-green-500 dark:focus:text-white"
+                  [ngClass]="{'bg-gray-100 text-green-500' : displaying === 'general',
+                           'bg-white' : displaying !== 'general'}"
+                  >
                     General Draft
                 </a>
-                <a class="px-4 py-1 text-xs font-semibold text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-green-500 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-                    Rookie Draft
+                <a (click)="setDisplay('rookie')" 
+                  class="cursor-pointer px-4 py-1 text-xs font-semibold text-gray-900 border-t border-b border-gray-200 hover:bg-gray-100 hover:text-green-500 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                  [ngClass]="{'bg-gray-100 text-green-500' : displaying === 'rookie',
+                           'bg-white' : displaying !== 'rookie'}"
+                  >   
+                  Rookie Draft
                 </a>
-                <a class="px-4 py-1 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-green-500 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                <a (click)="setDisplay('fa')" 
+                  class="cursor-pointer px-4 py-1 text-xs font-medium text-gray-900 border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-green-500 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                  [ngClass]="{'bg-gray-100 text-green-500' : displaying === 'fa',
+                           'bg-white' : displaying !== 'fa'}"
+                  >
                     FA Picks
                 </a>
             </div>
         </div>
         
          
-         <!-- Content Area -->
-         <div class="p-4">
+         <!-- General Draft Picks -->
+         <div *ngIf="displaying === 'general'" class="p-4">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md border-2">
                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                 <tr class="border-b-2">
-                   <th class="py-2 text-center max-w-[4%] border-r-2">Round</th>
-                   <th class="px-4 py-2 text-center border-r-2">1</th>
-                   <th class="px-4 py-2 text-center border-r-2">2</th>
-                   <th class="px-4 py-2 text-center border-r-2">3</th>
-                   <th class="px-4 py-2 text-center border-r-2">4</th>
-                   <th class="px-4 py-2 text-center border-r-2">5</th>
-                   <th class="px-4 py-2 text-center border-r-2">6</th>
-                   <th class="px-4 py-2 text-center border-r-2">7</th>
-                   <th class="px-4 py-2 text-center border-r-2">8</th>
-                   <th class="px-4 py-2 text-center border-r-2">9</th>
-                   <th class="px-4 py-2 text-center border-r-2">10</th>
-                 </tr>
+                  <tr class="border-b-2">
+                     <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold">Round</th>
+                     <th *ngFor="let round of [].constructor(globalService.league?.general_draft_length); let i = index"  class="px-4 py-2 text-center border-r-2 font-bold text-sm">{{ i + 1 }}</th>
+                     <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold">Total</th>
+                   </tr>                   
                </thead>
                 <tbody>
-                  <tr class="border-b-2">
-                     <td class="py-2 text-center border-r-2">
-                        <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
-                           2024
+                  <tr *ngFor="let year of getDraftYears()" class="border-b-2">
+                     <td class="py-1.5 text-center border-r-2">
+                        <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                           {{ year }}
                         </span>
                      </td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                  </tr>
-                  <tr class="border-b-2">
-                     <td class="py-2 text-center border-r-2">
-                        <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
-                           2025
-                        </span>
+                     <td *ngFor="let round of [].constructor(globalService.league?.general_draft_length); let i = index" class="p-1.5 text-center border-r-2">
+                        <ng-container *ngIf="getPicksByRound(year, i + 1, 'general') > 0; else noPicks">
+                            <div *ngIf="getPicksByRound(year, i + 1, 'general') > 1" 
+                                 class="rounded-full w-6 h-6 bg-green-400 text-white p-1.5 inline-flex items-center justify-center font-bold text-sm">
+                                {{ getPicksByRound(year, i + 1, 'general') }}
+                            </div>
+                            <div *ngIf="getPicksByRound(year, i + 1, 'general') <= 1" class="font-bold text-sm rounded-full w-6 h-6 border border-gray-800 p-1.5 inline-flex items-center justify-center">
+                                {{ getPicksByRound(year, i + 1, 'general') }}
+                            </div>
+                        </ng-container>
+                        <ng-template #noPicks>
+
+                        </ng-template>
+                    </td>                    
+                     <td class="py-2 text-center border-r-2 font-extrabold text-sm">
+                        {{ getTotalPicksByYear(year, 'general') }}   
                      </td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                  </tr>
-                  <tr>
-                     <td class="py-2 text-center border-r-2">
-                        <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
-                           2026
-                        </span>
-                     </td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                     <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
-                        <td class="px-4 py-2 text-center border-r-2"><img [src]="team.picture" class="max-w-[25px]"></td>
                   </tr>
                </tbody>
-             </table>
-             
+             </table>  
          </div>
+
+         <!-- Rookie Draft Picks -->
+         <div *ngIf="displaying === 'rookie'" class="p-4">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md border-2">
+               <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr class="border-b-2">
+                     <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold">Round</th>
+                     <th *ngFor="let round of [].constructor(globalService.league?.rookie_draft_length); let i = index"  class="px-4 py-2 text-center border-r-2 font-bold text-sm">{{ i + 1 }}</th>
+                     <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold">Total</th>
+                   </tr>                   
+               </thead>
+                <tbody>
+                  <tr *ngFor="let year of getDraftYears()" class="border-b-2">
+                     <td class="py-1.5 text-center border-r-2">
+                        <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                           {{ year }}
+                        </span>
+                     </td>
+                     <td *ngFor="let round of [].constructor(globalService.league?.rookie_draft_length); let i = index" class="p-1.5 text-center border-r-2">
+                        <ng-container *ngIf="getPicksByRound(year, i + 1, 'rookie') > 0; else noPicks">
+                            <div *ngIf="getPicksByRound(year, i + 1, 'rookie') > 1" 
+                                 class="rounded-full w-6 h-6 bg-green-400 text-white p-1.5 inline-flex items-center justify-center font-bold text-sm">
+                                {{ getPicksByRound(year, i + 1, 'rookie') }}
+                            </div>
+                            <div *ngIf="getPicksByRound(year, i + 1, 'rookie') <= 1" class="font-bold text-sm rounded-full w-6 h-6 border border-gray-800 p-1.5 inline-flex items-center justify-center">
+                                {{ getPicksByRound(year, i + 1, 'rookie') }}
+                            </div>
+                        </ng-container>
+                        <ng-template #noPicks>
+
+                        </ng-template>
+                    </td>                    
+                     <td class="py-2 text-center border-r-2 font-extrabold text-sm">
+                        {{ getTotalPicksByYear(year, 'rookie') }}   
+                     </td>
+                  </tr>
+               </tbody>
+             </table>  
+         </div>
+
       </div>
    </div>
 </div>
@@ -286,7 +302,7 @@
          <div class="relative">
             <h4 class="font-bold text-2xl">
                Forwards
-               <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.forwards.length }}/9</span>  
+               <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.forwards.length }}/{{ globalService.league?.min_forwards }} </span>  
            </h4>
          </div>
    </div>
@@ -384,7 +400,7 @@
       <div class="relative">
          <h4 class="font-bold text-2xl">
             Defensemen
-            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.defense.length }}/5</span>  
+            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.defense.length }}/{{ globalService.league?.min_defense }}</span>  
         </h4>
       </div>
 </div>
@@ -483,7 +499,7 @@
       <div class="relative">
          <h4 class="font-bold text-2xl">
             Goalies
-            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.goalies.length }}/3</span>  
+            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.goalies.length }}/{{ globalService.league?.min_goalies }}</span>  
         </h4>
       </div>
 </div>
@@ -583,7 +599,7 @@
       <div class="relative">
          <h4 class="font-bold text-2xl">
             Injured Reserve
-            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.injured_reserve.length }}/3</span>  
+            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.injured_reserve.length }}/{{ globalService.league?.ir_slots }}</span>  
         </h4>
       </div>
 </div>
@@ -614,63 +630,79 @@
             </th>
           </tr>
         </thead>
-        <tbody>
-          <tr *ngFor="let player of team.injured_reserve" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            <!-- Checkbox Column -->
-            <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
-               <div (click)="openModal(dropPlayerModal, player)" class="flex items-center">
-                  <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
-                        width="24" height="24" fill="none" viewBox="0 0 24 24">
-                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
-                           stroke-width="2" 
-                           d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                  </svg>
-               </div>                    
-            </td>
-
-            <!-- Player Column -->
-            <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
-               <img class="w-10 h-10 rounded-full" src="{{player.logo}}" alt="Player image">
-               <div class="ps-3 bg-white">
-               <div class="text-sm font-semibold">{{ player.first_name }} {{ player.last_name }}</div>
-               <div class="font-normal text-xs text-gray-500">{{ player.position }} - {{ player.short_code }} <span class="bg-red-100 text-red-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">IR</span></div>
-               </div>
-            </td>
-
-            <!-- Action Column -->
-            <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
-               <select (change)="rosterMove(player, $event, callUpModal)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
-                  <option value="">Action</option>
-                  <option value="ir">Activate to Main Roster </option>
-                  <option *ngIf="!player.onTradeBlock" value="trade-block">Add to Trade Block</option>
-                  <option *ngIf="player.onTradeBlock" value="trade-block">Remove from Trade Block</option>         
-               </select> 
-            </td>
-    
-            <!-- Salary Columns -->
-            <ng-container *ngIf="player.years_left_current">
-               <td *ngFor="let aav of generateRange(player.years_left_current)" class="px-6 py-2">
-                  {{ player.aav_current | number:'1.0-0' }}
+         <tbody>
+            <tr *ngFor="let row of [].constructor(globalService.league?.ir_slots); let i = index" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+               <!-- Check if a player exists at this index -->
+               <ng-container *ngIf="team.injured_reserve[i]; else emptyRow">
+               <!-- Checkbox Column -->
+               <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
+                  <div (click)="openModal(dropPlayerModal, team.injured_reserve[i])" class="flex items-center">
+                     <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
+                           aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                           width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
+                              stroke-width="2" 
+                              d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                     </svg>
+                  </div>                    
                </td>
-            </ng-container>
-
-            <ng-container *ngIf="player.years_left_next">
-               <td *ngFor="let aav of generateRange(player.years_left_next)" class="px-6 py-2">
-                  {{ player.aav_next | number:'1.0-0' }}
+         
+               <!-- Player Column -->
+               <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
+                  <img class="w-10 h-10 rounded-full" [src]="team.injured_reserve[i].logo" alt="Player image">
+                  <div class="ps-3 bg-white">
+                  <div class="text-sm font-semibold">{{ team.injured_reserve[i].first_name }} {{ team.injured_reserve[i].last_name }}</div>
+                  <div class="font-normal text-xs text-gray-500">{{ team.injured_reserve[i].position }} - {{ team.injured_reserve[i].short_code }} 
+                     <span class="bg-red-100 text-red-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">IR</span>
+                  </div>
+                  </div>
                </td>
-            </ng-container>
-
-            <td class="px-6 py-2">
-               <span class="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
-                     [ngClass]="{
-                     'bg-red-600': player.expiry_status === 'UFA',
-                     'bg-blue-600': player.expiry_status === 'RFA'
-                     }">
-                  {{ player.expiry_status }}
-               </span>
-            </td>
-          </tr>
+         
+               <!-- Action Column -->
+               <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
+                  <select (change)="rosterMove(team.injured_reserve[i], $event, callUpModal)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                     <option value="">Action</option>
+                     <option value="ir">Activate to Main Roster</option>
+                     <option *ngIf="!team.injured_reserve[i]?.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                     <option *ngIf="team.injured_reserve[i]?.onTradeBlock" value="trade-block">Remove from Trade Block</option>         
+                  </select> 
+               </td>
+            
+               <!-- Salary Columns -->
+               <ng-container *ngIf="team.injured_reserve[i].years_left_current">
+                  <td *ngFor="let aav of generateRange(team.injured_reserve[i].years_left_current)" class="px-6 py-2">
+                     {{ team.injured_reserve[i].aav_current | number:'1.0-0' }}
+                  </td>
+               </ng-container>
+         
+               <ng-container *ngIf="team.injured_reserve[i]?.years_left_next">
+                  <td *ngFor="let aav of generateRange(team.injured_reserve[i].years_left_next)" class="px-6 py-2">
+                     {{ team.injured_reserve[i].aav_next | number:'1.0-0' }}
+                  </td>
+               </ng-container>
+         
+               <td class="px-6 py-2">
+                  <span class="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                        [ngClass]="{
+                        'bg-red-600': team.injured_reserve[i].expiry_status === 'UFA',
+                        'bg-blue-600': team.injured_reserve[i].expiry_status === 'RFA'
+                        }">
+                     {{ team.injured_reserve[i].expiry_status }}
+                  </span>
+               </td>
+               </ng-container>
+         
+               <!-- Empty Row Template -->
+               <ng-template #emptyRow>
+               <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10 min-h-8"></td>
+               <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
+                     <div class="text-sm font-semibold">
+                        -- Empty Slot --
+                     </div>
+               </td>
+               <td class="p-4 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2"></td>
+               </ng-template>
+         </tr>        
         </tbody>
       </table>
     </div>       
@@ -683,7 +715,7 @@
       <div class="relative">
          <h4 class="font-bold text-2xl">
             Rookie Bank
-            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.rookie_bank.length }}/10</span>  
+            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.rookie_bank.length }}/{{ globalService.league?.rookie_bank_size }}</span>  
         </h4>
       </div>
 </div>

@@ -34,9 +34,12 @@ export class LoginComponent {
           this.globalService.openSession(user.email)
             .subscribe(response => {
               this.globalService.loggedInUser = response.userInfo[0];
+              console.log(this.globalService.loggedInUser)
 
               // use logged user to find associated league(s)
               if (this.globalService.loggedInUser) {
+                this.globalService.recordSession(this.globalService.loggedInUser.user_name, 'login');
+                this.globalService.notifications = this.globalService.loggedInUser?.notification_count
                 const league = this.globalService.loggedInUser.league_id;
 
                 // use league id to retrieve associated teams
@@ -49,7 +52,7 @@ export class LoginComponent {
 
                       // match logged in user to their corresponding team
                       for (let team of this.globalService.teams) {
-                        if (team.managed_by && this.globalService.loggedInUser?.user_name && team.managed_by.includes(this.globalService.loggedInUser.user_name)) {
+                        if (team.team_id === this.globalService.loggedInUser?.team_managed) {
                           this.globalService.loggedInTeam = team;
                           console.log('Matched ' + this.globalService.loggedInUser.user_name + ' to ' + this.globalService.loggedInTeam.team_name);
 
@@ -59,7 +62,7 @@ export class LoginComponent {
                       }
 
                       // redirect logged in user to main app
-                      this.router.navigate(['/' + league + '/activity-log']);
+                      this.router.navigate(['/' + league + '/home']);
                   });
               }
             })
@@ -78,6 +81,9 @@ export class LoginComponent {
     signOut(auth)
       .then(() => {
         console.log('User signed out');
+        if (this.globalService.loggedInUser) {
+          this.globalService.recordSession(this.globalService.loggedInUser.user_name, 'logout');
+        }
         this.globalService.loggedInUser = null;
         this.router.navigate(['/login']);
       })

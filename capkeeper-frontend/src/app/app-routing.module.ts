@@ -6,9 +6,11 @@ import { AppComponent } from './app.component';
 import { PlayerDatabaseComponent } from './components/player-database/player-database.component';
 import { LeagueActivityComponent } from './components/league-activity/league-activity.component';
 import { RulesComponent } from './components/rules/rules.component';
+import { HomeComponent } from './components/home/home.component';
 
 const routes: Routes = [
     { path: 'login', component: LoginComponent },
+    { path: ':league_id/home', component: HomeComponent },
     { path: ':league_id', component: AppComponent, pathMatch: 'full' },
     { path: ':league_id/activity-log', component: LeagueActivityComponent },
     { path: ':league_id/teams/:team_id', component: TeamRosterComponent },

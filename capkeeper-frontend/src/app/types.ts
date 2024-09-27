@@ -6,6 +6,12 @@ export interface User {
     picture: string,
     email: string,
     league_id: string,
+    notification_count: number,
+    team_managed: string,
+    log_in_date: string,
+    log_in_time: string,
+    log_out_date: string,
+    log_out_time: string
 };
 
 export interface League {
@@ -22,6 +28,8 @@ export interface League {
     min_defense: number,
     min_goalies: number,
     ir_slots: number,
+    general_draft_length: number,
+    rookie_draft_length: number,
 };
 
 export interface Team {
@@ -45,7 +53,8 @@ export interface Team {
     goalie_salary: number,
     injured_reserve: Player[],
     rookie_bank: Player[],
-    trade_block: Player[]
+    trade_block: Player[],
+    draft_picks: Draft_Pick[],
 };
 
 export interface Player {
@@ -70,6 +79,20 @@ export interface Player {
     last_updated: string,
     updated_by: string,
 };
+
+export interface Draft_Pick {
+    [key: string]: any;
+    asset_id: number,
+    assigned_to: string,
+    owned_by: string,
+	league_id: number,
+    year: number,
+    round: number,
+    position: number,
+    pick_number: number,
+    type: string,
+    player_taken: string,
+}
 
 export interface NHL_Team {
     [key: string]: any;

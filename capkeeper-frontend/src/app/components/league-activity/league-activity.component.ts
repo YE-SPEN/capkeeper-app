@@ -36,6 +36,7 @@ export class LeagueActivityComponent {
     this.route.paramMap.subscribe(params => {
       this.league_id = params.get('league_id')!;
     });
+    this.globalService.notifications = 0;
     this.getActivitiesByDate();
   }
 
@@ -78,7 +79,6 @@ export class LeagueActivityComponent {
     console.log("End Date:", this.end_date); 
   }
 
-
   getActivitiesByDate(): void {
     const league_id = this.league_id;
 
@@ -92,6 +92,19 @@ export class LeagueActivityComponent {
       });
     }
   }
+
+  isNew(activity: Activity): boolean {
+    if (this.globalService.loggedInUser) {
+        if (activity.date > this.globalService.loggedInUser.log_out_date) {
+            return true;
+        }
+        if (activity.date === this.globalService.loggedInUser.log_out_date && activity.time > this.globalService.loggedInUser.log_out_time) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
   getUser(user_id: string): string {
     for (let user of this.users) {

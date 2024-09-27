@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TeamService } from './services/team.service';
 import { GlobalService } from './services/global.service';
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
-import { User } from './types';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, User } from 'firebase/auth';
+//import { User } from './types';
 
 
 @Component({
@@ -13,14 +13,14 @@ import { User } from './types';
 export class AppComponent implements OnInit {
   title = 'capkeeper-app';
   user: User | null = null;
-  temp: User = {
+  /*temp: User = {
     user_name: 'e_spen',
     first_name: 'Eric',
     last_name: 'Spensieri',
     email: 'espensieri@hotmail.com',
     picture: '',
     league_id: '100'
-  }
+  }*/
   email = '';
   password = ''
 
@@ -31,6 +31,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     
+    /*
     // remove for sign-in to work again
     this.globalService.loggedInUser = this.temp;
     if (this.globalService.loggedInUser) {
@@ -61,9 +62,8 @@ export class AppComponent implements OnInit {
               }
             }
         });
-    } 
+    } */
 
-    /*
     const auth = getAuth();
     
     // Subscribe to the authentication state
@@ -76,7 +76,7 @@ export class AppComponent implements OnInit {
         this.user = null;
       }
     });
-    */
+    
   }
 
 }

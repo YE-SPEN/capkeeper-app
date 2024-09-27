@@ -5,7 +5,7 @@ import { TeamService } from '../../services/team.service';
 import { SortingService } from '../../services/sorting.service';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
-import { Team, League, Player } from '../../types';
+import { Team, Player, Draft_Pick } from '../../types';
 
 @Component({
   selector: 'app-team-roster',
@@ -18,9 +18,10 @@ export class TeamRosterComponent {
   team_id!: string;
   team!: Team;
   selected!: Player;
-  currentSeason: string = '2023-24'; 
+  currentSeason: string = '2024-25'; 
   sortColumn: string | null = 'points';
   sortDirection: 'asc' | 'desc' = 'desc';
+  displaying: 'general' | 'rookie' | 'fa' = 'general';
   formData = {
     oldName: '',
     name: '',
@@ -50,6 +51,8 @@ export class TeamRosterComponent {
             this.team.trade_block = response.roster.filter(player => player.onTradeBlock);
             this.team.injured_reserve = response.roster.filter(player => player.onIR);
 
+            this.team.draft_picks = response.draft_picks;
+
             this.team.roster_size = this.team.forwards.length + this.team.defense.length + this.team.goalies.length;
 
             this.team.forward_salary = this.getTotalSalary(this.team.forwards);
@@ -64,8 +67,8 @@ export class TeamRosterComponent {
       });
   }
 
-  getManagers(): string {
-    return '';
+  setDisplay(display: 'general' | 'rookie' | 'fa'): void {
+    this.displaying = display;
   }
 
   getMaxContractLength(array: Player[]): number {
@@ -105,6 +108,38 @@ export class TeamRosterComponent {
     let sum = 0;
     for (let player of array) {
       sum += player.aav_current;
+    }
+    return sum;
+  }
+
+  getDraftYears(): number[] {
+    const uniqueYears = new Set<number>();
+
+    this.team.draft_picks.forEach(pick => {
+        if (pick.year) {
+            uniqueYears.add(pick.year);
+        }
+    });
+
+    return Array.from(uniqueYears).sort((a, b) => a - b);
+  }
+
+  getPicksByRound(year: number, round: number, draft: string) {
+    let sum = 0;
+    for (let pick of this.team.draft_picks) {
+      if (pick.year === year && pick.round === round && pick.type === draft) {
+        ++sum;
+      }
+    }
+    return sum;
+  }
+
+  getTotalPicksByYear(year: number, draft: string): number {
+    let sum = 0;
+    for (let pick of this.team.draft_picks) {
+      if (pick.year === year && pick.type === draft) {
+        ++sum;
+      }
     }
     return sum;
   }

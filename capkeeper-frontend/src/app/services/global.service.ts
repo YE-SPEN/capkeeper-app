@@ -9,6 +9,7 @@ import { HttpParams, HttpClient } from '@angular/common/http';
 export class GlobalService {
   userMenuIsOpen: boolean = false;
   teamsMenuIsOpen: boolean = false;
+  notifications: number = 0;
   loggedInUser: User | null = null;
   loggedInTeam: Team | null = null;
   league: League | null = null;
@@ -82,11 +83,31 @@ export class GlobalService {
       .subscribe({
         next: (response) => {
           console.log('Action recorded successfully:', response);
+          this.notifications++;
         },
         error: (error) => {
           console.error('Error recording action:', error);
         }
       });
+  }
+
+  recordSession(uid: string, action: 'login' | 'logout'): void {
+    const sessionData = {
+      user_id: uid, 
+      date: this.getDate(),
+      time: this.getTime(),
+      action: action
+    }
+
+    this.http.post('api/record-session', sessionData)
+    .subscribe({
+      next: (response) => {
+        console.log('Session recorded successfully:', response);
+      },
+      error: (error) => {
+        console.error('Error recording action:', error);
+      }
+    });
   }
 
 }
