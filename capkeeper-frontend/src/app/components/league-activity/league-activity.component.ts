@@ -40,6 +40,17 @@ export class LeagueActivityComponent {
     this.getActivitiesByDate();
   }
 
+  ngAfterViewInit() {
+    const dropdownButton = document.getElementById('dropdownBgHoverButton');
+    const dropdownMenu = document.getElementById('dropdownBgHover');
+
+    if (dropdownButton && dropdownMenu) {
+      dropdownButton.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('hidden');
+      });
+    }
+  }
+
   getSearchDate(days: number): string {
       const today = new Date();
       today.setDate(today.getDate() - days);
