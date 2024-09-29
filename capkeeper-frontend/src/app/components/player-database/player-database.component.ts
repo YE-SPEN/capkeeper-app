@@ -1,4 +1,4 @@
-import { Component, TemplateRef } from '@angular/core';
+import { Component, TemplateRef, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../services/global.service';
@@ -37,6 +37,8 @@ export class PlayerDatabaseComponent {
   warnings: Warning[] = [];
   formSubmitted: boolean = false;
   addNextContract: boolean = false;
+  @ViewChild('toast', { static: false }) toast!: ElementRef<HTMLDivElement>;
+  toastMessage: string = '';
   formData = {
     first_name: '',
     last_name: '',
@@ -77,16 +79,30 @@ export class PlayerDatabaseComponent {
 
   searchPlayers(): void {
     if (this.searchKey === '') { this.resetSearch(); return; }
-    this.filteredPlayers = this.filteredPlayers.filter(player =>
-      player.first_name.toLowerCase().includes(this.searchKey.toLowerCase()) || player.last_name.toLowerCase().includes(this.searchKey.toLowerCase())
-    );
+    this.filterPlayers();
     this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
     this.setPage(1);
   }
 
   filterPlayers(): void {
-    this.filteredPlayers = this.allPlayers.filter(player => this.inPosFilter(player) && this.inStatusFilter(player) && this.inTeamFilter(player) && this.inSalaryFilter(player));
+    this.filteredPlayers = this.allPlayers
+      .filter(player => 
+              this.inPosFilter(player) 
+              && this.inStatusFilter(player) 
+              && this.inTeamFilter(player) 
+              && this.inSalaryFilter(player) 
+              && (player.first_name.toLowerCase().includes(this.searchKey.toLowerCase()) || player.last_name.toLowerCase().includes(this.searchKey.toLowerCase()))
+            );
     this.sortingService.sort(this.filteredPlayers, this.sortingService.sortColumn, this.sortingService.sortDirection);
+  }
+
+  clearFilter(): void {
+    this.searchKey = '';
+    this.statusFilter = 'all';
+    this.positionFilter = 'all';
+    this.teamFilter = 'all';
+    this.maxSalary = 15000000;
+    this.filterPlayers();
   }
 
   isSkater(player: Player): boolean {
@@ -231,6 +247,7 @@ export class PlayerDatabaseComponent {
           this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
 
           this.ngOnInit; 
+          this.showToast(message);
         }
       },
       error: (error) => {
@@ -270,7 +287,7 @@ export class PlayerDatabaseComponent {
         .subscribe({
           next: (response) => {
             
-            this.completeAction(message, true);
+            this.showToast(message);
             console.log('Changes saved.', response);
   
             this.formSubmitted = true;
@@ -281,7 +298,6 @@ export class PlayerDatabaseComponent {
           },
           error: (error) => {
             console.error('Error submitting form', error, submissionData);
-            this.completeAction('Error Submitting Player Form', false);
           }
         });
 
@@ -318,7 +334,7 @@ export class PlayerDatabaseComponent {
       .subscribe({
         next: (response) => {
           
-          this.completeAction(message, true);
+          this.showToast(message);
           console.log('Changes saved.', response);
 
           this.formSubmitted = true;
@@ -329,7 +345,6 @@ export class PlayerDatabaseComponent {
         },
         error: (error) => {
           console.error('Error submitting form', error, submissionData);
-          this.completeAction('Error Submitting Player Form', false);
         }
       });
 
@@ -371,10 +386,6 @@ export class PlayerDatabaseComponent {
     this.formData.expiry_status = '';
   }
 
-  completeAction(message: string, success: boolean): void {
-    //this.actionCompleted.emit({ message, success });
-  }
-
   isButtonDisabled(): boolean {
     return this.formData.first_name === '' || this.formData.last_name === '' || this.formData.position === '' || this.formData.short_code === '';
   }
@@ -391,6 +402,29 @@ export class PlayerDatabaseComponent {
     this.resetForm();
     this.resetSearch();
     this.addNextContract = false;
+  }
+
+  showToast(message: string): void {
+    this.toastMessage = message;
+    let toast = this.toast.nativeElement;
+    
+    if (toast) {
+      toast.classList.add('show');
+      toast.classList.remove('hidden');
+      
+      setTimeout(() => {
+        this.dismissToast();
+      }, 4500); 
+    } 
+  }
+
+  dismissToast(): void {
+    let toast = this.toast.nativeElement;
+
+    if (toast) {
+      toast.classList.remove('show');
+      toast.classList.add('hidden');
+    }
   }
 
 }

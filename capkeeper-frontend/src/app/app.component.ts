@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TeamService } from './services/team.service';
 import { GlobalService } from './services/global.service';
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, User } from 'firebase/auth';
-//import { User } from './types';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
+import { User } from './types';
 
 
 @Component({
@@ -13,14 +13,20 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, User 
 export class AppComponent implements OnInit {
   title = 'capkeeper-app';
   user: User | null = null;
-  /*temp: User = {
+  temp: User = {
     user_name: 'e_spen',
     first_name: 'Eric',
     last_name: 'Spensieri',
     email: 'espensieri@hotmail.com',
     picture: '',
-    league_id: '100'
-  }*/
+    league_id: '100',
+    notification_count: 0,
+    log_in_date: this.globalService.getDate(),
+    log_in_time: this.globalService.getTime(),
+    team_managed: 'chiefkeefe',
+    log_out_date: this.globalService.getDate(),
+    log_out_time: this.globalService.getTime(),
+  }
   email = '';
   password = ''
 
@@ -31,7 +37,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     
-    /*
+    
     // remove for sign-in to work again
     this.globalService.loggedInUser = this.temp;
     if (this.globalService.loggedInUser) {
@@ -62,8 +68,9 @@ export class AppComponent implements OnInit {
               }
             }
         });
-    } */
+    } 
 
+    /*
     const auth = getAuth();
     
     // Subscribe to the authentication state
@@ -76,6 +83,7 @@ export class AppComponent implements OnInit {
         this.user = null;
       }
     });
+    */
     
   }
 

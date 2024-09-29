@@ -1,11 +1,11 @@
-import { Component, TemplateRef } from '@angular/core';
+import { Component, TemplateRef, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from '../../services/global.service';
 import { TeamService } from '../../services/team.service';
 import { SortingService } from '../../services/sorting.service';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
-import { Team, Player, Draft_Pick } from '../../types';
+import { Team, Player } from '../../types';
 
 @Component({
   selector: 'app-team-roster',
@@ -22,6 +22,8 @@ export class TeamRosterComponent {
   sortColumn: string | null = 'points';
   sortDirection: 'asc' | 'desc' = 'desc';
   displaying: 'general' | 'rookie' | 'fa' = 'general';
+  @ViewChild('toast', { static: false }) toast!: ElementRef<HTMLDivElement>;
+  toastMessage: string = '';
   formData = {
     oldName: '',
     name: '',
@@ -165,6 +167,7 @@ export class TeamRosterComponent {
           this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
 
           this.ngOnInit();
+          this.showToast(player.first_name + ' ' + player.last_name + ' dropped to waivers.')
         }
       },
       error: (error) => {
@@ -212,17 +215,20 @@ export class TeamRosterComponent {
     
     if (player.onIR) {
       if (player.aav_current > this.team.cap_space) {
-        this.ngOnInit();
+        this.ngOnInit();  
         return false;
       }
-      message = player.first_name + ' ' + player.last_name + ' activated from IR by ' + this.team.team_name; 
+      message = player.first_name + ' ' + player.last_name + ' activated from IR by ' + this.team.team_name;
+      this.showToast(player.first_name + ' ' + player.last_name + ' activated from IR.') 
     } 
     if (!player.onIR) {
       if (this.team.injured_reserve.length >= 3) {
         this.ngOnInit();
+        this.showToast('Action could not be completed. Your IR slots are full.')
         return false;
       }
-      message = player.first_name + ' ' + player.last_name + ' placed on IR by ' + this.team.team_name; 
+      message = player.first_name + ' ' + player.last_name + ' placed on IR by ' + this.team.team_name;
+      this.showToast(player.first_name + ' ' + player.last_name + ' moved to IR.') 
     }
 
     const payload = {
@@ -269,6 +275,7 @@ export class TeamRosterComponent {
           }
 
           this.ngOnInit();
+          this.showToast(player.first_name + ' ' + player.last_name + ' added to the trade block.')
         }
       },
       error: (error) => {
@@ -320,6 +327,7 @@ export class TeamRosterComponent {
           }
 
           this.ngOnInit();
+          this.showToast(player.first_name + ' ' + player.last_name + ' activated to main roster.')
         }
       },
       error: (error) => {
@@ -363,7 +371,31 @@ export class TeamRosterComponent {
   }
 
   closeModal() {
+    this.ngOnInit();
     this.modalRef.hide();
+  }
+
+  showToast(message: string): void {
+    this.toastMessage = message;
+    let toast = this.toast.nativeElement;
+    
+    if (toast) {
+      toast.classList.add('show');
+      toast.classList.remove('hidden');
+      
+      setTimeout(() => {
+        this.dismissToast();
+      }, 4500); 
+    } 
+  }
+
+  dismissToast(): void {
+    let toast = this.toast.nativeElement;
+
+    if (toast) {
+      toast.classList.remove('show');
+      toast.classList.add('hidden');
+    }
   }
 
 

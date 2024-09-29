@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
@@ -91,5 +91,44 @@ export class LoginComponent {
         console.error('Error signing out:', error);
       });
   }
+
+  createAccount() {
+    const auth = getAuth();
+
+    createUserWithEmailAndPassword(auth, this.email, this.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log('Registration successful:', user);
+
+        this.signIn();
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error('Registration failed:', errorCode, errorMessage);
+      });
+  }
+
+  resetPassword() {
+    const auth = getAuth();
+  
+    if (!this.email) {
+      console.error('Please enter your email address.');
+      return;
+    }
+  
+    sendPasswordResetEmail(auth, this.email)
+      .then(() => {
+        console.log('Password reset email sent.');
+        alert('Password reset email sent. Please check your inbox.');
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error('Error sending password reset email:', errorCode, errorMessage);
+        alert('Error sending password reset email: ' + errorMessage);
+      });
+  }
+  
 
 }
