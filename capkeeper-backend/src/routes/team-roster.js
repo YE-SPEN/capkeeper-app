@@ -48,7 +48,16 @@ export const teamRosterRoute = {
                 [league_id, team_id]
             )
 
-            return { roster, team, draft_picks };
+            const { results: fa_picks } = await db.query(
+                `SELECT * FROM capkeeper.fa_picks
+                WHERE league_id = ?
+                    AND (assigned_to = ? OR owned_by = ?)
+                ORDER BY week
+                `,
+                [league_id, team_id, team_id]
+            )
+
+            return { roster, team, draft_picks, fa_picks };
 
         } catch (err) {
             console.error(err);
