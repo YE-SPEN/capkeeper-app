@@ -203,14 +203,13 @@ export class TeamRosterComponent {
 
     console.log('Submission: ', submissionData)
 
-    this.http.post('api/players/edit-team-info', submissionData)
+    this.http.post('api/teams/edit-team-info', submissionData)
     .subscribe({
       next: (response) => {
         console.log('Team Info Updated Successfully:', response);
           this.router.navigate(['/' + this.team.league_id + '/teams/' + new_id]);
           this.closeModal();
           this.showToast('Team Information Updated Successfully!')
-         
       },
       error: (error) => {
         console.error('Error recording action:', error);

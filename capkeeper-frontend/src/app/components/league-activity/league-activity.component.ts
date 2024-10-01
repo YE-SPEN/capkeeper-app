@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { UserService } from '../../services/user.service';
 import { GlobalService } from '../../services/global.service';
 import { SortingService } from '../../services/sorting.service';
 import { User, Activity } from '../../types';
@@ -28,7 +27,6 @@ export class LeagueActivityComponent {
 
   constructor(
     public globalService: GlobalService,
-    private userService: UserService,
     public sortingService: SortingService,
     private route: ActivatedRoute,
   ) { }
@@ -97,7 +95,7 @@ export class LeagueActivityComponent {
     const league_id = this.league_id;
 
     if (league_id) {
-      this.userService.getActivitiesByLeague(league_id, this.start_date, this.end_date)
+      this.globalService.getActivitiesByLeague(league_id, this.start_date, this.end_date)
       .subscribe(response => {
         this.users = response.users;
         this.selected_users = this.users;

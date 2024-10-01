@@ -91,7 +91,12 @@
             <div>
               <button type="button" (click)="globalService.toggleUserMenu()" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
                 <span class="sr-only">Open user menu</span>
-                <img class="w-10 h-10 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo">
+                <div *ngIf="globalService.loggedInUser.picture">
+                  <img class="w-10 h-10 rounded-full" src="{{ globalService.loggedInUser.picture }}" alt="user photo">
+                </div>
+                <div *ngIf="!globalService.loggedInUser.picture" class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                  <span class="font-bold text-lg text-gray-600 dark:text-gray-300">{{ globalService.getUserInitials(globalService.loggedInUser) }} </span>
+                </div>
               </button>
             </div>
             <div *ngIf="globalService.userMenuIsOpen" class="absolute top-full right-0 z-50 mt-2 text-base list-none bg-gray-800 divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
@@ -108,7 +113,7 @@
                   <a [routerLink]="['/', globalService.league?.league_id, 'teams', globalService.loggedInTeam?.team_id]" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">My Team</a>
                 </li>
                 <li>
-                  <a href="#" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">My Profile</a>
+                  <a [routerLink]="['/user/', globalService.loggedInUser.user_name]" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">My Profile</a>
                 </li>
                 <li>
                   <button (click)="signOutClicked()" class="w-full block px-4 py-2 text-sm text-left text-gray-200 hover:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</button>
@@ -126,7 +131,7 @@
      <div class="h-full px-3 pb-4 overflow-y-auto bg-gray-800 dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
            <li>
-              <a routerLink="/home"  class="flex items-center p-2 text-gray-200 rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group">
+              <a [routerLink]="['/', globalService.league?.league_id, 'home']"  class="flex items-center p-2 text-gray-200 rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group">
                  <svg class="w-5 h-5 text-green-400 transition duration-75 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
                   <path fill-rule="evenodd" d="M11.293 3.293a1 1 0 0 1 1.414 0l6 6 2 2a1 1 0 0 1-1.414 1.414L19 12.414V19a2 2 0 0 1-2 2h-3a1 1 0 0 1-1-1v-3h-2v3a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2v-6.586l-.293.293a1 1 0 0 1-1.414-1.414l2-2 6-6Z"/>
                 </svg>

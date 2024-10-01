@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Team, League, NHL_Team, User } from '../types';
+import { Team, League, NHL_Team, User, Activity } from '../types';
 import { HttpParams, HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -85,6 +85,16 @@ export class GlobalService {
       }
     }
     return '';
+  }
+
+  getUserInitials(user: User): string {
+    return user.first_name.slice(0, 1) + user.last_name.slice(0, 1);
+  }
+
+  getActivitiesByLeague(league_id: string, start: string, end: string): Observable<{ action_log: Activity[], users: User[] }> {
+    const url = `api/${league_id}/activity-log`;
+    const params = new HttpParams().set('start', start).set('end', end);
+    return this.http.get<{ action_log: Activity[], users: User[] }>(url, { params });
   }
 
   recordAction(league_id: string, uid: string, action: string, message: string,) {
