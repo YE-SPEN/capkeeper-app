@@ -22,6 +22,9 @@ export class LeagueActivityComponent {
   selected_users: User[] = [];
   users: User[] = [];
   activityFilter = 'all'
+  currentPage = 1;
+  totalPages!: number;
+  pageSize = 25;
 
   constructor(
     public globalService: GlobalService,
@@ -100,6 +103,7 @@ export class LeagueActivityComponent {
         this.selected_users = this.users;
         this.activity_log = response.action_log;
         this.filtered_activity_log = this.activity_log;
+        this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
       });
     }
   }
@@ -114,8 +118,7 @@ export class LeagueActivityComponent {
         }
     }
     return false;
-}
-
+  }
 
   getUser(user_id: string): string {
     for (let user of this.users) {
@@ -157,6 +160,7 @@ export class LeagueActivityComponent {
   filterActivities(): void {
     this.filtered_activity_log = this.activity_log.filter(activity => this.inActivityTypeFilter(activity) && this.inUserFilter(activity));
     this.sortingService.sort(this.filtered_activity_log, this.sortingService.sortColumn, this.sortingService.sortDirection);
+    this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
   }
 
   inActivityTypeFilter(activity: Activity): boolean {
@@ -196,15 +200,72 @@ export class LeagueActivityComponent {
   deselectAllUsers(): void {
     this.selected_users = [];
     this.filterActivities();
+    this.currentPage = 1;
   }
 
   selectAllUsers(): void {
     this.selected_users = this.users;
     this.filterActivities();
+    this.currentPage = 1;
   }
 
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
 
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  setPage(page: number): void {
+    this.currentPage = page;
+  }
+
+  getPageStart(): number {
+    return ((this.currentPage % this.pageSize) * this.pageSize) - (this.pageSize - 1);
+  }
+
+  getPageEnd(): number {
+    if (!this.filtered_activity_log) {
+      return 0; 
+    }
+    return Math.min((this.currentPage % this.pageSize * this.pageSize), this.filtered_activity_log.length);
+  }
   
+  generatePageArray(): number[] {
+    let array = [];
   
+    if (this.currentPage <= 3) {
+      const maxPage = Math.min(5, this.totalPages);
+      for (let i = 1; i <= maxPage; i++) {
+        array.push(i);
+      }
+      return array;
+    }
+  
+    if (this.currentPage >= this.totalPages - 2) {
+      const startPage = Math.max(this.totalPages - 4, 1); 
+      for (let i = startPage; i <= this.totalPages; i++) {
+        array.push(i);
+      }
+      return array;
+    }
+
+    for (let i = this.currentPage - 2; i <= this.currentPage + 2; i++) {
+      array.push(i);
+    }
+  
+    return array;
+  }
+  
+  setPageSize(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+    this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
+  }
 
 }

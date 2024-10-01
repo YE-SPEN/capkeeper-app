@@ -55,6 +55,7 @@ export interface Team {
     rookie_bank: Player[],
     trade_block: Player[],
     draft_picks: Draft_Pick[],
+    fa_picks: FA_Pick[]
 };
 
 export interface Player {
@@ -91,6 +92,18 @@ export interface Draft_Pick {
     position: number,
     pick_number: number,
     type: string,
+    player_taken: string,
+}
+
+export interface FA_Pick {
+    [key: string]: any;
+    asset_id: number,
+    assigned_to: string,
+    owned_by: string,
+	league_id: number,
+    year: number,
+    week: number,
+    expiry_date: Date,
     player_taken: string,
 }
 

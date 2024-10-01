@@ -409,7 +409,7 @@ export class PlayerDatabaseComponent {
     let toast = this.toast.nativeElement;
     
     if (toast) {
-      toast.classList.add('show');
+      toast.classList.add('flex');
       toast.classList.remove('hidden');
       
       setTimeout(() => {
@@ -422,7 +422,7 @@ export class PlayerDatabaseComponent {
     let toast = this.toast.nativeElement;
 
     if (toast) {
-      toast.classList.remove('show');
+      toast.classList.remove('flex');
       toast.classList.add('hidden');
     }
   }

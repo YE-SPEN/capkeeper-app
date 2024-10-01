@@ -227,7 +227,7 @@
                 <tbody>
                   <tr *ngFor="let year of getDraftYears()" class="border-b-2">
                      <td class="py-1.5 text-center border-r-2">
-                        <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                        <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
                            {{ year }}
                         </span>
                      </td>
@@ -266,7 +266,7 @@
                 <tbody>
                   <tr *ngFor="let year of getDraftYears()" class="border-b-2">
                      <td class="py-1.5 text-center border-r-2">
-                        <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                        <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
                            {{ year }}
                         </span>
                      </td>
@@ -290,6 +290,52 @@
                   </tr>
                </tbody>
              </table>  
+         </div>
+
+         <!-- FA Picks -->
+         <div *ngIf="displaying === 'fa'" class="p-4">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md border-2">
+               <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr class="border-b-2">
+                     <th *ngFor="let month of getFAMonths()" class="px-4 py-2 text-center border-r-2 font-bold text-sm">
+                        {{ month }}
+                      </th>                  
+               </thead>
+                  <tbody>
+                  <tr class="border-b-2">
+                     <td *ngFor="let month of getFAMonths()" class="py-1.5 text-center align-top border-r-2">
+                        <div *ngFor="let pick of getFAPicksByMonth(getMonthIndex(month))" class="mb-2 relative group">
+                           <button data-popover-target="popover-left" data-popover-placement="left" type="button"
+                             class="text-center justify-center bg-gray-100 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 border"
+                             [ngClass]="{
+                               'text-gray-400 border-gray-300': pick.owned_by !== team.team_id, 
+                               'text-gray-800 border-gray-500 hover:bg-gray-200': pick.owned_by === team.team_id,
+                               'text-red-600 border-red-600 bg-red-200 hover:bg-red-100': !pick.player_taken && isExpired(pick),
+                               'text-green-600 border-green-600 bg-green-200 hover:bg-green-100': pick.player_taken && isExpired(pick),
+                               'text-yellow-600 border-yellow-600 bg-yellow-100 hover:bg-yellow-200': pick.assigned_to !== team.team_id
+                             }">
+                             FA{{ pick.week }}<br>
+                           </button>
+                           
+                           <!-- Popover -->
+                           <div *ngIf="pick.owned_by === team.team_id" data-popover id="popover-left" role="tooltip" class="absolute left-[-14.5rem] top-[-2rem] z-10 hidden group-hover:block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
+                             <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                               <h3 class="text-left font-bold text-gray-900 dark:text-white">FA Week {{ pick.week }} ({{ currentSeason }})</h3>
+                             </div>
+                             <div class="px-3 py-2 text-left">
+                               <p *ngIf="pick.assigned_to !== pick.owned_by">Acquired from: <span class="font-semibold">{{ globalService.getTeamName(pick.assigned_to) }}</span></p>
+                               <p *ngIf="!isExpired(pick)" class="text-green-400 font-semibold">Expiring {{ pick.expiry_date | date:'MM-dd-yyyy' }}</p>
+                               <p *ngIf="isExpired(pick)" class="text-red-500 font-semibold">EXPIRED</p>
+                               <p *ngIf="isExpired(pick) && !pick.player_taken">Player Taken: <span class="font-semibold">NO SELECTION</span></p>
+                               <p *ngIf="pick.player_taken">Player Taken: <span class="font-semibold">{{ pick.player_taken }}</span></p>
+                             </div>
+                             <div data-popper-arrow></div>
+                           </div>
+                         </div>                                                                                               
+                     </td>                  
+                  </tr>
+               </tbody>
+               </table>  
          </div>
 
       </div>
@@ -379,7 +425,7 @@
                </ng-container>
 
                <td class="px-6 py-2">
-                  <span class="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                  <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
                         [ngClass]="{
                         'bg-red-600': forward.expiry_status === 'UFA',
                         'bg-blue-600': forward.expiry_status === 'RFA'
@@ -479,7 +525,7 @@
             </ng-container>
 
             <td class="px-6 py-2">
-               <span class="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+               <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
                      [ngClass]="{
                      'bg-red-600': defensemen.expiry_status === 'UFA',
                      'bg-blue-600': defensemen.expiry_status === 'RFA'
@@ -578,7 +624,7 @@
             </ng-container>
 
             <td class="px-6 py-2">
-               <span class="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+               <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
                      [ngClass]="{
                      'bg-red-600': goalie.expiry_status === 'UFA',
                      'bg-blue-600': goalie.expiry_status === 'RFA'
@@ -682,7 +728,7 @@
                </ng-container>
          
                <td class="px-6 py-2">
-                  <span class="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                  <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
                         [ngClass]="{
                         'bg-red-600': team.injured_reserve[i].expiry_status === 'UFA',
                         'bg-blue-600': team.injured_reserve[i].expiry_status === 'RFA'
@@ -765,8 +811,13 @@
             <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
                <img class="w-10 h-10 rounded-full" src="{{rookie.logo}}" alt="Player image">
                <div class="ps-3 bg-white">
-               <div class="text-sm font-semibold">{{ rookie.first_name }} {{ rookie.last_name }}</div>
-               <div class="font-normal text-xs text-gray-500">{{ rookie.position }} - {{ rookie.short_code }}</div>
+                  <div class="text-sm font-semibold">
+                     {{ rookie.first_name }} {{ rookie.last_name }}
+                  </div>
+                  <div class="font-normal text-xs text-gray-500">
+                     {{ rookie.position }} - {{ rookie.short_code }}
+                     <span class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Rookie</span>
+                  </div>
                </div>
             </td>
 
@@ -794,7 +845,7 @@
             </ng-container>
 
             <td class="px-6 py-2">
-               <span class="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+               <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
                      [ngClass]="{
                      'bg-red-600': rookie.expiry_status === 'UFA',
                      'bg-blue-600': rookie.expiry_status === 'RFA'
@@ -812,7 +863,7 @@
 <!-- Edit Team Modal -->
    <ng-template #editTeamModal id="editTeamModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
       <div class="relative w-full max-w-2xl max-h-full">
-            <form class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <form (ngSubmit)="editTeamFormSubmit($event)" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
    
                <div class="flex items-start justify-between p-4 rounded-t md:w-[400px]">
                   <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
@@ -829,11 +880,11 @@
                <div class="p-6 space-y-6">
                   <div class="col-span-6 sm:col-span-3">
                         <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Team Name</label>
-                        <input type="text" name="first-name" id="first-name" class="shadow-sm bg-gray-50  text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [placeholder]="team.team_name" required="">
+                        <input type="text" [(ngModel)]="formData.team_name" name="team-name" id="team-name" class="shadow-sm bg-gray-50  text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [placeholder]="team.team_name" required="">
                   </div>
                   <div>
                      <label for="picture" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Picture</label>
-                     <input (change)="uploadFile($event)" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
+                     <input (change)="uploadFile($event)" name="picture" id="picture" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
                      <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PNG, JPG (MAX. 1MB)</p>          
                  </div>
                </div>
@@ -1016,7 +1067,7 @@
 </ng-template>
 
 <!-- Toast -->
-<div #toast id="toast" class="toast hidden fixed bottom-4 right-4 w-auto max-w-lg p-4 mb-4 flex items-center justify-between text-gray-500 bg-white rounded-lg shadow-lg dark:text-gray-400 dark:bg-gray-800" role="alert">
+<div #toast id="toast" class="toast hidden fixed bottom-4 right-4 w-auto max-w-lg p-4 mb-4 items-center justify-between text-gray-500 bg-white rounded-lg shadow-lg dark:text-gray-400 dark:bg-gray-800" role="alert">
    <!-- Check Icon -->
    <div class="flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-400 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
       <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -1038,10 +1089,3 @@
      </svg>
    </button>
 </div>
- 
-
-
-
-   
-
-   

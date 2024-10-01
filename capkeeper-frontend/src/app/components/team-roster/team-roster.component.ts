@@ -5,7 +5,8 @@ import { TeamService } from '../../services/team.service';
 import { SortingService } from '../../services/sorting.service';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
-import { Team, Player } from '../../types';
+import { Team, Player, FA_Pick } from '../../types';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-team-roster',
@@ -25,12 +26,15 @@ export class TeamRosterComponent {
   @ViewChild('toast', { static: false }) toast!: ElementRef<HTMLDivElement>;
   toastMessage: string = '';
   formData = {
-    oldName: '',
-    name: '',
-    picture: '',
+    old_team_id: null as string | null,
+    league_id: null as string | null,
+    team_id: null as string | null,
+    team_name: null as string | null,
+    picture: null as string | null,
   };
 
   constructor(
+    private router: Router,
     private teamService: TeamService,
     public globalService: GlobalService,
     private modalService: BsModalService,
@@ -54,6 +58,7 @@ export class TeamRosterComponent {
             this.team.injured_reserve = response.roster.filter(player => player.onIR);
 
             this.team.draft_picks = response.draft_picks;
+            this.team.fa_picks = response.fa_picks;
 
             this.team.roster_size = this.team.forwards.length + this.team.defense.length + this.team.goalies.length;
 
@@ -146,6 +151,74 @@ export class TeamRosterComponent {
     return sum;
   }
 
+  getFAMonths(): string[] {
+    const monthAbrv = ['OCT', 'NOV', 'DEC', 'JAN', 'FEB', 'MAR', 'APR'];
+    return monthAbrv;
+  }
+
+  getMonthIndex(abrv: string): number {
+    const monthAbrv = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const index = monthAbrv.indexOf(abrv.toUpperCase());
+    
+    return index;
+  }
+  
+  getFAPicksByMonth(index: number): FA_Pick[] {
+    const picksInMonth: FA_Pick[] = [];
+  
+    this.team.fa_picks.forEach(pick => {
+      if (pick.expiry_date) {
+        const expiryDate = new Date(pick.expiry_date);
+  
+        if (expiryDate.getMonth() === index) {
+          picksInMonth.push(pick);
+        }
+      }
+    });
+  
+    return picksInMonth;
+  }
+
+  isExpired(pick: FA_Pick): boolean {
+    const currentDate = new Date();
+    const expiryDate = new Date(pick.expiry_date);
+    return expiryDate < currentDate;
+  }
+
+  editTeamFormSubmit(event: Event): void {
+    let new_id;
+    if (this.formData.team_name) {
+      new_id = this.formData.team_name.toLowerCase().replace(/\s+/g, '')
+    } else {
+      new_id = this.team_id
+    }
+
+    const submissionData = {
+      old_team_id: this.team_id,
+      league_id: this.team.league_id,
+      team_id: new_id,
+      team_name: this.formData.team_name ? this.formData.team_name : this.team.team_name,
+      picture: this.formData.picture ? this.formData.picture : this.team.picture,
+    };
+
+    console.log('Submission: ', submissionData)
+
+    this.http.post('api/players/edit-team-info', submissionData)
+    .subscribe({
+      next: (response) => {
+        console.log('Team Info Updated Successfully:', response);
+          this.router.navigate(['/' + this.team.league_id + '/teams/' + new_id]);
+          this.closeModal();
+          this.showToast('Team Information Updated Successfully!')
+         
+      },
+      error: (error) => {
+        console.error('Error recording action:', error);
+      }
+    });
+    
+  }
+  
   dropPlayer(player: Player): void {
     const payload = {
       player_id: player.player_id,
@@ -272,10 +345,10 @@ export class TeamRosterComponent {
             let message = player.first_name + ' ' + player.last_name + ' added to the trade block by ' + this.team.team_name;
             let action = 'trade-block';
             this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
+            this.showToast(player.first_name + ' ' + player.last_name + ' added to the trade block.')
           }
 
           this.ngOnInit();
-          this.showToast(player.first_name + ' ' + player.last_name + ' added to the trade block.')
         }
       },
       error: (error) => {
@@ -380,7 +453,7 @@ export class TeamRosterComponent {
     let toast = this.toast.nativeElement;
     
     if (toast) {
-      toast.classList.add('show');
+      toast.classList.add('flex');
       toast.classList.remove('hidden');
       
       setTimeout(() => {
@@ -393,7 +466,7 @@ export class TeamRosterComponent {
     let toast = this.toast.nativeElement;
 
     if (toast) {
-      toast.classList.remove('show');
+      toast.classList.remove('flex');
       toast.classList.add('hidden');
     }
   }

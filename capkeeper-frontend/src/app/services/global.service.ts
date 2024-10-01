@@ -69,6 +69,24 @@ export class GlobalService {
     return `${hours}:${minutes}:${seconds}`;
   }
 
+  getTeamName(team_id: string): string {
+    for (let team of this.teams) {
+      if (team.team_id === team_id) {
+        return team.team_name;
+      }
+    }
+    return '';
+  }
+
+  getTeamID(team_name: string): string {
+    for (let team of this.teams) {
+      if (team.team_name === team_name) {
+        return team.team_id;
+      }
+    }
+    return '';
+  }
+
   recordAction(league_id: string, uid: string, action: string, message: string,) {
     const actionData = {
       league_id: league_id,
