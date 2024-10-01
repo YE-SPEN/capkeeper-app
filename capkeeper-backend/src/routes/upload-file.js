@@ -56,7 +56,7 @@ export const uploadFileRoute = {
             // Prepare the S3 upload parameters
             const putObjectCommand = new PutObjectCommand({
                 Bucket: 'bbhl-angular-bucket',
-                Key: `player_pics/${fileName}`,
+                Key: `capkeeper/${fileName}`,
                 Body: file._data,
                 ACL: 'public-read',
                 ContentType: fileType,
@@ -67,7 +67,7 @@ export const uploadFileRoute = {
 
             console.log('File uploaded successfully:', uploadResult);
 
-            const fileUrl = `${process.env.DO_SPACES_ENDPOINT}/${process.env.DO_SPACES_BUCKET}/keeper_team_pics/${fileName}`;
+            const fileUrl = `${process.env.DO_SPACES_ENDPOINT}/${process.env.DO_SPACES_BUCKET}/capkeeper/${fileName}`;
             return h.response({ fileUrl }).code(201);
         
         } catch (error) {
