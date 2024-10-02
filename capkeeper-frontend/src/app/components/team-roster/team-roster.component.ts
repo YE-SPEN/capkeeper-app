@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
   styleUrl: './team-roster.component.css'
 })
 export class TeamRosterComponent {
+  editRights: boolean = false;
   modalRef!: BsModalRef;
   league_id!: string;
   team_id!: string;
@@ -46,6 +47,12 @@ export class TeamRosterComponent {
       this.route.paramMap.subscribe(params => {
         this.league_id = params.get('league_id')!;
         this.team_id = params.get('team_id')!;
+
+        if (this.team_id === this.globalService.loggedInTeam?.team_id) {
+          this.editRights = true;
+        } else {
+          this.editRights = false;
+        }
 
         this.teamService.getRosterByTeam(this.league_id, this.team_id)
           .subscribe(response => {

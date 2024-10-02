@@ -11,12 +11,23 @@
              <td>
                  <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ team.team_name }}</h1>
                  <h3 class="pb-4"><b>Managed by:</b><br> {{ team.managed_by }}</h3>
-                 <button type="button" (click)="openModal(editTeamModal)" class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                  <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                     <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd"/>
-                   </svg>
-                   Edit Team Info
+                 <div *ngIf="editRights">
+                     <button type="button" (click)="openModal(editTeamModal)" class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                           <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd"/>
+                        </svg>
+                        Edit Team Info
+                     </button>
+                 </div>
+                 <div *ngIf="!editRights">
+                  <button type="button" (click)="openModal(editTeamModal)" class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                     <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/>
+                     </svg>
+                     Propose Trade
                   </button>
+                 </div>
+
              </td>
          </tr>
      </table>
@@ -166,7 +177,7 @@
                                 <span class="pr-3">{{ i+1 }}.</span> 
                                 {{ team.trade_block[i] ? (team.trade_block[i].first_name || '') + ' ' + (team.trade_block[i].last_name || '') : ' ' }}
                             </span>
-                            <a *ngIf="team.trade_block[i]?.first_name || team.trade_block[i]?.last_name" 
+                            <a *ngIf="editRights && (team.trade_block[i]?.first_name || team.trade_block[i]?.last_name)" 
                                (click)="rosterMove(team.trade_block[i], 'trade-block')" 
                                class="text-red-500 ml-auto cursor-pointer hover:text-red-600">Remove</a>
                         </li>
@@ -358,17 +369,22 @@
          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
              <tr class="border-b-2">
-               <th scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
+               <th *ngIf="editRights" scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
 
                </th>
        
                <!-- Player Column -->
-               <th scope="col" class="p-4 sticky left-12 bg-gray-50 dark:bg-gray-700 z-10">
+               <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
+               [ngClass]="{
+                  'left-12' : editRights,
+                  'left-0 border-r-2 px-6' : !editRights
+               }"
+               >
                  Player
                </th>
        
                <!-- Action Column -->
-               <th scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
+               <th *ngIf="editRights" scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
                  
                </th>
        
@@ -380,7 +396,7 @@
            </thead>
            <tbody>
              <tr *ngFor="let forward of team.forwards" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-               <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
+               <td *ngIf="editRights" class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
                   <div (click)="openModal(dropPlayerModal, forward)" class="flex items-center">
                      <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
@@ -393,16 +409,21 @@
                </td>
 
                <!-- Player Column -->
-               <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
+               <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
+                  [ngClass]="{
+                     'left-12' : editRights,
+                     'left-0 border-r-2 px-6' : !editRights
+                  }"
+               >
                   <img class="w-10 h-10 rounded-full" src="{{forward.logo}}" alt="Player image">
                   <div class="ps-3 bg-white">
-                  <div class="text-sm font-semibold">{{ forward.first_name }} {{ forward.last_name }}</div>
-                  <div class="font-normal text-xs text-gray-500">{{ forward.position }} - {{ forward.short_code }}</div>
+                     <div class="text-sm font-semibold">{{ forward.first_name }} {{ forward.last_name }}</div>
+                     <div class="font-normal text-xs text-gray-500">{{ forward.position }} - {{ forward.short_code }}</div>
                   </div>
                </td>
 
                <!-- Action Column -->
-               <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
+               <td *ngIf="editRights" class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
                   <select (change)="rosterMove(forward, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
                      <option value="">Action</option>
                      <option value="ir">Place on IR</option>
@@ -457,17 +478,22 @@
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr class="border-b-2">
             <!-- Checkbox Column -->
-            <th scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
+            <th *ngIf="editRights" scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
 
             </th>
     
             <!-- Player Column -->
-            <th scope="col" class="p-4 sticky left-12 bg-gray-50 dark:bg-gray-700 z-10">
+            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
+            [ngClass]="{
+               'left-12' : editRights,
+               'left-0 border-r-2 px-6' : !editRights
+            }"
+            >
               Player
             </th>
     
             <!-- Action Column -->
-            <th scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
+            <th *ngIf="editRights" scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
               
             </th>
     
@@ -480,7 +506,7 @@
         <tbody>
           <tr *ngFor="let defensemen of team.defense" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
             <!-- Checkbox Column -->
-            <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
+            <td *ngIf="editRights" class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
                <div (click)="openModal(dropPlayerModal, defensemen)" class="flex items-center">
                   <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
@@ -493,16 +519,21 @@
             </td>
 
             <!-- Player Column -->
-            <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
+            <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
+               [ngClass]="{
+                  'left-12' : editRights,
+                  'left-0 border-r-2 px-6' : !editRights
+               }"
+            >
                <img class="w-10 h-10 rounded-full" src="{{defensemen.logo}}" alt="Player image">
                <div class="ps-3 bg-white">
-               <div class="text-sm font-semibold">{{ defensemen.first_name }} {{ defensemen.last_name }}</div>
-               <div class="font-normal text-xs text-gray-500">{{ defensemen.position }} - {{ defensemen.short_code }}</div>
+                  <div class="text-sm font-semibold">{{ defensemen.first_name }} {{ defensemen.last_name }}</div>
+                  <div class="font-normal text-xs text-gray-500">{{ defensemen.position }} - {{ defensemen.short_code }}</div>
                </div>
             </td>
 
             <!-- Action Column -->
-            <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
+            <td *ngIf="editRights" class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
                <select (change)="rosterMove(defensemen, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
                   <option value="">Action</option>
                   <option value="ir">Place on IR</option>
@@ -556,17 +587,22 @@
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr class="border-b-2">
             <!-- Checkbox Column -->
-            <th scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
+            <th *ngIf="editRights" scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
 
             </th>
     
             <!-- Player Column -->
-            <th scope="col" class="p-4 sticky left-12 bg-gray-50 dark:bg-gray-700 z-10">
+            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
+            [ngClass]="{
+               'left-12' : editRights,
+               'left-0 border-r-2 px-6' : !editRights
+            }"
+            >
               Player
             </th>
     
             <!-- Action Column -->
-            <th scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
+            <th *ngIf="editRights" scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
               
             </th>
     
@@ -579,7 +615,7 @@
         <tbody>
           <tr *ngFor="let goalie of team.goalies" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
             <!-- Checkbox Column -->
-            <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
+            <td *ngIf="editRights" class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
                <div (click)="openModal(dropPlayerModal, goalie)" class="flex items-center">
                   <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
@@ -592,16 +628,21 @@
             </td>
 
             <!-- Player Column -->
-            <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
+            <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
+               [ngClass]="{
+                  'left-12' : editRights,
+                  'left-0 border-r-2 px-6' : !editRights
+               }"
+            >
                <img class="w-10 h-10 rounded-full" src="{{goalie.logo}}" alt="Player image">
                <div class="ps-3 bg-white">
-               <div class="text-sm font-semibold">{{ goalie.first_name }} {{ goalie.last_name }}</div>
-               <div class="font-normal text-xs text-gray-500">{{ goalie.position }} - {{ goalie.short_code }}</div>
+                  <div class="text-sm font-semibold">{{ goalie.first_name }} {{ goalie.last_name }}</div>
+                  <div class="font-normal text-xs text-gray-500">{{ goalie.position }} - {{ goalie.short_code }}</div>
                </div>
             </td>
 
             <!-- Action Column -->
-            <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
+            <td *ngIf="editRights" class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
                <select (change)="rosterMove(goalie, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
                   <option value="">Action</option>
                   <option value="ir">Place on IR</option>
@@ -656,17 +697,22 @@
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr class="border-b-2">
             <!-- Checkbox Column -->
-            <th scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
+            <th *ngIf="editRights" scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
 
             </th>
     
             <!-- Player Column -->
-            <th scope="col" class="p-4 sticky left-12 bg-gray-50 dark:bg-gray-700 z-10">
+            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
+            [ngClass]="{
+               'left-12' : editRights,
+               'left-0 border-r-2 px-6' : !editRights
+            }"
+            >
               Player
             </th>
     
             <!-- Action Column -->
-            <th scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
+            <th *ngIf="editRights" scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
               
             </th>
     
@@ -681,7 +727,7 @@
                <!-- Check if a player exists at this index -->
                <ng-container *ngIf="team.injured_reserve[i]; else emptyRow">
                <!-- Checkbox Column -->
-               <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
+               <td *ngIf="editRights" class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
                   <div (click)="openModal(dropPlayerModal, team.injured_reserve[i])" class="flex items-center">
                      <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
@@ -694,7 +740,12 @@
                </td>
          
                <!-- Player Column -->
-               <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
+               <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
+                  [ngClass]="{
+                     'left-12' : editRights,
+                     'left-0 border-r-2 px-6' : !editRights
+                  }"
+               >
                   <img class="w-10 h-10 rounded-full" [src]="team.injured_reserve[i].logo" alt="Player image">
                   <div class="ps-3 bg-white">
                   <div class="text-sm font-semibold">{{ team.injured_reserve[i].first_name }} {{ team.injured_reserve[i].last_name }}</div>
@@ -705,7 +756,7 @@
                </td>
          
                <!-- Action Column -->
-               <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
+               <td *ngIf="editRights" class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
                   <select (change)="rosterMove(team.injured_reserve[i], $event, callUpModal)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
                      <option value="">Action</option>
                      <option value="ir">Activate to Main Roster</option>
@@ -740,13 +791,18 @@
          
                <!-- Empty Row Template -->
                <ng-template #emptyRow>
-               <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10 min-h-8"></td>
-               <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
+                  <td *ngIf="editRights" class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10 min-h-8"></td>
+                  <td class="flex items-left px-2 py-2 sticky min-w-52 text-gray-900 whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
+                     [ngClass]="{
+                        'left-12' : editRights,
+                        'left-0 border-r-2 px-6' : !editRights
+                     }"
+                  >
                      <div class="text-sm font-semibold">
                         -- Empty Slot --
                      </div>
-               </td>
-               <td class="p-4 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2"></td>
+                  </td>
+                  <td *ngIf="editRights" class="p-4 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2"></td>
                </ng-template>
          </tr>        
         </tbody>
@@ -772,17 +828,22 @@
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr class="border-b-2">
             <!-- Checkbox Column -->
-            <th scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
+            <th *ngIf="editRights" scope="col" class="p-4 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
 
             </th>
     
             <!-- Player Column -->
-            <th scope="col" class="p-4 sticky left-12 bg-gray-50 dark:bg-gray-700 z-10">
+            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
+            [ngClass]="{
+               'left-12' : editRights,
+               'left-0 border-r-2 px-6' : !editRights
+            }"
+            >
               Player
             </th>
     
             <!-- Action Column -->
-            <th scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
+            <th *ngIf="editRights" scope="col" class="text-center p-4 min-w-32 sticky left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
               
             </th>
     
@@ -795,7 +856,7 @@
         <tbody>
           <tr *ngFor="let rookie of team.rookie_bank" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
             <!-- Checkbox Column -->
-            <td class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
+            <td *ngIf="editRights" class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10">
                <div (click)="openModal(dropPlayerModal, rookie)" class="flex items-center">
                   <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
@@ -808,7 +869,12 @@
             </td>
 
             <!-- Player Column -->
-            <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 whitespace-nowrap dark:text-white sticky left-12 bg-white dark:bg-gray-800 z-10">
+            <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
+               [ngClass]="{
+                  'left-12' : editRights,
+                  'left-0 border-r-2 px-6' : !editRights
+               }"
+            >
                <img class="w-10 h-10 rounded-full" src="{{rookie.logo}}" alt="Player image">
                <div class="ps-3 bg-white">
                   <div class="text-sm font-semibold">
@@ -822,7 +888,7 @@
             </td>
 
             <!-- Action Column -->
-            <td class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
+            <td *ngIf="editRights" class="text-center px-2 py-2 sticky left-64 bg-white dark:bg-gray-800 z-10 border-r-2">
                <select (change)="rosterMove(rookie, $event, callUpModal)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
                   <option value="">Action</option>
                   <option *ngIf="!rookie.onTradeBlock" value="trade-block">Add to Trade Block</option>

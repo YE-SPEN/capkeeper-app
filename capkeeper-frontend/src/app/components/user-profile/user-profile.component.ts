@@ -39,6 +39,7 @@ export class UserProfileComponent {
         user_name: this.formData.user_name ? this.formData.user_name : this.user.user_name,
         first_name: this.formData.first_name ? this.formData.first_name : this.user.first_name,
         last_name: this.formData.last_name ? this.formData.last_name : this.user.last_name,
+        email: this.formData.email ? this.formData.email : this.user.email,
         picture: this.formData.picture ? this.formData.picture : this.user.picture,
       };
       
