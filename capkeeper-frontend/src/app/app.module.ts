@@ -16,6 +16,7 @@ import { LeagueActivityComponent } from './components/league-activity/league-act
 import { RulesComponent } from './components/rules/rules.component';
 import { HomeComponent } from './components/home/home.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { TradeProposalComponent } from './components/trade-proposal/trade-proposal.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
     PlayerDatabaseComponent,
     LeagueActivityComponent,
     RulesComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    TradeProposalComponent
   ],
   imports: [
     BrowserModule,

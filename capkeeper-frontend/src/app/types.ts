@@ -42,6 +42,7 @@ export interface Team {
     roster_size: number,
     total_cap: number,
     cap_space: number,
+    roster: Player[],
     forwards: Player[],
     num_forwards: number,
     forward_salary: number,
