@@ -12,6 +12,7 @@ import { editContractRoute } from "./edit-contract.js";
 import { recordSessionRoute } from "./record-session.js";
 import { editTeamRoute } from "./edit-team-info.js";
 import { editUserRoute } from "./edit-user-info.js";
+import { sendTradeRoute } from "./trade-sent.js";
 
 export default [
     leagueRoute,
@@ -27,5 +28,6 @@ export default [
     editContractRoute,
     recordSessionRoute,
     editTeamRoute,
-    editUserRoute
+    editUserRoute,
+    sendTradeRoute
 ]
