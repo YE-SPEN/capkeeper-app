@@ -9,7 +9,7 @@ import { RulesComponent } from './components/rules/rules.component';
 import { HomeComponent } from './components/home/home.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { TradeProposalComponent } from './components/trade-proposal/trade-proposal.component';
-import { TradeReviewComponent } from './trade-review/trade-review.component';
+import { TradeReviewComponent } from './components/trade-review/trade-review.component';
 
 const routes: Routes = [
     { path: 'login', component: LoginComponent },

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { TradeProposalComponent } from '../components/trade-proposal/trade-proposal.component';
-import { TeamService } from '../services/team.service';
-import { GlobalService } from '../services/global.service';
+import { TradeProposalComponent } from '../trade-proposal/trade-proposal.component';
+import { TeamService } from '../../services/team.service';
+import { GlobalService } from '../../services/global.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Trade } from '../types';
+import { Trade } from '../../types';
 
 @Component({
   selector: 'app-trade-review',
