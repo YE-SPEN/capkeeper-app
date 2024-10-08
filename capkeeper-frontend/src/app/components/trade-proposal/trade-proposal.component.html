@@ -197,7 +197,7 @@
                                         <img class="w-10 h-10 me-2 rounded-full" src="{{assets_given[i]?.logo}}" alt="{{assets_given[i]?.player_id}}">
                                         {{ assets_given[i]?.first_name }} {{ assets_given[i]?.last_name }} 
                                         <span class="font-normal text-[11px] text-gray-500">&nbsp;&nbsp;{{ assets_given[i]?.position }} - {{ assets_given[i]?.short_code }}&nbsp;&nbsp;</span>
-                                        <div *ngIf="assets_given[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-2 me-2 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
+                                        <div *ngIf="assets_given[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
                                             IR
                                         </div>
                                         <div *ngIf="assets_given[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
@@ -244,7 +244,7 @@
                                             </svg>
                                         </div>  
                                         &nbsp;&nbsp;
-                                        <div class="flex items-center">
+                                        <div class="flex items-center text-sm font-semibold">
                                             Round {{ assets_given[i]?.round }}
                                             <div *ngIf="assets_given[i]?.pick_number">&nbsp;#{{ assets_given[i]?.pick_number }}</div>
                                             &nbsp;- {{ capitalizeFirstLetter(assets_given[i]?.type) }} ({{ assets_given[i]?.year}})
@@ -287,7 +287,7 @@
                                             </svg>
                                         </div>  
                                         &nbsp;&nbsp;
-                                        <div class="flex items-center">
+                                        <div class="flex items-center text-sm font-semibold">
                                             Round {{ assets_given[i]?.round }}
                                             <div *ngIf="assets_given[i]?.pick_number">&nbsp;#{{ assets_given[i]?.pick_number }}</div>
                                             &nbsp;- {{ capitalizeFirstLetter(assets_given[i]?.type) }} ({{ assets_given[i]?.year}})
@@ -328,7 +328,7 @@
                                             </svg>               
                                         </div>  
                                         &nbsp;&nbsp;
-                                        <div class="flex items-center">
+                                        <div class="flex items-center text-sm font-semibold">
                                             FA Week {{ assets_given[i]?.week }} ({{ assets_given[i]?.year }})
                                         </div>                                       
                                     </div>                                    
@@ -415,7 +415,7 @@
                                         <img class="w-10 h-10 me-2 rounded-full" src="{{assets_received[i]?.logo}}" alt="{{assets_received[i]?.player_id}}">
                                         {{ assets_received[i]?.first_name }} {{ assets_received[i]?.last_name }} 
                                         <span class="font-normal text-[11px] text-gray-500">&nbsp;&nbsp;{{ assets_received[i]?.position }} - {{ assets_received[i]?.short_code }}&nbsp;&nbsp;</span>
-                                        <div *ngIf="assets_received[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-2 me-2 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
+                                        <div *ngIf="assets_received[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
                                             IR
                                         </div>
                                         <div *ngIf="assets_received[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
@@ -462,7 +462,7 @@
                                             </svg>
                                         </div>  
                                         &nbsp;&nbsp;
-                                        <div class="flex items-center">
+                                        <div class="flex items-center text-sm font-semibold">
                                             Round {{ assets_received[i]?.round }}
                                             <div *ngIf="assets_received[i]?.pick_number">&nbsp;#{{ assets_received[i]?.pick_number }}</div>
                                             &nbsp;- {{ capitalizeFirstLetter(assets_received[i]?.type) }} ({{ assets_received[i]?.year}})
@@ -505,7 +505,7 @@
                                             </svg>
                                         </div>  
                                         &nbsp;&nbsp;
-                                        <div class="flex items-center">
+                                        <div class="flex items-center text-sm font-semibold">
                                             Round {{ assets_received[i]?.round }}
                                             <div *ngIf="assets_received[i]?.pick_number">&nbsp;#{{ assets_received[i]?.pick_number }}</div>
                                             &nbsp;- {{ capitalizeFirstLetter(assets_received[i]?.type) }} ({{ assets_received[i]?.year}})
@@ -546,7 +546,7 @@
                                             </svg>               
                                         </div>  
                                         &nbsp;&nbsp;
-                                        <div class="flex items-center">
+                                        <div class="flex items-center text-sm font-semibold">
                                             FA Week {{ assets_received[i]?.week }} ({{ assets_received[i]?.year }})
                                         </div>                                       
                                     </div>                                    
@@ -576,7 +576,6 @@
     
     <div>
         <table class="w-full table-auto border-collapse pt-6">
-            <!-- Header row that spans the entire width -->
             <thead>
                 <tr>
                     <th colspan="3" class="text-lg font-bold text-gray-500 lg:text-xl dark:text-gray-400 text-center">

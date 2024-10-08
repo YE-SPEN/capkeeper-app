@@ -5,8 +5,7 @@ import { GlobalService } from '../../services/global.service';
 import { TeamService } from '../../services/team.service';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { HttpClient } from '@angular/common/http';
-import { Team, Player, Draft_Pick, FA_Pick } from '../../types';
-type Asset = Player | Draft_Pick | FA_Pick | null;
+import { Team, Player, Draft_Pick, FA_Pick, Asset } from '../../types';
 
 @Component({
   selector: 'app-trade-proposal',
@@ -36,11 +35,11 @@ export class TradeProposalComponent {
   modalRef!: BsModalRef;
 
   constructor(
-    private teamService: TeamService,
+    protected teamService: TeamService,
     public globalService: GlobalService,
-    private modalService: BsModalService,
-    private route: ActivatedRoute,
-    private http: HttpClient
+    protected modalService: BsModalService,
+    protected route: ActivatedRoute,
+    protected http: HttpClient
   ) { }
 
   ngOnInit(): void {
@@ -60,53 +59,68 @@ export class TradeProposalComponent {
     });
   }
     
-  setRequestor(team_id: string): void {
-      this.teamService.getRosterByTeam(this.league_id, team_id)
-      .subscribe(response => {
-        this.requestor = response.team;
-        this.requestor.roster = response.roster;
-        this.requestor.draft_picks = response.draft_picks;
-        this.requestor.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.requestor.team_id && !pick.player_taken);
-
-        this.requestor.roster_size = this.requestor.roster.length;
-        this.requestor.total_cap = this.getTotalCap(this.requestor.roster);
-
-        if (this.globalService.league) {
-          this.salary_cap = this.globalService.league.salary_cap;
-          this.requestor.cap_space = this.salary_cap - this.requestor.total_cap;
+  setRequestor(team_id: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.teamService.getRosterByTeam(this.league_id, team_id).subscribe(
+        response => {
+          this.requestor = response.team;
+          this.requestor.roster = response.roster;
+          this.requestor.draft_picks = response.draft_picks;
+          this.requestor.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.requestor.team_id && !pick.player_taken);
+  
+          this.requestor.roster_size = this.requestor.roster.length;
+          this.requestor.total_cap = this.getTotalCap(this.requestor.roster);
+  
+          if (this.globalService.league) {
+            this.salary_cap = this.globalService.league.salary_cap;
+            this.requestor.cap_space = this.salary_cap - this.requestor.total_cap;
+          }
+  
+          this.requestor_rookies = this.countRookies(this.requestor.roster);
+          this.requestor_contracts = this.requestor.roster_size - this.requestor_rookies;
+          this.requestor_salary = this.requestor.total_cap;
+  
+          resolve();
+        },
+        error => {
+          reject(error);
         }
-
-        this.requestor_rookies = this.countRookies(this.requestor.roster);
-        this.requestor_contracts = this.requestor.roster_size - this.requestor_rookies;
-        this.requestor_salary = this.requestor.total_cap;
-        
+      );
     });
   }
-
-  setRecipient(team_id: string): void {
+  
+  setRecipient(team_id: string): Promise<void> {
+    return new Promise((resolve, reject) => {
       this.assets_received = Array(6).fill(null);
       this.assets_received_types = Array(6).fill('');
-
-      this.teamService.getRosterByTeam(this.league_id, team_id)
-      .subscribe(response => {
-        this.recipient = response.team;
-        this.recipient.roster = response.roster;
-        this.recipient.draft_picks = response.draft_picks;
-        this.recipient.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.recipient.team_id && !pick.player_taken);
-
-        this.recipient.roster_size = this.recipient.roster.length;
-        this.recipient.total_cap = this.getTotalCap(this.recipient.roster);
-
-        if (this.globalService.league) {
-          this.recipient.cap_space = this.globalService.league.salary_cap - this.recipient.total_cap;
+  
+      this.teamService.getRosterByTeam(this.league_id, team_id).subscribe(
+        response => {
+          this.recipient = response.team;
+          this.recipient.roster = response.roster;
+          this.recipient.draft_picks = response.draft_picks;
+          this.recipient.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.recipient.team_id && !pick.player_taken);
+  
+          this.recipient.roster_size = this.recipient.roster.length;
+          this.recipient.total_cap = this.getTotalCap(this.recipient.roster);
+  
+          if (this.globalService.league) {
+            this.recipient.cap_space = this.globalService.league.salary_cap - this.recipient.total_cap;
+          }
+  
+          this.recipient_rookies = this.countRookies(this.recipient.roster);
+          this.recipient_contracts = this.recipient.roster_size - this.recipient_rookies;
+          this.recipient_salary = this.recipient.total_cap;
+  
+          resolve();
+        },
+        error => {
+          reject(error);
         }
-
-        this.recipient_rookies = this.countRookies(this.recipient.roster);
-        this.recipient_contracts = this.recipient.roster_size - this.recipient_rookies;
-        this.recipient_salary = this.recipient.total_cap;
-
+      );
     });
   }
+  
 
   getTotalCap(roster: Player[]): number {
     let sum = 0
@@ -292,7 +306,7 @@ export class TradeProposalComponent {
           {
               player_id: '',
               draft_pick_id: '',
-              fa_pick_id: '',
+              fa_id: '',
               traded_to: '',
               asset_type: ''
           }
@@ -303,7 +317,7 @@ export class TradeProposalComponent {
       const formattedAsset = {
           player_id: this.getAssetType(asset) === 'player' ? asset?.player_id : null,
           draft_pick_id: this.getAssetType(asset) === 'draft_pick' ? asset?.asset_id : null,
-          fa_pick_id: this.getAssetType(asset) === 'fa' ? asset?.asset_id : null,
+          fa_id: this.getAssetType(asset) === 'fa' ? asset?.asset_id : null,
           traded_to: this.recipient.team_id,      
           asset_type: this.getAssetType(asset)
       };
@@ -314,7 +328,7 @@ export class TradeProposalComponent {
       const formattedAsset = {
           player_id: this.getAssetType(asset) === 'player' ? asset?.player_id : null,
           draft_pick_id: this.getAssetType(asset) === 'draft_pick' ? asset?.asset_id : null,
-          fa_pick_id: this.getAssetType(asset) === 'fa' ? asset?.asset_id : null,
+          fa_id: this.getAssetType(asset) === 'fa' ? asset?.asset_id : null,
           traded_to: this.requestor.team_id,      
           asset_type: this.getAssetType(asset)
       };

@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 })
 export class TeamRosterComponent {
   editRights: boolean = false;
+  inboxIsOpen: boolean = false;
   modalRef!: BsModalRef;
   league_id!: string;
   team_id!: string;
@@ -66,6 +67,7 @@ export class TeamRosterComponent {
 
             this.team.draft_picks = response.draft_picks;
             this.team.fa_picks = response.fa_picks;
+            this.team.inbox = response.trades;
 
             this.team.roster_size = this.team.forwards.length + this.team.defense.length + this.team.goalies.length;
 
@@ -83,6 +85,10 @@ export class TeamRosterComponent {
 
   setDisplay(display: 'general' | 'rookie' | 'fa'): void {
     this.displaying = display;
+  }
+
+  toggleInbox(): void {
+    this.inboxIsOpen = ! this.inboxIsOpen;
   }
 
   getMaxContractLength(array: Player[]): number {

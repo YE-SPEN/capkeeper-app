@@ -17,6 +17,7 @@ import { RulesComponent } from './components/rules/rules.component';
 import { HomeComponent } from './components/home/home.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { TradeProposalComponent } from './components/trade-proposal/trade-proposal.component';
+import { TradeReviewComponent } from './trade-review/trade-review.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { TradeProposalComponent } from './components/trade-proposal/trade-propos
     LeagueActivityComponent,
     RulesComponent,
     UserProfileComponent,
-    TradeProposalComponent
+    TradeProposalComponent,
+    TradeReviewComponent
   ],
   imports: [
     BrowserModule,

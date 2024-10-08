@@ -9,6 +9,7 @@ import { RulesComponent } from './components/rules/rules.component';
 import { HomeComponent } from './components/home/home.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { TradeProposalComponent } from './components/trade-proposal/trade-proposal.component';
+import { TradeReviewComponent } from './trade-review/trade-review.component';
 
 const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -17,6 +18,7 @@ const routes: Routes = [
     { path: ':league_id/activity-log', component: LeagueActivityComponent },
     { path: ':league_id/teams/:team_id', component: TeamRosterComponent },
     { path: ':league_id/trade', component: TradeProposalComponent },
+    { path: ':league_id/trade/:trade_id', component: TradeReviewComponent },
     { path: ':league_id/players', component: PlayerDatabaseComponent },
     { path: ':league_id/rules', component: RulesComponent },
     { path: 'user/:user_name', component: UserProfileComponent },

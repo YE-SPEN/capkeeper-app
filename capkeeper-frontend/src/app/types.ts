@@ -56,7 +56,8 @@ export interface Team {
     rookie_bank: Player[],
     trade_block: Player[],
     draft_picks: Draft_Pick[],
-    fa_picks: FA_Pick[]
+    fa_picks: FA_Pick[],
+    inbox: Trade[]
 };
 
 export interface Player {
@@ -106,6 +107,21 @@ export interface FA_Pick {
     week: number,
     expiry_date: Date,
     player_taken: string,
+}
+
+export type Asset = (Player | Draft_Pick | FA_Pick) & {
+  traded_to?: string | null; 
+  asset_type?: 'player' | 'draft_pick' | 'fa';
+} | null;
+
+export interface Trade {
+    [key: string]: any;
+    trade_id: string,
+    league_id: number,
+    requested_by: string,
+    sent_to: string,
+    status: string,
+    assets: Asset[]
 }
 
 export interface NHL_Team {

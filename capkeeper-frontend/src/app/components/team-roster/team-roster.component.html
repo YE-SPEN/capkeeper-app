@@ -12,22 +12,55 @@
                  <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ team.team_name }}</h1>
                  <h3 class="pb-4"><b>Managed by:</b><br> {{ team.managed_by }}</h3>
                  <div *ngIf="editRights">
-                     <button type="button" (click)="openModal(editTeamModal)" class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                     <div class="relative inline-block">
+                        <!-- Inbox Button -->
+                        <button (click)="toggleInbox()" id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" type="button"
+                          class="w-auto px-4 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800 mb-3">
+                          <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M5.024 3.783A1 1 0 0 1 6 3h12a1 1 0 0 1 .976.783L20.802 12h-4.244a1.99 1.99 0 0 0-1.824 1.205 2.978 2.978 0 0 1-5.468 0A1.991 1.991 0 0 0 7.442 12H3.198l1.826-8.217ZM3 14v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5h-4.43a4.978 4.978 0 0 1-9.14 0H3Z" clip-rule="evenodd"/>
+                          </svg>
+                          Inbox
+                          <span class="inline-flex items-center justify-center w-5 h-5 ms-2 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                            {{ team.inbox.length }}
+                          </span>
+                          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                          </svg>
+                        </button>
+                      
+                        <!-- Dropdown menu -->
+                        <div *ngIf="inboxIsOpen" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-auto dark:bg-gray-700 left-0 top-full">
+                           <ul class="text-xs font-semibold overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
+                             <li *ngFor="let trade of team.inbox" class="border-gray-200 border-b rounded-lg">
+                               <a [routerLink]="['/', league_id, 'trade', trade.trade_id]" class="flex items-center justify-between text-gray-900 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white whitespace-nowrap">
+                                 <span>Trade Request received from {{ globalService.getTeamName(trade.requested_by) }}</span>
+                                 <svg class="w-6 h-6 text-green-400 dark:text-white ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/>
+                                 </svg> 
+                               </a>
+                             </li>                                            
+                           </ul>
+                        </div>
+                     </div>
+                         
+                     <!-- Edit Team Info Button -->
+                     <button type="button" (click)="openModal(editTeamModal)" 
+                     class="w-auto px-4 py-2 text-xs font-medium hover:text-white text-center border border-green-400 inline-flex items-center text-green-400 bg-white rounded-lg hover:bg-green-500 dark:bg-green-400 dark:hover:bg-green-500">
+                        <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                            <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd"/>
                         </svg>
-                        Edit Team Info
+                         Edit Team Info
                      </button>
-                 </div>
+                </div>
+                
                  <div *ngIf="!editRights">
-                  <a type="button" [routerLink]="['/', globalService.league?.league_id, 'trade']" [queryParams]="{ team: team_id }" class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                  <a type="button" [routerLink]="['/', globalService.league?.league_id, 'trade']" [queryParams]="{ team: team_id }" class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
                      <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/>
                      </svg>
                      Propose Trade
                   </a>
                  </div>
-
              </td>
          </tr>
      </table>
