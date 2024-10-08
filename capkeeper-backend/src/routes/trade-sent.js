@@ -24,12 +24,11 @@ export const sendTradeRoute = {
 
                 for (const asset of assets) {
                     console.log('Asset object: ', asset)
-
                     await db.query(insertAssetQuery, [trade_id, asset.draft_pick_id, asset.fa_id, asset.player_id, asset.traded_to, asset.asset_type]);
                 }
             }
 
-            return h.response({ trade_id }).code(201); // Return the trade_id upon success
+            return h.response({ trade_id }).code(201);
         } catch (error) {
             console.error('Error handling trade request:', error);
             return h.response(error.message).code(500);

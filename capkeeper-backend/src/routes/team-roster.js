@@ -57,7 +57,14 @@ export const teamRosterRoute = {
                 [league_id, team_id, team_id]
             )
 
-            return { roster, team, draft_picks, fa_picks };
+            const { results: trades } = await db.query(
+                `SELECT * FROM trades
+                WHERE sent_to = ?
+                AND status = 'Pending'`,
+                [team_id]
+            )
+
+            return { roster, team, draft_picks, fa_picks, trades };
 
         } catch (err) {
             console.error(err);
