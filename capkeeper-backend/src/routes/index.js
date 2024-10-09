@@ -14,6 +14,7 @@ import { editTeamRoute } from "./edit-team-info.js";
 import { editUserRoute } from "./edit-user-info.js";
 import { sendTradeRoute } from "./trade-sent.js";
 import { tradeReviewRoute } from "./trade-review.js";
+import { confirmTradeRoute } from "./trade-response.js";
 
 export default [
     leagueRoute,
@@ -31,5 +32,6 @@ export default [
     editTeamRoute,
     editUserRoute,
     sendTradeRoute,
-    tradeReviewRoute
+    tradeReviewRoute,
+    confirmTradeRoute
 ]

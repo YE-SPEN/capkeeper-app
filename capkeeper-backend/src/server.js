@@ -41,7 +41,6 @@ const start = async () => {
     routes.forEach(route => {
         if (route.method && route.path) {
             server.route(route);
-            console.log('Registered route: ', route);
         } else {
             console.error('Invalid route object:', route);
         }
