@@ -410,7 +410,7 @@
                <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
                [ngClass]="{
                   'left-12' : editRights,
-                  'left-0 border-r-2 px-6' : !editRights
+                  'left-0 border-r-2 px-6 min-w-[275px]': !editRights
                }"
                >
                  Player
@@ -519,7 +519,7 @@
             <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
             [ngClass]="{
                'left-12' : editRights,
-               'left-0 border-r-2 px-6' : !editRights
+               'left-0 border-r-2 px-6 min-w-[275px]' : !editRights
             }"
             >
               Player
@@ -555,7 +555,7 @@
             <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
                [ngClass]="{
                   'left-12' : editRights,
-                  'left-0 border-r-2 px-6' : !editRights
+                  'left-0 border-r-2 px-6 min-w-[275px]' : !editRights
                }"
             >
                <img class="w-10 h-10 rounded-full" src="{{defensemen.logo}}" alt="Player image">
@@ -664,7 +664,7 @@
             <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
                [ngClass]="{
                   'left-12' : editRights,
-                  'left-0 border-r-2 px-6' : !editRights
+                  'left-0 border-r-2 px-6 min-w-[275px]' : !editRights
                }"
             >
                <img class="w-10 h-10 rounded-full" src="{{goalie.logo}}" alt="Player image">
@@ -738,7 +738,7 @@
             <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
             [ngClass]="{
                'left-12' : editRights,
-               'left-0 border-r-2 px-6' : !editRights
+               'left-0 border-r-2 px-6 min-w-[275px]' : !editRights
             }"
             >
               Player
@@ -776,7 +776,7 @@
                <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
                   [ngClass]="{
                      'left-12' : editRights,
-                     'left-0 border-r-2 px-6' : !editRights
+                     'left-0 border-r-2 px-6 min-w-[275px]' : !editRights
                   }"
                >
                   <img class="w-10 h-10 rounded-full" [src]="team.injured_reserve[i].logo" alt="Player image">
@@ -828,7 +828,7 @@
                   <td class="flex items-left px-2 py-2 sticky min-w-52 text-gray-900 whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
                      [ngClass]="{
                         'left-12' : editRights,
-                        'left-0 border-r-2 px-6' : !editRights
+                        'left-0 border-r-2 px-6 min-w-[275px]' : !editRights
                      }"
                   >
                      <div class="text-sm font-semibold">
@@ -844,16 +844,16 @@
 </div>
 
 
-<!-- Rookie Section -->
-<div class="bg-gray-50 dark:bg-gray-800 relative overflow-x-auto">
-   <div class="pt-8 flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
-      <div class="relative">
-         <h4 class="font-bold text-2xl">
-            Rookie Bank
-            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.rookie_bank.length }}/{{ globalService.league?.rookie_bank_size }}</span>  
-        </h4>
-      </div>
-</div>
+   <!-- Rookie Section -->
+   <div class="bg-gray-50 dark:bg-gray-800 relative overflow-x-auto">
+      <div class="pt-8 flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+         <div class="relative">
+            <h4 class="font-bold text-2xl">
+               Rookie Bank
+               <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.rookie_bank.length }}/{{ globalService.league?.rookie_bank_size }}</span>  
+         </h4>
+         </div>
+   </div>
 
    <!-- Rookie Salary Table -->
    <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2">
@@ -869,7 +869,7 @@
             <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
             [ngClass]="{
                'left-12' : editRights,
-               'left-0 border-r-2 px-6' : !editRights
+               'left-0 border-r-2 px-6 min-w-[275px]': !editRights
             }"
             >
               Player
@@ -905,7 +905,7 @@
             <td class="flex items-left px-2 py-2 min-w-52 text-gray-900 sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
                [ngClass]="{
                   'left-12' : editRights,
-                  'left-0 border-r-2 px-6' : !editRights
+                  'left-0 border-r-2 px-6 min-w-[275px]': !editRights
                }"
             >
                <img class="w-10 h-10 rounded-full" src="{{rookie.logo}}" alt="Player image">
@@ -1165,15 +1165,23 @@
    </div>
 </ng-template>
 
-<!-- Toast -->
-<div #toast id="toast" class="toast hidden fixed bottom-4 right-4 w-auto max-w-lg p-4 mb-4 items-center justify-between text-gray-500 bg-white rounded-lg shadow-lg dark:text-gray-400 dark:bg-gray-800" role="alert">
+ <!-- Toast -->
+ <div #toast id="toast" class="toast hidden fixed bottom-4 right-4 w-auto max-w-lg p-4 mb-4 items-center justify-between text-gray-500 bg-white rounded-lg shadow-lg dark:text-gray-400 dark:bg-gray-800" role="alert">
    <!-- Check Icon -->
-   <div class="flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-400 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+   <div *ngIf="actionSuccessful" class="flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-400 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
       <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
       </svg>
       <span class="sr-only">Check icon</span>
-    </div>    
+   </div>
+
+   <!-- Reject Icon -->
+   <div *ngIf="!actionSuccessful" class="flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-400 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+       <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+           <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+       </svg>
+       <span class="sr-only">Error icon</span> 
+   </div>
 
    <!-- Toast Message -->
    <div class="text-gray-800 toast-message ms-3 flex-grow text-sm font-semibold max-w-60">

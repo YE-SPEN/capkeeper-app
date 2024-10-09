@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 export class TeamRosterComponent {
   editRights: boolean = false;
   inboxIsOpen: boolean = false;
+  actionSuccessful: boolean = true;
   modalRef!: BsModalRef;
   league_id!: string;
   team_id!: string;
@@ -222,7 +223,7 @@ export class TeamRosterComponent {
         console.log('Team Info Updated Successfully:', response);
           this.router.navigate(['/' + this.team.league_id + '/teams/' + new_id]);
           this.closeModal();
-          this.showToast('Team Information Updated Successfully!')
+          this.showToast('Team Information Updated Successfully!', true)
       },
       error: (error) => {
         console.error('Error recording action:', error);
@@ -252,7 +253,7 @@ export class TeamRosterComponent {
           this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
 
           this.ngOnInit();
-          this.showToast(player.first_name + ' ' + player.last_name + ' dropped to waivers.')
+          this.showToast(player.first_name + ' ' + player.last_name + ' dropped to waivers.', true)
         }
       },
       error: (error) => {
@@ -304,16 +305,16 @@ export class TeamRosterComponent {
         return false;
       }
       message = player.first_name + ' ' + player.last_name + ' activated from IR by ' + this.team.team_name;
-      this.showToast(player.first_name + ' ' + player.last_name + ' activated from IR.') 
+      this.showToast(player.first_name + ' ' + player.last_name + ' activated from IR.', true) 
     } 
     if (!player.onIR) {
       if (this.team.injured_reserve.length >= 3) {
         this.ngOnInit();
-        this.showToast('Action could not be completed. Your IR slots are full.')
+        this.showToast('Action could not be completed. Your IR slots are full.', false)
         return false;
       }
       message = player.first_name + ' ' + player.last_name + ' placed on IR by ' + this.team.team_name;
-      this.showToast(player.first_name + ' ' + player.last_name + ' moved to IR.') 
+      this.showToast(player.first_name + ' ' + player.last_name + ' moved to IR.', true) 
     }
 
     const payload = {
@@ -357,7 +358,7 @@ export class TeamRosterComponent {
             let message = player.first_name + ' ' + player.last_name + ' added to the trade block by ' + this.team.team_name;
             let action = 'trade-block';
             this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
-            this.showToast(player.first_name + ' ' + player.last_name + ' added to the trade block.')
+            this.showToast(player.first_name + ' ' + player.last_name + ' added to the trade block.', true)
           }
 
           this.ngOnInit();
@@ -412,7 +413,7 @@ export class TeamRosterComponent {
           }
 
           this.ngOnInit();
-          this.showToast(player.first_name + ' ' + player.last_name + ' activated to main roster.')
+          this.showToast(player.first_name + ' ' + player.last_name + ' activated to main roster.', true)
         }
       },
       error: (error) => {
@@ -460,7 +461,8 @@ export class TeamRosterComponent {
     this.modalRef.hide();
   }
 
-  showToast(message: string): void {
+  showToast(message: string, isSuccessful: boolean): void {
+    this.actionSuccessful = isSuccessful;
     this.toastMessage = message;
     let toast = this.toast.nativeElement;
     

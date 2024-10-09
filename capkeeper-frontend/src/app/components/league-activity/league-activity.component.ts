@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { GlobalService } from '../../services/global.service';
 import { SortingService } from '../../services/sorting.service';
-import { User, Activity } from '../../types';
+import { User, Activity, Asset } from '../../types';
 import { ActivatedRoute } from '@angular/router';
+import { TeamService } from '../../services/team.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-league-activity',
@@ -19,20 +21,23 @@ export class LeagueActivityComponent {
   activity_log: Activity[] = [];
   filtered_activity_log: Activity[] = [];
   selected_users: User[] = [];
+  trade_items: Asset[] = [];
   users: User[] = [];
   activityFilter = 'all'
   currentPage = 1;
   totalPages!: number;
   pageSize = 25;
+  tradeData: { [key: string]: { partners: string[], assetsByTeam: { [team_id: string]: any[] } } } = {};
 
   constructor(
     public globalService: GlobalService,
     public sortingService: SortingService,
+    private teamService: TeamService,
     private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-    this.sortingService.sortColumn = 'date';
+    this.sortingService.sortColumn = 'datetime';
       this.sortingService.sortDirection = 'desc';
     this.route.paramMap.subscribe(params => {
       this.league_id = params.get('league_id')!;
@@ -71,6 +76,7 @@ export class LeagueActivityComponent {
     else {
       this.start_date = this.getSearchDate(days);
       this.end_date = this.getSearchDate(0);
+      console.log('Range: ', this.start_date, this.end_date)
       this.getActivitiesByDate();
     }
   }
@@ -80,7 +86,6 @@ export class LeagueActivityComponent {
     const start = inputElement.value;
     
     this.start_date = start;
-    console.log("Start Date:", this.start_date); 
   }
 
   setEndDate(event: Event): void {
@@ -88,7 +93,6 @@ export class LeagueActivityComponent {
     const end = inputElement.value;
     
     this.end_date = end
-    console.log("End Date:", this.end_date); 
   }
 
   getActivitiesByDate(): void {
@@ -99,11 +103,23 @@ export class LeagueActivityComponent {
       .subscribe(response => {
         this.users = response.users;
         this.selected_users = this.users;
+        this.trade_items = response.tradeItems;
         this.activity_log = response.action_log;
-        this.filtered_activity_log = this.activity_log;
+        this.filterActivities();
+        this.concatDateTimes(this.filtered_activity_log);
         this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
       });
     }
+  }
+
+  concatDateTimes(activity_log: any[]): any[] {
+    return activity_log.map(activity => {
+      const datetime = new Date(activity.date + ' ' + activity.time);
+      return {
+        ...activity,
+        datetime
+      };
+    });
   }
 
   isNew(activity: Activity): boolean {
@@ -159,6 +175,7 @@ export class LeagueActivityComponent {
     this.filtered_activity_log = this.activity_log.filter(activity => this.inActivityTypeFilter(activity) && this.inUserFilter(activity));
     this.sortingService.sort(this.filtered_activity_log, this.sortingService.sortColumn, this.sortingService.sortDirection);
     this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
+    this.currentPage = 1;
   }
 
   inActivityTypeFilter(activity: Activity): boolean {
@@ -266,4 +283,21 @@ export class LeagueActivityComponent {
     this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
   }
 
+  getTradePartners(trade_id: string): string[] {
+    const teamIdsSet = new Set<string>();
+  
+    this.trade_items.forEach(item => {
+      if (item && item.traded_to && item.trade_id === trade_id) {
+        teamIdsSet.add(item.traded_to);
+      }
+    });
+  
+    return Array.from(teamIdsSet);
+  }
+
+  getAssetsByTeam(trade_id: string, team_id: string): Asset[] {
+    const items = this.trade_items.filter(asset => asset?.trade_id === trade_id && asset?.traded_to === team_id);
+    return items
+  }
+  
 }

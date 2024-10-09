@@ -30,14 +30,20 @@ export class SortingService {
     return data;
   }
 
-  toggleSort(data: any[], column: string): void {
+  toggleSort(data: any[], column: string, secondaryColumn?: string): void {
     if (column === this.sortColumn) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
       this.sortColumn = column;
       this.sortDirection = 'desc';
     }
+    
     this.sort(data, column, this.sortDirection);
+  
+    if (secondaryColumn) {
+      this.sort(data, secondaryColumn, this.sortDirection);
+    }
   }
+  
   
 }

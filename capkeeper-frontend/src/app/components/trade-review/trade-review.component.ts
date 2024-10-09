@@ -4,9 +4,11 @@ import { TeamService } from '../../services/team.service';
 import { GlobalService } from '../../services/global.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Trade } from '../../types';
+import { TeamRosterComponent } from '../team-roster/team-roster.component';
 
 @Component({
   selector: 'app-trade-review',
@@ -21,7 +23,8 @@ export class TradeReviewComponent extends TradeProposalComponent {
     globalService: GlobalService,
     modalService: BsModalService,
     route: ActivatedRoute,
-    http: HttpClient
+    http: HttpClient,
+    private router: Router
   ) {
     super(teamService, globalService, modalService, route, http);
   }
@@ -50,17 +53,26 @@ export class TradeReviewComponent extends TradeProposalComponent {
       action: 'accept'
     };
 
+    console.log(payload);
+
     this.http.post('api/confirm-trade', payload)
-    .subscribe({
-      next: (response) => {
-        console.log('Post Response: ', response);
-          this.showToast('Trade confirmed!')
-      },
-      error: (error) => {
-        console.error('Error recording action:', error);
-      }
-    });
-  }
+      .subscribe({
+        next: (response) => {
+          let message = 'A trade has been accepted by ' + this.globalService.loggedInTeam?.team_name;
+
+          if (this.globalService.loggedInUser) {
+            this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, 'trade', message, this.trade.trade_id);
+          }
+
+          this.router.navigate(['/' + this.league_id + '/teams/' + this.globalService.loggedInTeam?.team_id]).then(() => {
+            this.showToast('Trade confirmed!');
+          });
+        },
+        error: (error) => {
+          console.error('Error recording action:', error);
+        }
+      });
+}
 
   rejectTrade(): void {
     const payload = {
@@ -73,7 +85,8 @@ export class TradeReviewComponent extends TradeProposalComponent {
     .subscribe({
       next: (response) => {
         console.log('Post Response: ', response);
-          this.showToast('Trade confirmed!')
+        this.router.navigate(['/' + this.league_id + '/teams/' + this.globalService.loggedInTeam?.team_id]);
+          this.showToast('Trade rejected.')
       },
       error: (error) => {
         console.error('Error recording action:', error);

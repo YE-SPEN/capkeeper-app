@@ -274,11 +274,6 @@ export class TradeProposalComponent {
     }
   }
 
-  capitalizeFirstLetter(value: string | undefined | null): string {
-    if (!value) return '';
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  }
-
   rosterIsValid(roster: number): boolean {
     return roster <=30;
   }

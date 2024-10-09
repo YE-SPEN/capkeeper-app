@@ -112,6 +112,7 @@ export interface FA_Pick {
 export type Asset = (Player | Draft_Pick | FA_Pick) & {
   traded_to?: string | null; 
   asset_type?: 'player' | 'draft_pick' | 'fa';
+  trade_id?: string | null;
 } | null;
 
 export interface Trade {
@@ -140,4 +141,5 @@ export interface Activity {
     date: string,
     time: string,
     user_id: string,
+    trade_id: string,
 }

@@ -228,7 +228,7 @@
                                                     <div (click)="selectAsset(assets_given, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
-                                                        &nbsp;({{ capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
+                                                        &nbsp;({{ globalService.capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -247,7 +247,7 @@
                                         <div class="flex items-center text-sm font-semibold">
                                             Round {{ assets_given[i]?.round }}
                                             <div *ngIf="assets_given[i]?.pick_number">&nbsp;#{{ assets_given[i]?.pick_number }}</div>
-                                            &nbsp;- {{ capitalizeFirstLetter(assets_given[i]?.type) }} ({{ assets_given[i]?.year}})
+                                            &nbsp;- {{ globalService.capitalizeFirstLetter(assets_given[i]?.type) }} ({{ assets_given[i]?.year}})
                                         </div>                                       
                                     </div>                                    
                                 </ng-template>
@@ -271,7 +271,7 @@
                                                     <div (click)="selectAsset(assets_given, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
-                                                        &nbsp;({{ capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
+                                                        &nbsp;({{ globalService.capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -290,7 +290,7 @@
                                         <div class="flex items-center text-sm font-semibold">
                                             Round {{ assets_given[i]?.round }}
                                             <div *ngIf="assets_given[i]?.pick_number">&nbsp;#{{ assets_given[i]?.pick_number }}</div>
-                                            &nbsp;- {{ capitalizeFirstLetter(assets_given[i]?.type) }} ({{ assets_given[i]?.year}})
+                                            &nbsp;- {{ globalService.capitalizeFirstLetter(assets_given[i]?.type) }} ({{ assets_given[i]?.year}})
                                         </div>                                       
                                     </div>                                    
                                 </ng-template>
@@ -446,7 +446,7 @@
                                                     <div (click)="selectAsset(assets_received, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
-                                                        &nbsp;({{ capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
+                                                        &nbsp;({{ globalService.capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -465,7 +465,7 @@
                                         <div class="flex items-center text-sm font-semibold">
                                             Round {{ assets_received[i]?.round }}
                                             <div *ngIf="assets_received[i]?.pick_number">&nbsp;#{{ assets_received[i]?.pick_number }}</div>
-                                            &nbsp;- {{ capitalizeFirstLetter(assets_received[i]?.type) }} ({{ assets_received[i]?.year}})
+                                            &nbsp;- {{ globalService.capitalizeFirstLetter(assets_received[i]?.type) }} ({{ assets_received[i]?.year}})
                                         </div>                                       
                                     </div>                                    
                                 </ng-template>
@@ -489,7 +489,7 @@
                                                     <div (click)="selectAsset(assets_received, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
-                                                        &nbsp;({{ capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
+                                                        &nbsp;({{ globalService.capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -508,7 +508,7 @@
                                         <div class="flex items-center text-sm font-semibold">
                                             Round {{ assets_received[i]?.round }}
                                             <div *ngIf="assets_received[i]?.pick_number">&nbsp;#{{ assets_received[i]?.pick_number }}</div>
-                                            &nbsp;- {{ capitalizeFirstLetter(assets_received[i]?.type) }} ({{ assets_received[i]?.year}})
+                                            &nbsp;- {{ globalService.capitalizeFirstLetter(assets_received[i]?.type) }} ({{ assets_received[i]?.year}})
                                         </div>                                       
                                     </div>                                    
                                 </ng-template>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Team, League, NHL_Team, User, Activity } from '../types';
+import { Team, League, NHL_Team, User, Activity, Asset } from '../types';
 import { HttpParams, HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -91,20 +91,26 @@ export class GlobalService {
     return user.first_name.slice(0, 1) + user.last_name.slice(0, 1);
   }
 
-  getActivitiesByLeague(league_id: string, start: string, end: string): Observable<{ action_log: Activity[], users: User[] }> {
-    const url = `api/${league_id}/activity-log`;
-    const params = new HttpParams().set('start', start).set('end', end);
-    return this.http.get<{ action_log: Activity[], users: User[] }>(url, { params });
+  capitalizeFirstLetter(value: string | undefined | null): string {
+    if (!value) return '';
+    return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
-  recordAction(league_id: string, uid: string, action: string, message: string,) {
+  getActivitiesByLeague(league_id: string, start: string, end: string): Observable<{ action_log: Activity[], users: User[], tradeItems: Asset[] }> {
+    const url = `api/${league_id}/activity-log`;
+    const params = new HttpParams().set('start', start).set('end', end);
+    return this.http.get<{ action_log: Activity[], users: User[], tradeItems: Asset[] }>(url, { params });
+  }
+
+  recordAction(league_id: string, uid: string, action: string, message: string, trade_id?: string) {
     const actionData = {
       league_id: league_id,
       message: message,
       date: this.getDate(),
       time: this.getTime(),
       user_id: uid,
-      action_type: action
+      action_type: action,
+      trade_id: trade_id ? trade_id : null 
     }
   
     this.http.post('api/record-action', actionData)
