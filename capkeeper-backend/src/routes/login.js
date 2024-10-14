@@ -28,13 +28,19 @@ export const loginRoute = {
             );
 
             const { results: teamInfo } = await db.query( 
-                `SELECT COUNT(*) AS roster_size, SUM(aav_current) as total_cap
-                FROM player_owned_by pob JOIN players p 
-                    ON pob.player_id = p.player_id
-                WHERE pob.league_id = ?
+                `SELECT 
+                    COUNT(CASE WHEN pob.onIR = 0 AND pob.isRookie = 0 THEN 1 END) AS roster_size,
+                    SUM(CASE WHEN pob.onIR = 0 AND pob.isRookie = 0 THEN aav_current ELSE 0 END) AS total_cap,
+                    COUNT(CASE WHEN pob.onIR = 1 THEN 1 END) AS ir_count,
+                    COUNT(CASE WHEN pob.isRookie = 1 THEN 1 END) AS rookie_count
+                FROM 
+                    player_owned_by pob 
+                JOIN 
+                    players p ON pob.player_id = p.player_id
+                WHERE 
+                    pob.league_id = ?
                     AND pob.team_id = ?
-                    AND pob.onIR = 0
-                    AND pob.isRookie = 0`,
+                `,
                  [league, team]
             );
 

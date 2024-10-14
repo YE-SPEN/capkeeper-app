@@ -15,9 +15,11 @@ import { editUserRoute } from "./edit-user-info.js";
 import { sendTradeRoute } from "./trade-sent.js";
 import { tradeReviewRoute } from "./trade-review.js";
 import { confirmTradeRoute } from "./trade-response.js";
+import { leagueHomeRoute } from "./home.js";
 
 export default [
     leagueRoute,
+    leagueHomeRoute,
     teamRosterRoute,
     playerDatabaseRoute,
     createPlayerRoute,
