@@ -47,9 +47,9 @@ export class GlobalService {
     });
   }
 
-  toggleUserMenu(): void {
-    this.userMenuIsOpen = !this.userMenuIsOpen;
-  }
+  toggleUserMenu(isOpen: boolean): void {
+    this.userMenuIsOpen = isOpen;
+  }  
 
   toggleTeamsMenu(): void {
     this.teamsMenuIsOpen = !this.teamsMenuIsOpen;
@@ -67,6 +67,25 @@ export class GlobalService {
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const seconds = now.getSeconds().toString().padStart(2, '0');
     return `${hours}:${minutes}:${seconds}`;
+  }
+
+  formatDateTime(dateString: string, timeString: string): string {
+    const date = new Date(dateString);
+
+    const [hours, minutes] = timeString.split(':').map(Number);
+    date.setHours(hours, minutes);
+  
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+      timeZone: 'America/New_York'
+    };
+  
+    return new Intl.DateTimeFormat('en-US', options).format(date);
   }
 
   getTeamName(team_id: string): string {
@@ -94,6 +113,11 @@ export class GlobalService {
   capitalizeFirstLetter(value: string | undefined | null): string {
     if (!value) return '';
     return value.charAt(0).toUpperCase() + value.slice(1);
+  }
+
+  getLeagueHomeData(league_id: string): Observable<{ recentActivity: Activity[], teamPoints: Team[] }> {
+    const url = `api/${league_id}/home`;
+    return this.http.get<{ recentActivity: Activity[], teamPoints: Team[] }>(url);
   }
 
   getActivitiesByLeague(league_id: string, start: string, end: string): Observable<{ action_log: Activity[], users: User[], tradeItems: Asset[] }> {

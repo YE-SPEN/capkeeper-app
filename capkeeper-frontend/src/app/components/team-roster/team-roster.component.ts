@@ -2,10 +2,11 @@ import { Component, TemplateRef, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from '../../services/global.service';
 import { TeamService } from '../../services/team.service';
+import { ToastService } from '../../services/toast-service.service';
 import { SortingService } from '../../services/sorting.service';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
-import { Team, Player, FA_Pick } from '../../types';
+import { Team, Player, FA_Pick, Draft_Pick } from '../../types';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
   templateUrl: './team-roster.component.html',
   styleUrl: './team-roster.component.css'
 })
+
 export class TeamRosterComponent {
   editRights: boolean = false;
   inboxIsOpen: boolean = false;
@@ -41,6 +43,7 @@ export class TeamRosterComponent {
     private teamService: TeamService,
     public globalService: GlobalService,
     private modalService: BsModalService,
+    private toastService: ToastService,
     private route: ActivatedRoute,
     private http: HttpClient
   ) { }
@@ -145,7 +148,7 @@ export class TeamRosterComponent {
     return Array.from(uniqueYears).sort((a, b) => a - b);
   }
 
-  getPicksByRound(year: number, round: number, draft: string) {
+  getPicksByRound(year: number, round: number, draft: string): number {
     let sum = 0;
     for (let pick of this.team.draft_picks) {
       if (pick.year === year && pick.round === round && pick.type === draft) {
@@ -154,6 +157,16 @@ export class TeamRosterComponent {
     }
     return sum;
   }
+
+  displayPicksByRound(year: number, round: number, draft: string): Draft_Pick[] {
+    let array = [];
+    for (let pick of this.team.draft_picks) {
+      if (pick.year === year && pick.round === round && pick.type === draft) {
+        array.push(pick);
+      }
+    }
+    return array;
+  } 
 
   getTotalPicksByYear(year: number, draft: string): number {
     let sum = 0;
@@ -223,7 +236,7 @@ export class TeamRosterComponent {
         console.log('Team Info Updated Successfully:', response);
           this.router.navigate(['/' + this.team.league_id + '/teams/' + new_id]);
           this.closeModal();
-          this.showToast('Team Information Updated Successfully!', true)
+          this.toastService.showToast('Team Information Updated Successfully!', true)
       },
       error: (error) => {
         console.error('Error recording action:', error);
@@ -253,7 +266,7 @@ export class TeamRosterComponent {
           this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
 
           this.ngOnInit();
-          this.showToast(player.first_name + ' ' + player.last_name + ' dropped to waivers.', true)
+          this.toastService.showToast(player.first_name + ' ' + player.last_name + ' dropped to waivers.', true)
         }
       },
       error: (error) => {
@@ -305,16 +318,16 @@ export class TeamRosterComponent {
         return false;
       }
       message = player.first_name + ' ' + player.last_name + ' activated from IR by ' + this.team.team_name;
-      this.showToast(player.first_name + ' ' + player.last_name + ' activated from IR.', true) 
+      this.toastService.showToast(player.first_name + ' ' + player.last_name + ' activated from IR.', true) 
     } 
     if (!player.onIR) {
       if (this.team.injured_reserve.length >= 3) {
         this.ngOnInit();
-        this.showToast('Action could not be completed. Your IR slots are full.', false)
+        this.toastService.showToast('Action could not be completed. Your IR slots are full.', false)
         return false;
       }
       message = player.first_name + ' ' + player.last_name + ' placed on IR by ' + this.team.team_name;
-      this.showToast(player.first_name + ' ' + player.last_name + ' moved to IR.', true) 
+      this.toastService.showToast(player.first_name + ' ' + player.last_name + ' moved to IR.', true) 
     }
 
     const payload = {
@@ -358,7 +371,7 @@ export class TeamRosterComponent {
             let message = player.first_name + ' ' + player.last_name + ' added to the trade block by ' + this.team.team_name;
             let action = 'trade-block';
             this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
-            this.showToast(player.first_name + ' ' + player.last_name + ' added to the trade block.', true)
+            this.toastService.showToast(player.first_name + ' ' + player.last_name + ' added to the trade block.', true)
           }
 
           this.ngOnInit();
@@ -413,7 +426,7 @@ export class TeamRosterComponent {
           }
 
           this.ngOnInit();
-          this.showToast(player.first_name + ' ' + player.last_name + ' activated to main roster.', true)
+          this.toastService.showToast(player.first_name + ' ' + player.last_name + ' activated to main roster.', true)
         }
       },
       error: (error) => {
@@ -459,30 +472,6 @@ export class TeamRosterComponent {
   closeModal() {
     this.ngOnInit();
     this.modalRef.hide();
-  }
-
-  showToast(message: string, isSuccessful: boolean): void {
-    this.actionSuccessful = isSuccessful;
-    this.toastMessage = message;
-    let toast = this.toast.nativeElement;
-    
-    if (toast) {
-      toast.classList.add('flex');
-      toast.classList.remove('hidden');
-      
-      setTimeout(() => {
-        this.dismissToast();
-      }, 4500); 
-    } 
-  }
-
-  dismissToast(): void {
-    let toast = this.toast.nativeElement;
-
-    if (toast) {
-      toast.classList.remove('flex');
-      toast.classList.add('hidden');
-    }
   }
 
 

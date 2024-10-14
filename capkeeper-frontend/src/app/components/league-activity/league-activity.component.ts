@@ -37,13 +37,14 @@ export class LeagueActivityComponent {
   ) { }
 
   ngOnInit(): void {
+    this.sortingService.sortDirection = 'asc';
     this.sortingService.sortColumn = 'datetime';
-      this.sortingService.sortDirection = 'desc';
     this.route.paramMap.subscribe(params => {
-      this.league_id = params.get('league_id')!;
+    this.league_id = params.get('league_id')!;
     });
     this.globalService.notifications = 0;
     this.getActivitiesByDate();
+    this.sortingService.toggleSort(this.filtered_activity_log, this.sortingService.sortColumn, this.sortingService.sortDirection);
   }
 
   ngAfterViewInit() {
@@ -76,7 +77,6 @@ export class LeagueActivityComponent {
     else {
       this.start_date = this.getSearchDate(days);
       this.end_date = this.getSearchDate(0);
-      console.log('Range: ', this.start_date, this.end_date)
       this.getActivitiesByDate();
     }
   }
@@ -105,8 +105,8 @@ export class LeagueActivityComponent {
         this.selected_users = this.users;
         this.trade_items = response.tradeItems;
         this.activity_log = response.action_log;
+        this.concatDateTimes(this.activity_log);
         this.filterActivities();
-        this.concatDateTimes(this.filtered_activity_log);
         this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
       });
     }
@@ -150,25 +150,6 @@ export class LeagueActivityComponent {
     if (action === 'trade') { return 'Trade' }
     if (action === 'trade-block') { return 'Trade Block' }
     return ''
-  }
-
-  formatDateTime(dateString: string, timeString: string): string {
-    const date = new Date(dateString);
-
-    const [hours, minutes] = timeString.split(':').map(Number);
-    date.setHours(hours, minutes);
-  
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
-      timeZone: 'America/New_York'
-    };
-  
-    return new Intl.DateTimeFormat('en-US', options).format(date);
   }
 
   filterActivities(): void {

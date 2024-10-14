@@ -87,9 +87,11 @@
           </a>
         </div>
         <div class="flex items-center">
-          <div class="relative flex items-center ms-3">
-            <div>
-              <button type="button" (click)="globalService.toggleUserMenu()" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
+          <div class="relative flex items-center ms-3"
+               (mouseenter)="globalService.toggleUserMenu(true)" 
+               (mouseleave)="globalService.toggleUserMenu(false)">
+            
+              <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false">
                 <span class="sr-only">Open user menu</span>
                 <div *ngIf="globalService.loggedInUser.picture">
                   <img class="w-10 h-10 rounded-full" src="{{ globalService.loggedInUser.picture }}" alt="user photo">
@@ -98,8 +100,9 @@
                   <span class="font-bold text-lg text-gray-600 dark:text-gray-300">{{ globalService.getUserInitials(globalService.loggedInUser) }} </span>
                 </div>
               </button>
-            </div>
-            <div *ngIf="globalService.userMenuIsOpen" class="absolute top-full right-0 z-50 mt-2 text-base list-none bg-gray-800 divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
+        
+            <!-- Dropdown Menu -->
+            <div *ngIf="globalService.userMenuIsOpen" class="absolute top-full right-0 z-50 text-base list-none bg-gray-800 divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
               <div class="px-4 py-3" role="none">
                 <p class="text-sm text-gray-200 dark:text-white" role="none">
                   {{ globalService.loggedInUser.first_name }} {{ globalService.loggedInUser.last_name }}
@@ -121,7 +124,8 @@
               </ul>
             </div>
           </div>
-          </div>
+        </div>
+              
       </div>
     </div>
   </nav>

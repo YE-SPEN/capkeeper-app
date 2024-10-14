@@ -1,1 +1,224 @@
-<p>home works!</p>
+<div class="flex items-center justify-between flex-column md:flex-row py-4 bg-white dark:bg-gray-900">
+    <div class="w-full">
+        <h1 class="font-bold text-2xl">
+            Welcome back, {{ globalService.loggedInUser?.first_name }}
+        </h1>
+    </div>
+</div>
+
+ <!-- 3 column layout with 2/3 merge -->
+ <div class="grid grid-cols-2 gap-4 mb-4">
+   
+    <!-- Trade Block card -->
+    <div class="flex h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
+       <div class="w-full">
+          <!-- Header Row with Dark Background -->
+          <div class="bg-green-400 text-white p-2 rounded-t-md">
+             <h3 class="font-semibold text-lg">Recent Activity</h3>
+          </div>
+          
+          <!-- Content Area -->
+          <div>
+            <div class="overflow-x-auto border-1">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr class="border-b-2 sticky top-0">
+                        <th scope="col" class="p-1 bg-gray-50 dark:bg-gray-700">
+                            
+                        </th>
+                        <th scope="col" class="text-left p-1 bg-gray-50 dark:bg-gray-700">
+                            Description
+                        </th>
+                        <th scope="col" class="text-left p-1 bg-gray-50 dark:bg-gray-700">
+                            Date
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let activity of recent_activity" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+                        <td class="py-2 px-2 dark:bg-gray-800">
+                            <div class="flex items-center">
+                                <svg 
+                                class="w-4 h-4" 
+                                [ngClass]="{
+                                    'text-green-400': activity.action_type === 'add-player' || activity.action_type === 'create-player' || (activity.action_type === 'ir' && activity.message.includes('activated from')),
+                                    'text-red-400': activity.action_type === 'drop-player' || (activity.action_type === 'ir' && activity.message.includes('placed on')),
+                                }" 
+                                aria-hidden="true" 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                width="24" 
+                                height="24" 
+                                fill="none" 
+                                viewBox="0 0 24 24">
+                                    <path *ngIf="activity.action_type === 'add-player'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                    <path *ngIf="activity.action_type === 'drop-player'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/> 
+                                </svg>        
+                            </div>
+                        </td>            
+
+                        <td class="items-left py-2 text-gray-900 whitespace-nowrap dark:text-white dark:bg-gray-800">
+                            <div class="flex items-center text-xs font-semibold text-gray-900 dark:text-white align-middle">
+                                {{ activity.message }} 
+                            </div>
+                        </td>
+
+                        <td class="py-2 px-2 text-[11px]">
+                            {{ globalService.formatDateTime(activity.date, activity.time) }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="flex justify-end">
+                    <button type="button" [routerLink]="['/', globalService.league?.league_id, 'activity-log']" 
+                            class="text-green-400 hover:underline font-bold text-sm px-5 py-2.5 text-center inline-flex items-center ml-auto">
+                      See all activities
+                      <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                      </svg>
+                    </button>
+                  </div>                     
+            </div>
+          </div>
+       </div>
+    </div>
+ 
+    <!-- Teams Card -->
+    <div class="flex h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
+       <div class="w-full">
+          <!-- Header Row with Dark Background -->
+          <div class="bg-green-400 text-white p-2 rounded-t-md flex justify-between items-center">
+             <h3 class="font-semibold text-lg">Teams</h3> 
+
+            <!-- Buttons -->
+            <div class="inline-flex rounded-md shadow-sm">
+                <a (click)="setDisplay('cap')" aria-current="page" 
+                  class="cursor-pointer px-4 py-1 text-xs font-medium text-gray-900 border border-gray-200 rounded-s-lg hover:text-green-500 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-gray-800 focus:text-gray-800 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-green-500 dark:focus:text-white"
+                  [ngClass]="{'bg-gray-100 text-green-500' : displaying === 'cap',
+                           'bg-white' : displaying !== 'cap'}"
+                  >
+                    Cap Summary
+                </a>
+                <a (click)="setDisplay('points')" 
+                  class="cursor-pointer px-4 py-1 text-xs font-medium text-gray-900 border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-green-500 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                  [ngClass]="{'bg-gray-100 text-green-500' : displaying === 'points',
+                           'bg-white' : displaying !== 'points'}"
+                  >
+                    Points Summary
+                </a>
+            </div>
+         </div>
+ 
+          <!-- Rookie Draft Picks -->
+          <div>
+             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 border-1">
+                <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr class="border-b-2">
+                        <th class="px-2 py-1.5 text-left border-r-1 font-bold">Team</th>
+                        <th class="py-1.5 text-center border-r-1 font-bold">Contracts</th>
+                        <th class="py-1.5 text-center border-r-1 font-bold">Rookies</th>
+                        <th class="py-1.5 text-center border-r-1 font-bold">IR</th>
+                        <th class="py-1.5 text-center border-r-1 font-bold">Cap Space</th>
+                    </tr>                   
+                </thead>
+                 <tbody>
+                   <tr *ngFor="let team of allTeams" class="border-b">
+                        <td class="px-2 py-0.5 text-left border-r text-xs font-semibold text-gray-900">
+                            <a [routerLink]="['/', globalService.league?.league_id, 'teams', team.team_id]" class="hover:underline font-semibold">
+                                {{ team.team_name }}
+                            </a>
+                        </td>
+                        <td class="px-2 py-0.5 text-center border-r font-normal text-sm">
+                            {{ team.roster_size }}/{{ globalService.league?.max_roster_size}}
+                        </td>                   
+                        <td class="px-2 py-0.5 text-center border-r font-normal text-sm">
+                            {{ team.rookie_count }}/{{ globalService.league?.rookie_bank_size}}
+                        </td>
+                        <td class="px-2 py-0.5 text-center border-r font-normal text-sm">
+                            {{ team.ir_count }}/{{ globalService.league?.ir_slots}}
+                        </td>
+                        <td class="px-2 py-1 text-center border-r font-extrabold text-sm">
+                            <span 
+                                [ngClass]="{
+                                'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': team.cap_space < 0,
+                                'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': team.cap_space > 0 && team.cap_space < 7000000,
+                                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': team.cap_space >= 7000000
+                                }"
+                                class="text-sm font-medium me-2 px-2.5 py-0.5 rounded">
+                                ${{ team.cap_space | number:'1.0-0' }}
+                            </span>
+                        </td>
+                   </tr>
+                </tbody>
+              </table>  
+          </div>
+ 
+       </div>
+    </div>
+ </div>
+
+
+<div>
+    <ul class="flex flex-wrap justify-center pb-10">
+        <li class="w-full lg:w-1/3">
+            <div class="max-w-sm p-6 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 rounded-md shadow-md">
+                <svg class="w-12 h-17 text-gray-500 dark:text-gray-400 mb-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M4.5 17H4a1 1 0 0 1-1-1 3 3 0 0 1 3-3h1m0-3.05A2.5 2.5 0 1 1 9 5.5M19.5 17h.5a1 1 0 0 0 1-1 3 3 0 0 0-3-3h-1m0-3.05a2.5 2.5 0 1 0-2-4.45m.5 13.5h-7a1 1 0 0 1-1-1 3 3 0 0 1 3-3h3a3 3 0 0 1 3 3 1 1 0 0 1-1 1Zm-1-9.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/>
+                </svg>
+                  
+                <a [routerLink]="['/', globalService.league?.league_id, 'teams', globalService.loggedInTeam?.team_id]">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">My Team</h5>
+                </a>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 text-sm">
+                    Get a snapshot of your current cap situation, manage your roster, and see what trade assets you have at your disposal. 
+                </p>
+                <a [routerLink]="['/', globalService.league?.league_id, 'teams', globalService.loggedInTeam?.team_id]" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:outline-none dark:bg-green-400 dark:hover:bg-green-500">
+                    My Team
+                    <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+                </a>
+            </div>
+        </li>
+        <li class="w-full lg:w-1/3">
+            <div class="max-w-sm p-6 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 rounded-md shadow-md">
+                <svg class="w-12 h-12 text-gray-500 dark:text-gray-400 mb-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 6c0 1.657-3.134 3-7 3S5 7.657 5 6m14 0c0-1.657-3.134-3-7-3S5 4.343 5 6m14 0v6M5 6v6m0 0c0 1.657 3.134 3 7 3s7-1.343 7-3M5 12v6c0 1.657 3.134 3 7 3s7-1.343 7-3v-6"/>
+                </svg>
+                  
+                <a [routerLink]="['/', globalService.league?.league_id, 'players']">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Player Database</h5>
+                </a>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 text-sm">
+                    Search the player databse to view & edit player contracts and see who's available to add to your squad.
+                </p>
+                <a [routerLink]="['/', globalService.league?.league_id, 'players']" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:outline-none dark:bg-green-400 dark:hover:bg-green-500">
+                    Search Players
+                    <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+                </a>
+            </div>
+        </li>
+        <li class="w-full lg:w-1/3">
+            <div class="max-w-sm p-6 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 rounded-md shadow-md">
+                <svg class="w-12 h-12 text-gray-500 dark:text-gray-400 mb-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.03v13m0-13c-2.819-.831-4.715-1.076-8.029-1.023A.99.99 0 0 0 3 6v11c0 .563.466 1.014 1.03 1.007 3.122-.043 5.018.212 7.97 1.023m0-13c2.819-.831 4.715-1.076 8.029-1.023A.99.99 0 0 1 21 6v11c0 .563-.466 1.014-1.03 1.007-3.122-.043-5.018.212-7.97 1.023"/>
+                </svg>
+                  
+                <a [routerLink]="['/', globalService.league?.league_id, 'rules']">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Rulebook</h5>
+                </a>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 text-sm">
+                    Keeper leagues are no joke. Make sure you're well-versed in your league's rules to avoid taking any penalties.
+                </p>
+                <a [routerLink]="['/', globalService.league?.league_id, 'rules']" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:outline-none dark:bg-green-400 dark:hover:bg-green-500">
+                    View Rulebook
+                    <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+                </a>
+            </div>
+        </li>
+    </ul>
+</div>

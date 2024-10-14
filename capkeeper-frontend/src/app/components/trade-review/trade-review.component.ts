@@ -36,8 +36,6 @@ export class TradeReviewComponent extends TradeProposalComponent {
   
     const response = await firstValueFrom(this.teamService.getTradeByID(this.league_id, trade_id));
     this.trade = response.trade;
-    console.log(this.trade);
-    console.log(response.tradeItems);
   
     await this.setRequestor(this.trade.requested_by);
     await this.setRecipient(this.trade.sent_to);

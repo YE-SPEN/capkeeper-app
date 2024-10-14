@@ -18,6 +18,8 @@ import { HomeComponent } from './components/home/home.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { TradeProposalComponent } from './components/trade-proposal/trade-proposal.component';
 import { TradeReviewComponent } from './components/trade-review/trade-review.component';
+import { ToastComponent } from './components/toast/toast.component';
+import { toNamespacedPath } from 'path';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { TradeReviewComponent } from './components/trade-review/trade-review.com
     RulesComponent,
     UserProfileComponent,
     TradeProposalComponent,
-    TradeReviewComponent
+    TradeReviewComponent,
+    ToastComponent
   ],
   imports: [
     BrowserModule,
@@ -38,6 +41,9 @@ import { TradeReviewComponent } from './components/trade-review/trade-review.com
     FormsModule,
     ModalModule,
     HttpClientModule,
+  ],
+  exports: [
+    ToastComponent
   ],
   providers: [ 
     BsModalService,

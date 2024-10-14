@@ -4,8 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../services/global.service';
 import { PlayerService } from '../../services/player.service';
 import { SortingService } from '../../services/sorting.service';
+import { ToastService } from '../../services/toast-service.service';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { Team, Player } from '../../types';
+import { Observable } from 'rxjs';
 
 interface Warning {
   header: string,
@@ -37,7 +39,6 @@ export class PlayerDatabaseComponent {
   warnings: Warning[] = [];
   formSubmitted: boolean = false;
   addNextContract: boolean = false;
-  @ViewChild('toast', { static: false }) toast!: ElementRef<HTMLDivElement>;
   toastMessage: string = '';
   formData = {
     first_name: '',
@@ -57,6 +58,7 @@ export class PlayerDatabaseComponent {
     public globalService: GlobalService,
     public sortingService: SortingService,
     private modalService: BsModalService,
+    private toastService: ToastService,
     private route: ActivatedRoute,
     private http: HttpClient
   ) { }
@@ -247,7 +249,7 @@ export class PlayerDatabaseComponent {
           this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
 
           this.ngOnInit; 
-          this.showToast(message);
+          this.toastService.showToast(message, true);
         }
       },
       error: (error) => {
@@ -287,7 +289,7 @@ export class PlayerDatabaseComponent {
         .subscribe({
           next: (response) => {
             
-            this.showToast(message);
+            this.toastService.showToast(message, true);
             console.log('Changes saved.', response);
   
             this.formSubmitted = true;
@@ -334,7 +336,7 @@ export class PlayerDatabaseComponent {
       .subscribe({
         next: (response) => {
           
-          this.showToast(message);
+          this.toastService.showToast(message, true);
           console.log('Changes saved.', response);
 
           this.formSubmitted = true;
@@ -402,29 +404,6 @@ export class PlayerDatabaseComponent {
     this.resetForm();
     this.resetSearch();
     this.addNextContract = false;
-  }
-
-  showToast(message: string): void {
-    this.toastMessage = message;
-    let toast = this.toast.nativeElement;
-    
-    if (toast) {
-      toast.classList.add('flex');
-      toast.classList.remove('hidden');
-      
-      setTimeout(() => {
-        this.dismissToast();
-      }, 4500); 
-    } 
-  }
-
-  dismissToast(): void {
-    let toast = this.toast.nativeElement;
-
-    if (toast) {
-      toast.classList.remove('flex');
-      toast.classList.add('hidden');
-    }
   }
 
 }
