@@ -1,7 +1,8 @@
-import { Component, TemplateRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from '../../services/global.service';
 import { TeamService } from '../../services/team.service';
+import { PlayerService } from '../../services/player.service';
 import { ToastService } from '../../services/toast-service.service';
 import { SortingService } from '../../services/sorting.service';
 import { HttpClient } from '@angular/common/http';
@@ -28,7 +29,6 @@ export class TeamRosterComponent {
   sortColumn: string | null = 'points';
   sortDirection: 'asc' | 'desc' = 'desc';
   displaying: 'general' | 'rookie' | 'fa' = 'general';
-  @ViewChild('toast', { static: false }) toast!: ElementRef<HTMLDivElement>;
   toastMessage: string = '';
   formData = {
     old_team_id: null as string | null,
@@ -41,8 +41,10 @@ export class TeamRosterComponent {
   constructor(
     private router: Router,
     private teamService: TeamService,
+    public playerService: PlayerService,
     public globalService: GlobalService,
     private modalService: BsModalService,
+    public sortingService: SortingService,
     private toastService: ToastService,
     private route: ActivatedRoute,
     private http: HttpClient
@@ -79,10 +81,15 @@ export class TeamRosterComponent {
             this.team.defense_salary = this.getTotalSalary(this.team.defense);
             this.team.goalie_salary = this.getTotalSalary(this.team.goalies);
 
-            this.team.total_cap = this.team.forward_salary + this.team.defense_salary + this.team.goalie_salary;
+            this.team.total_cap = this.team.forward_salary + this.team.defense_salary + this.team.goalie_salary + this.team.salary_retained;
             if (this.globalService.league?.salary_cap) {
               this.team.cap_space = this.globalService.league?.salary_cap - this.team.total_cap;
             }
+
+            this.sortingService.sort(this.team.forwards, 'aav_current', 'desc');
+            this.sortingService.sort(this.team.defense, 'aav_current', 'desc');
+            this.sortingService.sort(this.team.goalies, 'aav_current', 'desc');
+            this.sortingService.sort(this.team.injured_reserve, 'aav_current', 'desc');
         });
       });
   }
@@ -227,8 +234,6 @@ export class TeamRosterComponent {
       team_name: this.formData.team_name ? this.formData.team_name : this.team.team_name,
       picture: this.formData.picture ? this.formData.picture : this.team.picture,
     };
-
-    console.log('Submission: ', submissionData)
 
     this.http.post('api/teams/edit-team-info', submissionData)
     .subscribe({

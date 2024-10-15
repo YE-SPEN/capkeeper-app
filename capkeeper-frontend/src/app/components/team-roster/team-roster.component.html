@@ -15,12 +15,12 @@
                      <div class="relative inline-block">
                         <!-- Inbox Button -->
                         <button (click)="toggleInbox()" id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" type="button"
-                          class="w-auto px-4 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800 mb-3">
+                          class="w-auto px-4 py-2 mr-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800 mb-3">
                           <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd" d="M5.024 3.783A1 1 0 0 1 6 3h12a1 1 0 0 1 .976.783L20.802 12h-4.244a1.99 1.99 0 0 0-1.824 1.205 2.978 2.978 0 0 1-5.468 0A1.991 1.991 0 0 0 7.442 12H3.198l1.826-8.217ZM3 14v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5h-4.43a4.978 4.978 0 0 1-9.14 0H3Z" clip-rule="evenodd"/>
                           </svg>
                           Inbox
-                          <span class="inline-flex items-center justify-center w-5 h-5 ms-2 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                          <span class="inline-flex items-center justify-center w-4 h-4 ms-2 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
                             {{ team.inbox.length }}
                           </span>
                           <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -91,10 +91,16 @@
                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
                         ${{ team.goalie_salary | number:'1.0-0' }}
                      </span>
-                     <br>Injured Reserve:  &nbsp;&nbsp;&nbsp; 
-                     <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
-                        ${{ getTotalSalary(team.injured_reserve) | number:'1.0-0' }}
-                     </span>
+                     <br>Retained Salary:  &nbsp;&nbsp;&nbsp; 
+                     <div class="inline bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                        <ng-container *ngIf="team.player_retained; else noRetention">
+                          ${{ team.salary_retained | number:'1.0-0' }} 
+                          <span class="text-xs text-gray-500">
+                            ({{ team.player_retained }})
+                          </span>
+                        </ng-container>
+                        <ng-template #noRetention>N/A</ng-template>
+                     </div>                
    
                      <div class="py-2">
                         <hr class="border-0 border-t-2 border-gray-300">
@@ -103,6 +109,11 @@
                      <b>Total Spend: &nbsp;&nbsp;&nbsp; </b> 
                      <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
                         ${{ team.total_cap | number:'1.0-0' }}
+                     </span>
+
+                     <br>Injured Reserve:  &nbsp;&nbsp;&nbsp; 
+                     <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                        ${{ getTotalSalary(team.injured_reserve) | number:'1.0-0' }}
                      </span>
 
                      <br>League Salary Cap: &nbsp;&nbsp;&nbsp; 
@@ -427,9 +438,9 @@
                              [ngClass]="{
                                'text-gray-400 border-gray-300': pick.owned_by !== team.team_id, 
                                'text-gray-800 border-gray-500 hover:bg-gray-200': pick.owned_by === team.team_id,
-                               'text-red-600 border-red-600 bg-red-200 hover:bg-red-100': !pick.player_taken && isExpired(pick) && pick.owned_by === team.team_id,
-                               'text-green-600 border-green-600 bg-green-200 hover:bg-green-100': pick.player_taken && isExpired(pick),
-                               'text-yellow-600 border-yellow-600 bg-yellow-100 hover:bg-yellow-200': pick.assigned_to !== team.team_id
+                               'text-red-600 border-red-600 bg-red-200 hover:bg-red-100': (!pick.player_taken && isExpired(pick) && pick.owned_by === team.team_id),
+                               'text-green-600 border-green-400 bg-green-200 hover:bg-green-100': pick.player_taken && pick.owned_by === team.team_id,
+                               'text-yellow-600 border-yellow-600 bg-yellow-100 hover:bg-yellow-200': pick.assigned_to !== team.team_id && !isExpired(pick)
                              }">
                              FA{{ pick.week }}<br>
                            </button>
@@ -471,7 +482,7 @@
    </div>
 
       <!-- Forward Salary Table -->
-      <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2">
+      <div class="overflow-x-auto rounded m:rounded-lg shadow-md border-2">
          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
              <tr class="border-b-2">
@@ -480,13 +491,22 @@
                </th>
        
                <!-- Player Column -->
-               <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
+               <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
                [ngClass]="{
                   'left-12' : editRights,
-                  'left-0 border-r-2 px-6 min-w-[275px]': !editRights
+                  'left-0 border-r-2 px-6 min-w-[275px]': !editRights,
+                  'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
                }"
+               (click)="sortingService.toggleSort(team.forwards, 'first_name')"
                >
-                 Player
+                  <span class="flex items-center">
+                     Player
+                     <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path *ngIf="sortingService.sortColumn !== 'first_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                        <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                        <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                     </svg>
+                  </span>  
                </th>
        
                <!-- Action Column -->
@@ -495,9 +515,26 @@
                </th>
        
                <!-- Dynamic Columns -->
-               <th *ngFor="let year of getContractSeasons(team.forwards)" scope="col" class="px-6 py-3">
-                 {{ year }}
+               <th *ngFor="let year of getContractSeasons(team.forwards); let i = index" 
+                  scope="col" 
+                  class="px-6 py-3 min-w-32"
+                  [ngClass]="{
+                     'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
+                     'hover:cursor-pointer hover:text-gray-500': i === 0
+                  }"
+                  (click)="i === 0 && sortingService.toggleSort(team.forwards, 'aav_current')"
+               >
+                  <span class="flex items-center">
+                     {{ year }}
+                     <!-- Sorting arrow only for the first year -->
+                     <svg *ngIf="i === 0" class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path *ngIf="sortingService.sortColumn !== 'aav_current'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                        <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                        <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                     </svg>
+                  </span> 
                </th>
+
              </tr>
            </thead>
            <tbody>
@@ -579,7 +616,7 @@
 </div>
 
    <!-- Defense Salary Table -->
-   <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2">
+   <div class="overflow-x-auto rounded m:rounded-lg shadow-md border-2">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr class="border-b-2">
@@ -589,13 +626,22 @@
             </th>
     
             <!-- Player Column -->
-            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
+            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
             [ngClass]="{
                'left-12' : editRights,
-               'left-0 border-r-2 px-6 min-w-[275px]' : !editRights
+               'left-0 border-r-2 px-6 min-w-[275px]': !editRights,
+               'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
             }"
+            (click)="sortingService.toggleSort(team.defense, 'first_name')"
             >
-              Player
+               <span class="flex items-center">
+                  Player
+                  <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'first_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span>  
             </th>
     
             <!-- Action Column -->
@@ -604,8 +650,24 @@
             </th>
     
             <!-- Dynamic Columns -->
-            <th *ngFor="let year of getContractSeasons(team.defense)" scope="col" class="px-6 py-3">
-              {{ year }}
+            <th *ngFor="let year of getContractSeasons(team.defense); let i = index" 
+               scope="col" 
+               class="px-6 py-3 hover:text-gray-500 hover:cursor-pointer min-w-32"
+               [ngClass]="{
+                  'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
+                  'hover:cursor-pointer hover:text-gray-500': i === 0
+               }"
+               (click)="i === 0 && sortingService.toggleSort(team.defense, 'aav_current')"
+            >
+               <span class="flex items-center">
+                  {{ year }}
+                  <!-- Sorting arrow only for the first year -->
+                  <svg *ngIf="i === 0" class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'aav_current'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span> 
             </th>
           </tr>
         </thead>
@@ -688,7 +750,7 @@
 </div>
 
    <!-- Goalie Salary Table -->
-   <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2">
+   <div class="overflow-x-auto rounded m:rounded-lg shadow-md border-2">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr class="border-b-2">
@@ -698,13 +760,22 @@
             </th>
     
             <!-- Player Column -->
-            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
+            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
             [ngClass]="{
                'left-12' : editRights,
-               'left-0 border-r-2 px-6' : !editRights
+               'left-0 border-r-2 px-6 min-w-[275px]': !editRights,
+               'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
             }"
+            (click)="sortingService.toggleSort(team.goalies, 'first_name')"
             >
-              Player
+               <span class="flex items-center">
+                  Player
+                  <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'first_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span>  
             </th>
     
             <!-- Action Column -->
@@ -713,8 +784,24 @@
             </th>
     
             <!-- Dynamic Columns -->
-            <th *ngFor="let year of getContractSeasons(team.goalies)" scope="col" class="px-6 py-3">
-              {{ year }}
+            <th *ngFor="let year of getContractSeasons(team.goalies); let i = index" 
+               scope="col" 
+               class="px-6 py-3 hover:text-gray-500 hover:cursor-pointer min-w-32"
+               [ngClass]="{
+                  'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
+                  'hover:cursor-pointer hover:text-gray-500': i === 0
+               }"
+               (click)="i === 0 && sortingService.toggleSort(team.goalies, 'aav_current')"
+            >
+               <span class="flex items-center">
+                  {{ year }}
+                  <!-- Sorting arrow only for the first year -->
+                  <svg *ngIf="i === 0" class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'aav_current'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span> 
             </th>
           </tr>
         </thead>
@@ -798,7 +885,7 @@
 </div>
 
    <!-- IR Table -->
-   <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2">
+   <div class="overflow-x-auto rounded m:rounded-lg shadow-md border-2">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr class="border-b-2">
@@ -808,13 +895,22 @@
             </th>
     
             <!-- Player Column -->
-            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
+            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
             [ngClass]="{
                'left-12' : editRights,
-               'left-0 border-r-2 px-6 min-w-[275px]' : !editRights
+               'left-0 border-r-2 px-6 min-w-[275px]': !editRights,
+               'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
             }"
+            (click)="sortingService.toggleSort(team.injured_reserve, 'first_name')"
             >
-              Player
+               <span class="flex items-center">
+                  Player
+                  <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'first_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span>  
             </th>
     
             <!-- Action Column -->
@@ -823,8 +919,24 @@
             </th>
     
             <!-- Dynamic Columns -->
-            <th *ngFor="let year of getContractSeasons(team.injured_reserve)" scope="col" class="px-6 py-3">
-              {{ year }}
+            <th *ngFor="let year of getContractSeasons(team.injured_reserve); let i = index" 
+               scope="col" 
+               class="px-6 py-3 hover:text-gray-500 hover:cursor-pointer min-w-32"
+               [ngClass]="{
+                  'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
+                  'hover:cursor-pointer hover:text-gray-500': i === 0
+               }"
+               (click)="i === 0 && sortingService.toggleSort(team.injured_reserve, 'aav_current')"
+            >
+               <span class="flex items-center">
+                  {{ year }}
+                  <!-- Sorting arrow only for the first year -->
+                  <svg *ngIf="i === 0" class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'aav_current'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span> 
             </th>
           </tr>
         </thead>
@@ -898,7 +1010,7 @@
                <!-- Empty Row Template -->
                <ng-template #emptyRow>
                   <td *ngIf="editRights" class="p-4 sticky left-0 bg-white dark:bg-gray-800 z-10 min-h-8"></td>
-                  <td class="flex items-left px-2 py-2 sticky min-w-52 text-gray-900 whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
+                  <td class="flex items-left px-2 py-4 sticky min-w-52 text-gray-900 whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 z-10"
                      [ngClass]="{
                         'left-12' : editRights,
                         'left-0 border-r-2 px-6 min-w-[275px]' : !editRights
@@ -929,7 +1041,7 @@
    </div>
 
    <!-- Rookie Salary Table -->
-   <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2">
+   <div class="overflow-x-auto rounded m:rounded-lg shadow-md border-2">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr class="border-b-2">
@@ -939,13 +1051,22 @@
             </th>
     
             <!-- Player Column -->
-            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10"
+            <th scope="col" class="p-4 bg-gray-50 sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
             [ngClass]="{
                'left-12' : editRights,
-               'left-0 border-r-2 px-6 min-w-[275px]': !editRights
+               'left-0 border-r-2 px-6 min-w-[275px]': !editRights,
+               'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
             }"
+            (click)="sortingService.toggleSort(team.rookie_bank, 'first_name')"
             >
-              Player
+               <span class="flex items-center">
+                  Player
+                  <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'first_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span>  
             </th>
     
             <!-- Action Column -->
@@ -954,8 +1075,24 @@
             </th>
     
             <!-- Dynamic Columns -->
-            <th *ngFor="let year of getContractSeasons(team.rookie_bank)" scope="col" class="px-6 py-3">
-              {{ year }}
+            <th *ngFor="let year of getContractSeasons(team.rookie_bank); let i = index" 
+               scope="col" 
+               class="px-6 py-3 hover:text-gray-500 hover:cursor-pointer min-w-32"
+               [ngClass]="{
+                  'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
+                  'hover:cursor-pointer hover:text-gray-500': i === 0
+               }"
+               (click)="i === 0 && sortingService.toggleSort(team.rookie_bank, 'aav_current')"
+            >
+               <span class="flex items-center">
+                  {{ year }}
+                  <!-- Sorting arrow only for the first year -->
+                  <svg *ngIf="i === 0" class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'aav_current'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span> 
             </th>
           </tr>
         </thead>

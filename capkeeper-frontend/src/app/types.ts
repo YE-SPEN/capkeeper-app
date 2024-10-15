@@ -56,6 +56,8 @@ export interface Team {
     ir_count: number,
     rookie_bank: Player[],
     rookie_count: number,
+    salary_retained: number,
+    player_retained: string,
     trade_block: Player[],
     draft_picks: Draft_Pick[],
     fa_picks: FA_Pick[],

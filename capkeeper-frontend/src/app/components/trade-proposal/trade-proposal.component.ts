@@ -3,8 +3,10 @@ import { Observable, map } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from '../../services/global.service';
 import { TeamService } from '../../services/team.service';
+import { ToastService } from '../../services/toast-service.service';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Team, Player, Draft_Pick, FA_Pick, Asset } from '../../types';
 
 @Component({
@@ -30,7 +32,6 @@ export class TradeProposalComponent {
   assets_received_types: string[] = Array(6).fill('');
   dropdownOpenReq: boolean[] = Array(6).fill(false);
   dropdownOpenRec: boolean[] = Array(6).fill(false);  
-  @ViewChild('toast', { static: false }) toast!: ElementRef<HTMLDivElement>;
   toastMessage: string = '';
   modalRef!: BsModalRef;
 
@@ -38,8 +39,10 @@ export class TradeProposalComponent {
     protected teamService: TeamService,
     public globalService: GlobalService,
     protected modalService: BsModalService,
+    protected toastService: ToastService,
     protected route: ActivatedRoute,
-    protected http: HttpClient
+    protected http: HttpClient,
+    protected router: Router
   ) { }
 
   ngOnInit(): void {
@@ -335,8 +338,8 @@ export class TradeProposalComponent {
     this.http.post('api/send-trade', payload)
     .subscribe({
       next: (response) => {
-        console.log('Post Response: ', response);
-          this.showToast('Your trade request has been sent!')
+        this.router.navigate(['/' + this.league_id + '/teams/' + this.globalService.loggedInTeam?.team_id]);
+          this.toastService.showToast('Your trade request has been sent!.', true)
       },
       error: (error) => {
         console.error('Error recording action:', error);
@@ -353,29 +356,5 @@ export class TradeProposalComponent {
     this.clearAssets(this.recipient.team_id);
     this.modalRef.hide();
   }
-
-  showToast(message: string): void {
-    this.toastMessage = message;
-    let toast = this.toast.nativeElement;
-    
-    if (toast) {
-      toast.classList.add('flex');
-      toast.classList.remove('hidden');
-      
-      setTimeout(() => {
-        this.dismissToast();
-      }, 4500); 
-    } 
-  }
-
-  dismissToast(): void {
-    let toast = this.toast.nativeElement;
-
-    if (toast) {
-      toast.classList.remove('flex');
-      toast.classList.add('hidden');
-    }
-  }
-
 
 }

@@ -15,6 +15,6 @@ export class PlayerService {
   getAllPlayers(league_id: string): Observable<{ players: Player[] }> {
     const url = `api/${league_id}/players`;
     return this.http.get<{ players: Player[] }>(url);
-  }
+  }  
   
 }

@@ -24,6 +24,11 @@ export class TeamService {
     return this.http.get<{ team: Team, roster: Player[], draft_picks: Draft_Pick[], fa_picks: FA_Pick[], trades: Trade[] }>(url);
   }
 
+  getFAsByTeam(league_id: string, team_id: string): Observable<{ fa_picks: FA_Pick[] }> {
+    const url = `api/${league_id}/teams/${team_id}`;
+    return this.http.get<{ fa_picks: FA_Pick[] }>(url);
+  }
+
   getTradeByID(league_id: string, trade_id: string): Observable<{ trade: Trade, tradeItems: Asset[] }> {
     const url = `api/${league_id}/trade/${trade_id}`;
     return this.http.get<{ trade: Trade, tradeItems: Asset[] }>(url);

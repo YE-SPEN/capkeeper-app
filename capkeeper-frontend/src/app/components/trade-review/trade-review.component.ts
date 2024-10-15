@@ -3,12 +3,12 @@ import { TradeProposalComponent } from '../trade-proposal/trade-proposal.compone
 import { TeamService } from '../../services/team.service';
 import { GlobalService } from '../../services/global.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { ToastService } from '../../services/toast-service.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Trade } from '../../types';
-import { TeamRosterComponent } from '../team-roster/team-roster.component';
 
 @Component({
   selector: 'app-trade-review',
@@ -22,11 +22,12 @@ export class TradeReviewComponent extends TradeProposalComponent {
     teamService: TeamService,
     globalService: GlobalService,
     modalService: BsModalService,
+    toastService: ToastService,
     route: ActivatedRoute,
     http: HttpClient,
-    private router: Router
+    router: Router
   ) {
-    super(teamService, globalService, modalService, route, http);
+    super(teamService, globalService, modalService, toastService, route, http, router);
   }
 
   override async ngOnInit(): Promise<void> {
@@ -63,7 +64,7 @@ export class TradeReviewComponent extends TradeProposalComponent {
           }
 
           this.router.navigate(['/' + this.league_id + '/teams/' + this.globalService.loggedInTeam?.team_id]).then(() => {
-            this.showToast('Trade confirmed!');
+            this.toastService.showToast('Trade confirmed!', true);
           });
         },
         error: (error) => {
@@ -82,9 +83,8 @@ export class TradeReviewComponent extends TradeProposalComponent {
     this.http.post('api/confirm-trade', payload)
     .subscribe({
       next: (response) => {
-        console.log('Post Response: ', response);
         this.router.navigate(['/' + this.league_id + '/teams/' + this.globalService.loggedInTeam?.team_id]);
-          this.showToast('Trade rejected.')
+          this.toastService.showToast('Trade rejected.', false)
       },
       error: (error) => {
         console.error('Error recording action:', error);

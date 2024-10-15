@@ -1,13 +1,13 @@
-import { Component, TemplateRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../services/global.service';
 import { PlayerService } from '../../services/player.service';
 import { SortingService } from '../../services/sorting.service';
+import { TeamService } from '../../services/team.service';
 import { ToastService } from '../../services/toast-service.service';
-import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
-import { Team, Player } from '../../types';
-import { Observable } from 'rxjs';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Team, Player, FA_Pick } from '../../types';
 
 interface Warning {
   header: string,
@@ -28,6 +28,8 @@ export class PlayerDatabaseComponent {
   filteredPlayers: Player[] = [];
   selected!: Player;
   teams: Team[] = [];
+  fa_picks: FA_Pick[] = [];
+  fa_to_use!: string;
   searchKey: string = '';
   currentPage = 1;
   totalPages!: number;
@@ -52,9 +54,9 @@ export class PlayerDatabaseComponent {
     expiry_status: '',
 };
 
-
   constructor(
     private playerService: PlayerService,
+    private teamService: TeamService,
     public globalService: GlobalService,
     public sortingService: SortingService,
     private modalService: BsModalService,
@@ -76,6 +78,15 @@ export class PlayerDatabaseComponent {
 
           this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
       });
+
+      if (this.globalService.loggedInTeam) {
+        this.teamService.getFAsByTeam(this.league_id, this.globalService.loggedInTeam.team_id)
+          .subscribe(response => {
+            this.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.globalService.loggedInTeam?.team_id && !pick.player_taken);
+            console.log('Picks: ', this.fa_picks)
+          })
+      }
+
     });
   }
 
@@ -232,10 +243,13 @@ export class PlayerDatabaseComponent {
       league_id: this.league_id,
       team_id: this.globalService.loggedInTeam?.team_id,
       isRookie: rookie,
+      fa_used: this.fa_to_use,
       action: 'add',
       last_updated: this.globalService.getDate(),
       updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name
     }
+
+    console.log('sending add payload: ', payload)
 
     this.http.post('api/players/add-drop', payload)
     .subscribe({

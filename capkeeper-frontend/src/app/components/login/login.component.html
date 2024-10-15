@@ -13,9 +13,7 @@
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <form class="space-y-6" (ngSubmit)="signIn()">
       <div>
-        <label for="email" class="block text-sm font-medium leading-6 text-gray-600"
-          >Email address</label
-        >
+        <label for="email" class="block text-sm font-medium leading-6 text-gray-600">Email address</label>
         <div class="mt-2">
           <input
             id="email"
@@ -23,22 +21,20 @@
             type="email"
             [(ngModel)]="email"
             required
-            class="block w-full rounded-md border-0 py-1.5 text-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            class="block w-full rounded-md py-1.5 shadow-sm sm:text-sm sm:leading-6"
+            [ngClass]="{
+              'bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500': loginError,
+              'text-gray-600 placeholder:text-gray-400 focus:ring-green-400 ring-gray-300 border-0 ring-1 ring-inset focus:ring-2 focus:ring-inset': !loginError
+            }"
           />
         </div>
       </div>
-
+    
       <div>
         <div class="flex items-center justify-between">
-          <label
-            for="password"
-            class="block text-sm font-medium leading-6 text-gray-600"
-            >Password</label
-          >
+          <label for="password" class="block text-sm font-medium leading-6 text-gray-600">Password</label>
           <div class="text-sm">
-            <a href="#" class="font-semibold text-green-400 hover:text-green-500"
-              >Forgot password?</a
-            >
+            <a href="#" class="font-semibold text-green-400 hover:text-green-500">Forgot password?</a>
           </div>
         </div>
         <div class="mt-2">
@@ -48,11 +44,18 @@
             type="password"
             [(ngModel)]="password"
             required
-            class="block w-full rounded-md border-0 py-1.5 text-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            class="block w-full rounded-md py-1.5 shadow-sm sm:text-sm sm:leading-6"
+            [ngClass]="{
+              'bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500': loginError,
+              'text-gray-600 placeholder:text-gray-400 focus:ring-green-400 ring-gray-300 border-0 ring-1 ring-inset focus:ring-2 focus:ring-inset': !loginError
+            }"
           />
+          <div *ngIf="loginError">
+            <p class="text-sm text-red-600 dark:text-red-500 mt-0.5"><span class="font-medium">Error:</span> Incorrect email or password. Please try again.</p>
+          </div>
         </div>
       </div>
-
+    
       <div>
         <button
           type="submit"
@@ -61,10 +64,13 @@
           Sign in
         </button>
       </div>
+    
       <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
         Not registered? <a href="#" class="text-blue-700 hover:underline dark:text-blue-500">Create account</a>
-    </div>
+      </div>
     </form>
+    
+    
   </div>
 </div>
 

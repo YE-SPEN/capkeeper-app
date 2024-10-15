@@ -38,7 +38,7 @@ export class GlobalService {
       let temp = response.teamInfo[0];
       if (this.loggedInTeam) {
         this.loggedInTeam.roster_size = temp.roster_size;
-        this.loggedInTeam.total_cap = temp.total_cap;
+        this.loggedInTeam.total_cap = temp.total_cap + temp.salary_retained;
         
         if (this.league?.salary_cap) {
           this.loggedInTeam.cap_space = this.league.salary_cap - temp.total_cap;

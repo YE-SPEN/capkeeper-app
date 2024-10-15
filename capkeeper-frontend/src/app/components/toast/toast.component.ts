@@ -41,7 +41,6 @@ export class ToastComponent implements OnDestroy, OnInit {
   timeoutHandle: any;
 
   ngOnInit() {
-    console.log('Toast initialized with isSuccessful:', this.isSuccessful);
     this.autoDismiss();
   }
 
@@ -52,7 +51,6 @@ export class ToastComponent implements OnDestroy, OnInit {
   }
 
   dismissToast() {
-    console.log('Dismiss toast clicked');
     this.isVisible = false;
   }
 

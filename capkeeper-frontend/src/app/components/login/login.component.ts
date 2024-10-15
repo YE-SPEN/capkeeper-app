@@ -14,6 +14,7 @@ import { TeamService } from '../../services/team.service';
 export class LoginComponent {
   email: string = '';
   password: string = '';
+  loginError: boolean = false;
 
   constructor(
     private router: Router,
@@ -26,6 +27,7 @@ export class LoginComponent {
 
     signInWithEmailAndPassword(auth, this.email, this.password)
       .then((userCredential) => {
+        this.loginError = false;
         const user = userCredential.user;
         console.log('Login successful:', user);
 
@@ -69,7 +71,7 @@ export class LoginComponent {
         }
       })
       .catch((error) => {
-        // Handle login errors
+        this.loginError = true;
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error('Login failed:', errorCode, errorMessage);
