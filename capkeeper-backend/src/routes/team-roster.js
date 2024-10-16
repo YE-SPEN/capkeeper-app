@@ -10,7 +10,7 @@ export const teamRosterRoute = {
 
         try {
             const { results: roster} = await db.query( 
-                `SELECT p.*, pob.isRookie, pob.onIR, pob.onTradeBlock, nl.logo 
+                `SELECT p.*, pob.isRookie, pob.onIR, pob.onTradeBlock, pob.retention_perc, nl.logo 
                 FROM nhl_logos nl
                     JOIN players p ON
                         p.short_code = nl.short_code 
@@ -27,11 +27,12 @@ export const teamRosterRoute = {
             );
 
             const { results: teamInfo } = await db.query( 
-                `SELECT t.team_id, t.team_name, t.picture, t.league_id, GROUP_CONCAT(CONCAT(u.first_name, ' ', u.last_name) SEPARATOR ', ') AS managed_by
+                `SELECT t.team_id, t.team_name, t.picture, t.league_id, t.salary_retained, CONCAT(p.first_name, ' ', p.last_name) AS player_retained, GROUP_CONCAT(CONCAT(u.first_name, ' ', u.last_name) SEPARATOR ', ') AS managed_by
                 FROM teams t JOIN team_managed_by tmb
                     ON t.team_id = tmb.team_id
                     JOIN users u ON
                     tmb.user_name = u.user_name
+                    LEFT JOIN players p ON p.player_id = t.player_retained
                 WHERE t.league_id = ?
                     AND t.team_id = ?`,
                 [league_id, team_id]
@@ -49,9 +50,11 @@ export const teamRosterRoute = {
             )
 
             const { results: fa_picks } = await db.query(
-                `SELECT * FROM fa_picks
+                `SELECT fa.asset_id, fa.league_id, fa.assigned_to, fa.owned_by, fa.week, fa.year, fa.expiry_date, CONCAT(p.first_name, ' ', p.last_name) AS player_taken
+                FROM fa_picks fa LEFT JOIN players p
+                    ON fa.player_taken = p.player_id
                 WHERE league_id = ?
-                    AND (assigned_to = ? OR owned_by = ?)
+                    AND (fa.assigned_to = ? OR fa.owned_by = ?)
                 ORDER BY week
                 `,
                 [league_id, team_id, team_id]

@@ -6,7 +6,7 @@ export const addDropRoute = {
     path: '/api/players/add-drop',
     handler: async (req, h) => {
         try {
-            const { player_id, league_id, team_id, isRookie, last_updated, updated_by, action } = req.payload;
+            const { player_id, league_id, team_id, isRookie, fa_used, last_updated, updated_by, action } = req.payload;
             let result;
 
             const updateQuery = `
@@ -18,6 +18,13 @@ export const addDropRoute = {
             await db.query(updateQuery, [last_updated, updated_by, player_id]);
 
             if (action === 'add') {
+                const updateFAQuery = `
+                    UPDATE fa_picks
+                    SET player_taken = ?
+                    WHERE asset_id = ?`;
+                
+                result = await db.query(updateFAQuery, [player_id, fa_used]);
+                    
                 const insertQuery = `
                 INSERT INTO player_owned_by (player_id, league_id, team_id, isRookie)
                 VALUES (?, ?, ?, ?)
