@@ -37,23 +37,47 @@ export class LeagueActivityComponent {
   ) { }
 
   ngOnInit(): void {
-    this.sortingService.sortDirection = 'asc';
+    this.sortingService.sortDirection = 'desc';
     this.sortingService.sortColumn = 'datetime';
     this.route.paramMap.subscribe(params => {
     this.league_id = params.get('league_id')!;
     });
     this.globalService.notifications = 0;
     this.getActivitiesByDate();
-    this.sortingService.toggleSort(this.filtered_activity_log, this.sortingService.sortColumn, this.sortingService.sortDirection);
   }
 
   ngAfterViewInit() {
     const dropdownButton = document.getElementById('dropdownBgHoverButton');
     const dropdownMenu = document.getElementById('dropdownBgHover');
-
+  
     if (dropdownButton && dropdownMenu) {
-      dropdownButton.addEventListener('click', () => {
-        dropdownMenu.classList.toggle('hidden');
+      dropdownButton.addEventListener('mouseenter', () => {
+        dropdownMenu.classList.remove('hidden');
+      });
+  
+      dropdownMenu.addEventListener('mouseleave', () => {
+        dropdownMenu.classList.add('hidden');
+      });
+    }
+  
+    const startDateInput = document.getElementById('datepicker-range-start') as HTMLInputElement;
+    const endDateInput = document.getElementById('datepicker-range-end') as HTMLInputElement;
+  
+    const datePicker = document.querySelector('.datepicker-class'); // Update with the actual class or ID of your date picker
+  
+    if (startDateInput) {
+      startDateInput.addEventListener('click', () => {
+        if (datePicker) {
+          datePicker.classList.toggle('hidden'); // Assuming 'hidden' class controls visibility
+        }
+      });
+    }
+  
+    if (endDateInput) {
+      endDateInput.addEventListener('click', () => {
+        if (datePicker) {
+          datePicker.classList.toggle('hidden'); // Assuming 'hidden' class controls visibility
+        }
       });
     }
   }
@@ -107,6 +131,7 @@ export class LeagueActivityComponent {
         this.activity_log = response.action_log;
         this.concatDateTimes(this.activity_log);
         this.filterActivities();
+        this.sortingService.sort(this.filtered_activity_log, this.sortingService.sortColumn, this.sortingService.sortDirection);
         this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
       });
     }

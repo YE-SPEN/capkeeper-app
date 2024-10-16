@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef } from '@angular/core';
 import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { GlobalService } from '../../services/global.service';
 import { TeamService } from '../../services/team.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-login',
@@ -12,12 +13,14 @@ import { TeamService } from '../../services/team.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
+  modalRef!: BsModalRef;
   email: string = '';
   password: string = '';
   loginError: boolean = false;
 
   constructor(
     private router: Router,
+    private modalService: BsModalService,
     public globalService: GlobalService,
     private teamService: TeamService,
   ) { initializeApp(environment.firebase) }
@@ -29,14 +32,12 @@ export class LoginComponent {
       .then((userCredential) => {
         this.loginError = false;
         const user = userCredential.user;
-        console.log('Login successful:', user);
-
+        
         // use logged in email to retrieve user profile
         if (user.email) {
           this.globalService.openSession(user.email)
             .subscribe(response => {
               this.globalService.loggedInUser = response.userInfo[0];
-              console.log(this.globalService.loggedInUser)
 
               // use logged user to find associated league(s)
               if (this.globalService.loggedInUser) {
@@ -50,7 +51,6 @@ export class LoginComponent {
                       this.globalService.teams = response.teams;
                       this.globalService.league = response.league;
                       this.globalService.nhl_teams = response.nhl_teams;
-                      console.log(this.globalService.teams);
 
                       // match logged in user to their corresponding team
                       for (let team of this.globalService.teams) {
@@ -118,11 +118,12 @@ export class LoginComponent {
       console.error('Please enter your email address.');
       return;
     }
-  
+    
     sendPasswordResetEmail(auth, this.email)
       .then(() => {
         console.log('Password reset email sent.');
-        alert('Password reset email sent. Please check your inbox.');
+        alert('Password reset email sent. Please check your inbox & junk folder.');
+        this.closeModal()
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -130,6 +131,14 @@ export class LoginComponent {
         console.error('Error sending password reset email:', errorCode, errorMessage);
         alert('Error sending password reset email: ' + errorMessage);
       });
+  }
+
+  openModal(template: TemplateRef<any>): void {
+    this.modalRef = this.modalService.show(template);
+  }
+
+  closeModal() {
+    this.modalRef.hide();
   }
   
 

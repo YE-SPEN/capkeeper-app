@@ -1,5 +1,6 @@
 export interface User {
     [key: string]: any;
+    uid: string,
     user_name: string,
     first_name: string,
     last_name: string,
@@ -54,6 +55,7 @@ export interface Team {
     goalie_salary: number,
     injured_reserve: Player[],
     ir_count: number,
+    ir_salary: number,
     rookie_bank: Player[],
     rookie_count: number,
     salary_retained: number,
@@ -83,6 +85,7 @@ export interface Player {
     years_left_next: number,
     aav_next: number,
     owned_by: string,
+    retention_perc: number,
     last_updated: string,
     updated_by: string,
 };

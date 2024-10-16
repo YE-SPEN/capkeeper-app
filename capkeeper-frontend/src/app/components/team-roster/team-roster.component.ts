@@ -6,7 +6,7 @@ import { PlayerService } from '../../services/player.service';
 import { ToastService } from '../../services/toast-service.service';
 import { SortingService } from '../../services/sorting.service';
 import { HttpClient } from '@angular/common/http';
-import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Team, Player, FA_Pick, Draft_Pick } from '../../types';
 import { Router } from '@angular/router';
 
@@ -80,6 +80,7 @@ export class TeamRosterComponent {
             this.team.forward_salary = this.getTotalSalary(this.team.forwards);
             this.team.defense_salary = this.getTotalSalary(this.team.defense);
             this.team.goalie_salary = this.getTotalSalary(this.team.goalies);
+            this.team.ir_salary = this.getTotalSalary(this.team.injured_reserve);
 
             this.team.total_cap = this.team.forward_salary + this.team.defense_salary + this.team.goalie_salary + this.team.salary_retained;
             if (this.globalService.league?.salary_cap) {
@@ -138,6 +139,9 @@ export class TeamRosterComponent {
   getTotalSalary(array: Player[]): number {
     let sum = 0;
     for (let player of array) {
+      if (player.retention_perc && player.retention_perc > 0) {
+        player.aav_current = player.aav_current * (1 - (player.retention_perc / 100))
+      }
       sum += player.aav_current;
     }
     return sum;

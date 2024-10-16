@@ -31,7 +31,6 @@ export class HomeComponent {
         this.globalService.initializeTeam(team)
         .subscribe(response => {
           let temp = response.teamInfo[0];
-          console.log('Registering team: ', temp)
           if (temp) {
             team.roster_size = temp.roster_size;
             team.total_cap = Number(temp.total_cap) + Number(temp.salary_retained);
@@ -41,7 +40,6 @@ export class HomeComponent {
             if (this.globalService.league?.salary_cap) {
               team.cap_space = this.globalService.league.salary_cap - team.total_cap;
             }
-            console.log('Saved as ', team)
           }
         });
       }
