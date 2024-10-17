@@ -4,9 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx nodemon --exec babel-node src/server.js",
-    "start": "src/server.js"
+    "build": "babel src --out-dir backend-dist",
+    "start": "node backend-dist/server.js",
+    "dev": "nodemon --exec babel-node src/server.js"
   },
   "author": "Eric Spensieri",
   "license": "ISC",
