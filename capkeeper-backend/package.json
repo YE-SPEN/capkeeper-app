@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "babel": "npx babel src --out-dir backend-dist",
+    "build": "npx babel src --out-dir backend-dist",
     "start": "node backend-dist/server.js",
     "dev": "nodemon --exec babel-node src/server.js"
   },
@@ -29,6 +29,7 @@
     "typescript": "^5.6.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.25.7",
     "@babel/core": "^7.22.5",
     "@babel/node": "^7.25.7",
     "@babel/plugin-transform-runtime": "^7.22.5",
