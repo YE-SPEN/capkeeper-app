@@ -16,6 +16,7 @@ import { sendTradeRoute } from "./trade-sent.js";
 import { tradeReviewRoute } from "./trade-review.js";
 import { confirmTradeRoute } from "./trade-response.js";
 import { leagueHomeRoute } from "./home.js";
+import { draftHistoryRoute } from "./draft-history.js";
 
 export default [
     leagueRoute,
@@ -35,5 +36,6 @@ export default [
     editUserRoute,
     sendTradeRoute,
     tradeReviewRoute,
-    confirmTradeRoute
+    confirmTradeRoute,
+    draftHistoryRoute
 ]
