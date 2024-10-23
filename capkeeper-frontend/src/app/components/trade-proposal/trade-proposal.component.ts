@@ -16,6 +16,7 @@ import { Team, Player, Draft_Pick, FA_Pick, Asset } from '../../types';
 })
 
 export class TradeProposalComponent {
+  teams: Team[] = [];
   league_id!: string;
   salary_cap: number = 0;
   requestor!: Team;
@@ -34,6 +35,8 @@ export class TradeProposalComponent {
   dropdownOpenRec: boolean[] = Array(6).fill(false);  
   toastMessage: string = '';
   modalRef!: BsModalRef;
+  selected_player!: Player;
+  selected_team!: Team;
 
   constructor(
     protected teamService: TeamService,
@@ -42,7 +45,7 @@ export class TradeProposalComponent {
     protected toastService: ToastService,
     protected route: ActivatedRoute,
     protected http: HttpClient,
-    protected router: Router
+    protected router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -50,6 +53,7 @@ export class TradeProposalComponent {
       this.league_id = params.get('league_id')!;
   
       if (this.globalService.loggedInTeam) {
+        this.teams = this.globalService.teams.filter(team => team.team_id !== this.globalService.loggedInTeam?.team_id);
         this.setRequestor(this.globalService.loggedInTeam.team_id);
       }
       
@@ -105,7 +109,7 @@ export class TradeProposalComponent {
           this.recipient.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.recipient.team_id && !pick.player_taken);
   
           this.recipient.roster_size = this.recipient.roster.length;
-          this.recipient.total_cap = this.getTotalCap(this.recipient.roster);
+          this.recipient.total_cap = this.getTotalCap(this.recipient.roster) + this.recipient.salary_retained;
   
           if (this.globalService.league) {
             this.recipient.cap_space = this.globalService.league.salary_cap - this.recipient.total_cap;
@@ -124,11 +128,13 @@ export class TradeProposalComponent {
     });
   }
   
-
   getTotalCap(roster: Player[]): number {
     let sum = 0
     for (let player of roster) {
       if (!player.isRookie && !player.onIR) {
+        if (player.retention_perc && player.retention_perc > 0) {
+          player.aav_current = player.aav_current * (1 - (player.retention_perc / 100))
+        }
         sum += player.aav_current;
       }
     }
@@ -233,6 +239,36 @@ export class TradeProposalComponent {
     return '';
   }
 
+  setSalaryRet(team: Team, player: Player): void {
+    if (this.requestor === team) {
+      this.requestor.player_retained = player.player_id;
+      this.requestor.salary_retained = player.aav_current * (player.retention_perc / 100)
+      console.log('After salary Retained: ', this.requestor) 
+    }
+    if (this.recipient === team) {
+      this.recipient.player_retained = player.player_id;
+      this.recipient.salary_retained = player.aav_current * (player.retention_perc / 100) 
+    }
+  }
+
+  incrementSalaryRet(player: Player): number {
+    if (!player.retention_perc) {
+      player.retention_perc = 0;
+    }
+    player.retention_perc += 5
+    return player.retention_perc;
+  }
+
+  decrementSalaryRet(player: Player): number {
+    if (!player.retention_perc) {
+      player.retention_perc = 0
+    }
+    else {
+      player.retention_perc -= 5;
+    }
+    return player.retention_perc;
+  }
+
   resetAdjustments(): void {
     this.requestor_rookies = this.countRookies(this.requestor.roster);
     this.requestor_contracts = this.requestor.roster_size - this.requestor_rookies;
@@ -247,7 +283,7 @@ export class TradeProposalComponent {
     this.resetAdjustments();
 
     for (let asset of this.assets_given) {
-      if (asset?.aav_current) {
+      if (asset && this.getAssetType(asset) === 'player') {
         if (asset.isRookie) {
           this.recipient_rookies++;
           this.requestor_rookies--;
@@ -262,7 +298,7 @@ export class TradeProposalComponent {
     }
 
     for (let asset of this.assets_received) {
-      if (asset?.aav_current) {
+      if (asset && this.getAssetType(asset) === 'player') {
         if (asset.isRookie) {
           this.requestor_rookies++;
           this.recipient_rookies--;
@@ -291,7 +327,7 @@ export class TradeProposalComponent {
 
   tradeIsValid(): boolean {
     return (this.rosterIsValid(this.requestor_contracts) && this.rookieIsValid(this.requestor_rookies) && this.salaryIsValid(this.requestor_salary)
-            && this.rosterIsValid(this.recipient_contracts) && this.rookieIsValid(this.recipient_rookies) && this.salaryIsValid(this.requestor_salary)
+            && this.rosterIsValid(this.recipient_contracts) && this.rookieIsValid(this.recipient_rookies) && this.salaryIsValid(this.recipient_salary)
           )
   }
 
@@ -347,7 +383,14 @@ export class TradeProposalComponent {
     });
   }
 
-  openModal(template: TemplateRef<any>): void {
+  openModal(template: TemplateRef<any>, asset?: Asset, team?: Team): void {
+    if (asset && asset.player_id) {
+      const player = asset as Player;
+      this.selected_player = player;
+    }
+    if (team) {
+      this.selected_team = team;
+    }
     this.modalRef = this.modalService.show(template);
   }
 

@@ -25,7 +25,7 @@ export class TradeReviewComponent extends TradeProposalComponent {
     toastService: ToastService,
     route: ActivatedRoute,
     http: HttpClient,
-    router: Router
+    router: Router,
   ) {
     super(teamService, globalService, modalService, toastService, route, http, router);
   }

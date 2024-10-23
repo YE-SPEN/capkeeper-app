@@ -11,7 +11,7 @@
                 <label for="team-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Choose team:</label>
                 <select id="team-filter" [(ngModel)]="recipient.team_id" (ngModelChange)="setRecipient($event)" class="bg-gray-50 border border-green-400 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400 min-w-[200px]">
                   <option value="">Select team...</option>
-                  <option *ngFor="let team of globalService.teams" [value]="team.team_id">{{ team.team_name }}</option>
+                  <option *ngFor="let team of teams" [value]="team.team_id">{{ team.team_name }}</option>
                 </select>
             </div>
         </div>
@@ -178,13 +178,13 @@
                                         <!-- Dropdown menu -->
                                         <div *ngIf="dropdownOpenReq[i]" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-80 dark:bg-gray-700 mt-1 top-full">
                                             <ul class="text-sm font-semibold h-64 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
-                                                <li *ngFor="let player of requestor.roster" class="border-gray-200 border-b">
+                                                <li *ngFor="let player of requestor.roster | tradeAssetPipe: assets_given : getAssetType" class="border-gray-200 border-b">
                                                     <div (click)="selectAsset(assets_given, player, i)" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         <img class="w-8 h-8 me-2 rounded-full" src="{{player.logo}}" alt="{{player.player_id}}">
                                                         {{ player.first_name }} {{ player.last_name }}
                                                         <span class="font-normal text-[11px] text-gray-500">&nbsp;&nbsp;{{ player.position }} - {{ player.short_code }}&nbsp;&nbsp;</span>
                                                         <div *ngIf="player.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">IR</div>
-                                                        <div *ngIf="player.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Rookie</div>
+                                                        <div *ngIf="player.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Rookie</div>                                                    
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -194,15 +194,20 @@
                         
                                 <ng-template #showPlayer>
                                     <div class="flex items-center text-sm font-semibold">
-                                        <img class="w-10 h-10 me-2 rounded-full" src="{{assets_given[i]?.logo}}" alt="{{assets_given[i]?.player_id}}">
-                                        {{ assets_given[i]?.first_name }} {{ assets_given[i]?.last_name }} 
-                                        <span class="font-normal text-[11px] text-gray-500">&nbsp;&nbsp;{{ assets_given[i]?.position }} - {{ assets_given[i]?.short_code }}&nbsp;&nbsp;</span>
-                                        <div *ngIf="assets_given[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
-                                            IR
+                                        <img class="w-10 h-10 rounded-full" src="{{assets_given[i]?.logo}}" alt="Player image">
+                                        <div class="ps-3">
+                                            <div class="text-sm font-semibold">{{ assets_given[i]?.first_name }} {{ assets_given[i]?.last_name }}</div>
+                                            <div class="font-normal text-xs text-gray-500">
+                                                {{ assets_given[i]?.position }} - {{ assets_given[i]?.short_code }}
+                                                <span *ngIf="assets_given[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
+                                                    IR
+                                                </span>
+                                                <span *ngIf="assets_given[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                                                    Rookie
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div *ngIf="assets_given[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
-                                            Rookie
-                                        </div>
+
                                         <div class="text-sm text-left rtl:text-right text-gray-500 ml-8">
                                             {{ assets_given[i] && assets_given[i]?.aav_current > 0 ? '$' + (assets_given[i]?.aav_current | number: '1.0-0') + ' x ' + assets_given[i]?.years_left_current : '' }}
                                         </div>
@@ -224,7 +229,7 @@
                                         <!-- Dropdown menu -->
                                         <div *ngIf="dropdownOpenReq[i]" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-80 dark:bg-gray-700 mt-1 top-full">
                                             <ul class="text-sm font-semibold h-64 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
-                                                <li *ngFor="let pick of getPicksByType(requestor, 'general')" class="border-gray-200 border-b">
+                                                <li *ngFor="let pick of getPicksByType(requestor, 'general') | tradeAssetPipe: assets_given : getAssetType" class="border-gray-200 border-b">
                                                     <div (click)="selectAsset(assets_given, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
@@ -267,7 +272,7 @@
                                         <!-- Dropdown menu -->
                                         <div *ngIf="dropdownOpenReq[i]" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-80 dark:bg-gray-700 mt-1 top-full">
                                             <ul class="text-sm font-semibold h-64 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
-                                                <li *ngFor="let pick of getPicksByType(requestor, 'rookie')" class="border-gray-200 border-b">
+                                                <li *ngFor="let pick of getPicksByType(requestor, 'rookie') | tradeAssetPipe: assets_given : getAssetType" class="border-gray-200 border-b">
                                                     <div (click)="selectAsset(assets_given, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
@@ -310,7 +315,7 @@
                                         <!-- Dropdown menu -->
                                         <div *ngIf="dropdownOpenReq[i]" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-80 dark:bg-gray-700 mt-1 top-full">
                                             <ul class="text-sm font-semibold h-64 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
-                                                <li *ngFor="let pick of requestor.fa_picks" class="border-gray-200 border-b">
+                                                <li *ngFor="let pick of requestor.fa_picks | tradeAssetPipe: assets_given : getAssetType" class="border-gray-200 border-b">
                                                     <div (click)="selectAsset(assets_given, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         FA Week {{ pick?.week }} ({{ pick?.year }})
                                                     </div>
@@ -338,7 +343,14 @@
                         </td>
         
                         <td class="px-6 py-4">
-                            <div *ngIf="assets_given[i]" (click)="removeAsset(assets_given, i); closeReqDropdown(i)"  class="flex items-center">
+                            <div *ngIf="assets_given[i] && assets_given[i]?.player_id && !assets_given[i]?.isRookie" (click)="openModal(retainSalaryModal, assets_given[i])"  class="inline-flex items-center mr-3">
+                                <svg class="w-6 h-6 text-blue-700 dark:text-white hover:fill-blue-700 hover:text-white hover:cursor-pointer"  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.891 15.107 15.11 8.89m-5.183-.52h.01m3.089 7.254h.01M14.08 3.902a2.849 2.849 0 0 0 2.176.902 2.845 2.845 0 0 1 2.94 2.94 2.849 2.849 0 0 0 .901 2.176 2.847 2.847 0 0 1 0 4.16 2.848 2.848 0 0 0-.901 2.175 2.843 2.843 0 0 1-2.94 2.94 2.848 2.848 0 0 0-2.176.902 2.847 2.847 0 0 1-4.16 0 2.85 2.85 0 0 0-2.176-.902 2.845 2.845 0 0 1-2.94-2.94 2.848 2.848 0 0 0-.901-2.176 2.848 2.848 0 0 1 0-4.16 2.849 2.849 0 0 0 .901-2.176 2.845 2.845 0 0 1 2.941-2.94 2.849 2.849 0 0 0 2.176-.901 2.847 2.847 0 0 1 4.159 0Z"/>
+                                </svg>
+                                  
+                            </div>
+                              
+                            <div *ngIf="assets_given[i]" (click)="removeAsset(assets_given, i); closeReqDropdown(i)"  class="inline-flex items-center">
                                 <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
                                       aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
                                       width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -396,7 +408,7 @@
                                         <!-- Dropdown menu -->
                                         <div *ngIf="dropdownOpenRec[i]" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-80 dark:bg-gray-700 mt-1 top-full">
                                             <ul class="text-sm font-semibold h-64 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
-                                                <li *ngFor="let player of recipient.roster" class="border-gray-200 border-b">
+                                                <li *ngFor="let player of recipient.roster | tradeAssetPipe: assets_received : getAssetType" class="border-gray-200 border-b">
                                                     <div (click)="selectAsset(assets_received, player, i)" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         <img class="w-6 h-6 me-2 rounded-full" src="{{player.logo}}" alt="{{player.player_id}}">
                                                         {{ player.first_name }} {{ player.last_name }}
@@ -412,17 +424,18 @@
                         
                                 <ng-template #showPlayer>
                                     <div class="flex items-center text-sm font-semibold">
-                                        <img class="w-10 h-10 me-2 rounded-full" src="{{assets_received[i]?.logo}}" alt="{{assets_received[i]?.player_id}}">
-                                        {{ assets_received[i]?.first_name }} {{ assets_received[i]?.last_name }} 
-                                        <span class="font-normal text-[11px] text-gray-500">&nbsp;&nbsp;{{ assets_received[i]?.position }} - {{ assets_received[i]?.short_code }}&nbsp;&nbsp;</span>
-                                        <div *ngIf="assets_received[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
-                                            IR
-                                        </div>
-                                        <div *ngIf="assets_received[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
-                                            Rookie
-                                        </div>
-                                        <div class="text-sm text-left rtl:text-right text-gray-500 ml-8">
-                                            {{ assets_received[i] && assets_received[i]?.aav_current > 0 ? '$' + (assets_received[i]?.aav_current | number: '1.0-0') + ' x ' + assets_received[i]?.years_left_current : '' }}
+                                        <img class="w-10 h-10 rounded-full" src="{{assets_received[i]?.logo}}" alt="Player image">
+                                        <div class="ps-3">
+                                            <div class="text-sm font-semibold">{{ assets_received[i]?.first_name }} {{ assets_received[i]?.last_name }}</div>
+                                            <div class="font-normal text-xs text-gray-500">
+                                                {{ assets_received[i]?.position }} - {{ assets_received[i]?.short_code }}
+                                                <span *ngIf="assets_received[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
+                                                    IR
+                                                </span>
+                                                <span *ngIf="assets_received[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                                                    Rookie
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </ng-template>
@@ -442,7 +455,7 @@
                                         <!-- Dropdown menu -->
                                         <div *ngIf="dropdownOpenRec[i]" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-80 dark:bg-gray-700 mt-1 top-full">
                                             <ul class="text-sm font-semibold h-64 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
-                                                <li *ngFor="let pick of getPicksByType(recipient, 'general')" class="border-gray-200 border-b">
+                                                <li *ngFor="let pick of getPicksByType(recipient, 'general') | tradeAssetPipe: assets_received : getAssetType" class="border-gray-200 border-b">
                                                     <div (click)="selectAsset(assets_received, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
@@ -485,7 +498,7 @@
                                         <!-- Dropdown menu -->
                                         <div *ngIf="dropdownOpenRec[i]" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-80 dark:bg-gray-700 mt-1 top-full">
                                             <ul class="text-sm font-semibold h-64 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
-                                                <li *ngFor="let pick of getPicksByType(recipient, 'rookie')" class="border-gray-200 border-b">
+                                                <li *ngFor="let pick of getPicksByType(recipient, 'rookie') | tradeAssetPipe: assets_received : getAssetType" class="border-gray-200 border-b">
                                                     <div (click)="selectAsset(assets_received, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
@@ -528,7 +541,7 @@
                                         <!-- Dropdown menu -->
                                         <div *ngIf="dropdownOpenRec[i]" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-80 dark:bg-gray-700 mt-1 top-full">
                                             <ul class="text-sm font-semibold h-64 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
-                                                <li *ngFor="let pick of recipient.fa_picks" class="border-gray-200 border-b">
+                                                <li *ngFor="let pick of recipient.fa_picks | tradeAssetPipe: assets_received : getAssetType" class="border-gray-200 border-b">
                                                     <div (click)="selectAsset(assets_received, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         FA Week {{ pick?.week }} ({{ pick?.year }})
                                                     </div>
@@ -588,7 +601,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <!-- Requestor Data -->
+                    <!-- Active Contracts -->
                     <td class="text-right px-4 w-[40%]">
                         <h4 class="flex items-center text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400 justify-end">
                             <span class="font-semibold text-lg mr-6">
@@ -631,6 +644,8 @@
                         </h4>
                     </td>   
                 </tr>
+
+                <!-- Rookie Bank -->
                 <tr>
                     <td class="text-right px-4">
                         <h4 class="flex items-center text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400 justify-end">
@@ -674,6 +689,8 @@
                         </h4>
                     </td>
                 </tr>
+
+                <!-- Salary Cap -->
                 <tr>
                     <td class="text-right px-4"> 
                         <h4 class="flex items-center text-lg font-bold text-gray-500 dark:text-gray-400 justify-end">
@@ -788,4 +805,49 @@
        </div>
     </div>
  </ng-template>
+
+ <!-- Retain Salary Modal -->
+  <ng-template #retainSalaryModal id="retainSalaryModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full">
+          <form (ngSubmit)="setSalaryRet(selected_team, selected_player); closeModal()" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+ 
+             <div class="flex items-start justify-between p-4 rounded-t md:w-[400px]">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                   Retain Salary on {{ selected_player.first_name }} {{ selected_player.last_name }}?
+                </h3>
+                <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+             </button>
+             </div>
+             <div class="grid gap-4 p-6">
+                <div class="col-span-2">         
+                    <div class="relative flex items-center mb-2">
+                        <button type="button" (click)="decrementSalaryRet(selected_player)" id="decrement-button" data-input-counter-decrement="bedrooms-input" class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                            <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
+                            </svg>
+                        </button>
+                        <input type="text" id="bedrooms-input" disabled data-input-counter data-input-counter-min="1" data-input-counter-max="5" class="bg-gray-50 border-x-0 border-gray-300 h-11 font-medium text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pb-6 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="0%" [value]="selected_player.retention_perc" required />
+                        <div class="absolute bottom-1 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 flex items-center text-sm text-gray-400 space-x-1 rtl:space-x-reverse">
+                            <span>${{ selected_player.aav_current * (selected_player.retention_perc / 100) | number:'1.0-0' }}</span>
+                        </div>
+                        <button type="button" id="increment-button" (click)="incrementSalaryRet(selected_player)" data-input-counter-increment="bedrooms-input" class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                            <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+             </div>
+ 
+             <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse rounded-b">
+                <button type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Confirm</button>
+                <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+             </div>
+       </form>
+    </div>
+</ng-template>
 

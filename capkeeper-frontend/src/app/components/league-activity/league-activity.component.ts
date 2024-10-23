@@ -58,17 +58,18 @@ export class LeagueActivityComponent {
       dropdownMenu.addEventListener('mouseleave', () => {
         dropdownMenu.classList.add('hidden');
       });
+
     }
   
     const startDateInput = document.getElementById('datepicker-range-start') as HTMLInputElement;
     const endDateInput = document.getElementById('datepicker-range-end') as HTMLInputElement;
   
-    const datePicker = document.querySelector('.datepicker-class'); // Update with the actual class or ID of your date picker
+    const datePicker = document.querySelector('.date-range-picker');
   
     if (startDateInput) {
       startDateInput.addEventListener('click', () => {
         if (datePicker) {
-          datePicker.classList.toggle('hidden'); // Assuming 'hidden' class controls visibility
+          datePicker.classList.toggle('hidden'); 
         }
       });
     }
@@ -76,7 +77,7 @@ export class LeagueActivityComponent {
     if (endDateInput) {
       endDateInput.addEventListener('click', () => {
         if (datePicker) {
-          datePicker.classList.toggle('hidden'); // Assuming 'hidden' class controls visibility
+          datePicker.classList.toggle('hidden'); 
         }
       });
     }

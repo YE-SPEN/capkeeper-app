@@ -102,6 +102,10 @@ export interface Draft_Pick {
     pick_number: number,
     type: string,
     player_taken: string,
+    player_first_name: string, 
+    player_last_name: string, 
+    player_position: string,
+    player_short_code: string
 }
 
 export interface FA_Pick {

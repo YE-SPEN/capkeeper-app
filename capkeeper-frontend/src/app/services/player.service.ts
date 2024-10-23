@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Player, Team, League } from '../types';
+import { Player, Draft_Pick } from '../types';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,18 @@ export class PlayerService {
   getAllPlayers(league_id: string): Observable<{ players: Player[] }> {
     const url = `api/${league_id}/players`;
     return this.http.get<{ players: Player[] }>(url);
-  }  
+  }
+
+  getPlayerByID(player_id: string): Observable<{ player: Player }> {
+    const url = `api/get-player`;
+    const params = new HttpParams().set('id', player_id);
+    return this.http.get<{ player: Player }>(url, { params });
+  }
+  
+  getDraftByYear(league_id: string, year: number): Observable<{ draft: Draft_Pick[] }> {
+    const url = `api/${league_id}/draft`;
+    const params = new HttpParams().set('year', year);
+    return this.http.get<{ draft: Draft_Pick[] }>(url, { params });
+  }
   
 }

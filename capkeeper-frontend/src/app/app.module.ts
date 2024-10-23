@@ -19,7 +19,8 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { TradeProposalComponent } from './components/trade-proposal/trade-proposal.component';
 import { TradeReviewComponent } from './components/trade-review/trade-review.component';
 import { ToastComponent } from './components/toast/toast.component';
-import { toNamespacedPath } from 'path';
+import { TradeAssetPipe } from './pipes/trade-assets.pipe';
+import { DraftComponent } from './components/draft/draft.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,9 @@ import { toNamespacedPath } from 'path';
     UserProfileComponent,
     TradeProposalComponent,
     TradeReviewComponent,
-    ToastComponent
+    ToastComponent,
+    TradeAssetPipe, 
+    DraftComponent
   ],
   imports: [
     BrowserModule,

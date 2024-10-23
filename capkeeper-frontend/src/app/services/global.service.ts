@@ -9,6 +9,7 @@ import { HttpParams, HttpClient } from '@angular/common/http';
 export class GlobalService {
   userMenuIsOpen: boolean = false;
   teamsMenuIsOpen: boolean = false;
+  toolsMenuIsOpen: boolean = false;
   notifications: number = 0;
   loggedInUser: User | null = null;
   loggedInTeam: Team | null = null;
@@ -53,6 +54,10 @@ export class GlobalService {
 
   toggleTeamsMenu(): void {
     this.teamsMenuIsOpen = !this.teamsMenuIsOpen;
+  }
+
+  toggleToolsMenu(): void {
+    this.toolsMenuIsOpen = !this.toolsMenuIsOpen;
   }
 
   getDate(): string {
