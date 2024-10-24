@@ -11,7 +11,7 @@ export const draftHistoryRoute = {
         try {
             const { results: draft } = await db.query( 
                 `SELECT d.*, p.first_name AS player_first_name, p.last_name AS player_last_name, p.short_code AS player_short_code, p.position AS player_position 
-                FROM draft_picks d JOIN players p
+                FROM draft_picks d LEFT JOIN players p
                     ON d.player_taken = p.player_id
                 WHERE d.league_id = ?
                 AND d.year = ?
