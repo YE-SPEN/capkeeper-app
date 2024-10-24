@@ -21,8 +21,9 @@
         <div *ngFor="let team of rookie_order" class="w-1/12">
             <!-- Get the pick information for the current team and round -->
             <ng-container *ngIf="getPickInfo(team.team_id, row + 1, 'rookie') as pick">
-                <div class="block p-1.5 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+                <div class="block p-1.5 border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
                     [ngClass]="{
+                        'bg-white border-gray-200': pick.assigned_to === pick.owned_by && pick.player_first_name,
                         'bg-yellow-100 border-yellow-300': pick.player_first_name && pick.assigned_to !== pick.owned_by,
                         'bg-red-300 border-red-500': !pick.player_first_name
                     }">
