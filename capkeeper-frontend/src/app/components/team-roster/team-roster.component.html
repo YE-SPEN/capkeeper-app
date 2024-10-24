@@ -438,9 +438,9 @@
                              [ngClass]="{
                                'text-gray-400 border-gray-300': pick.owned_by !== team.team_id, 
                                'text-gray-800 border-gray-500 hover:bg-gray-200': pick.owned_by === team.team_id,
-                               'text-red-600 border-red-600 bg-red-200 hover:bg-red-100': (!pick.player_taken && isExpired(pick) && pick.owned_by === team.team_id),
+                               'text-red-600 border-red-600 bg-red-200 hover:bg-red-100': (!pick.player_taken && isExpired(pick) && pick.owned_by === team.team_id) || pick.player_taken === 'Penalty',
                                'text-green-600 border-green-400 bg-green-200 hover:bg-green-100': pick.player_taken && pick.owned_by === team.team_id,
-                               'text-yellow-600 border-yellow-600 bg-yellow-100 hover:bg-yellow-200': pick.assigned_to !== team.team_id && !isExpired(pick)
+                               'text-yellow-600 border-yellow-600 bg-yellow-100 hover:bg-yellow-200': pick.assigned_to !== team.team_id && !isExpired(pick) && !pick.player_taken
                              }">
                              FA{{ pick.week }}<br>
                            </button>
