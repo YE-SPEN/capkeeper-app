@@ -37,7 +37,7 @@
                         </span>
                     </p>
                     <h5 class="text-sm font-bold tracking-tight text-gray-700 dark:text-white">
-                        <span *ngIf="pick.player_first_name" [ngClass]="{ 'text-xs': pick.player_last_name.length > 10, 'text-[10px]': pick.player_last_name.length > 12 }">
+                        <span *ngIf="pick.player_first_name" [ngClass]="{ 'text-[10px]': pick.player_last_name.length > 12 , 'text-xs': pick.player_last_name.length > 10 }">
                             {{ pick.player_last_name }}
                         </span>
 
@@ -94,6 +94,7 @@
             <ng-container *ngIf="getPickInfo(team.team_id, row + 1, 'general') as pick">
                 <div class="block p-1.5 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
                     [ngClass]="{
+                        'bg-white border-gray-200': pick.assigned_to === pick.owned_by && pick.player_first_name,
                         'bg-yellow-100 border-yellow-300': pick.player_first_name && pick.assigned_to !== pick.owned_by,
                         'bg-red-300 border-red-500': !pick.player_first_name
                     }">
@@ -107,7 +108,7 @@
                         </span>
                     </p>
                     <h5 class="text-sm font-bold tracking-tight text-gray-700 dark:text-white">
-                        <span *ngIf="pick.player_first_name" [ngClass]="{ 'text-xs': pick.player_last_name.length > 10 }">
+                        <span *ngIf="pick.player_first_name" [ngClass]="{ 'text-[10px]': pick.player_last_name.length > 12 , 'text-xs': pick.player_last_name.length > 10 }">
                             {{ pick.player_last_name }}
                         </span>
 
