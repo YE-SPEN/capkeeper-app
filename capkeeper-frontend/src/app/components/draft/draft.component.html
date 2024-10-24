@@ -1,47 +1,145 @@
-<h1 class="font-bold text-2xl">
+<h1 class="font-bold text-2xl mb-6">
     Draft History
 </h1>
 
+<h2 class="font-semibold text-gray-500 text-lg mb-4">
+    Rookie Draft (2024)
+</h2>
+
 <div class="w-full">
-    <div *ngFor="let round of [].constructor(globalService.league?.general_draft_length); let row = index" class="flex w-full">
-      <div *ngFor="let team of general_order" class="w-1/12">
-        <!-- Get the pick information for the current team and round -->
-        <ng-container *ngIf="getPickInfo(team.team_id, row + 1, 'general') as pick; else burnedCard">
-          <div class="block p-1.5 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-            <!-- Display pick details -->
-            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">
-              {{ pick.player_first_name }}
-            </p>
-            <h5 class="text-sm font-bold tracking-tight text-gray-700 dark:text-white">
-              {{ pick.player_last_name }}
+    <div class="flex w-full">
+        <div *ngFor="let team of rookie_order" class="w-1/12 text-center p-2">
+            <div class="max-w-[50px] mb-2 mx-auto block">
+                <img [src]="team.picture" class="w-[50px] h-[50px] rounded-full object-cover mx-auto">
+            </div>
+            <h5 class="text-center items-center text-xs font-semibold tracking-tight text-gray-500 dark:text-white">
+                {{ team.team_name }}
             </h5>
-            <p class="text-[10px] mb-2 text-gray-500 dark:text-gray-400">
-              {{ pick.player_position }} - {{ pick.player_short_code }}
-            </p>
-            <p class="text-right text-[10px] text-gray-700 font-semibold dark:text-gray-400">
-              {{ pick.round }}.{{ pick.position }} ({{ pick.pick_number }})
-            </p>
+        </div>        
+    </div>    
+    <div *ngFor="let round of [].constructor(globalService.league?.rookie_draft_length); let row = index" class="flex w-full">
+        <div *ngFor="let team of rookie_order" class="w-1/12">
+            <!-- Get the pick information for the current team and round -->
+            <ng-container *ngIf="getPickInfo(team.team_id, row + 1, 'rookie') as pick">
+                <div class="block p-1.5 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+                    [ngClass]="{
+                        'bg-yellow-100 border-yellow-300': pick.player_first_name && pick.assigned_to !== pick.owned_by,
+                        'bg-red-300 border-red-500': !pick.player_first_name
+                    }">
+                    <!-- Display pick details -->
+                    <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                        <span *ngIf="pick.player_first_name">
+                            {{ pick.player_first_name }}
+                        </span>
+                        <span *ngIf="!pick.player_first_name">
+                            &nbsp;
+                        </span>
+                    </p>
+                    <h5 class="text-sm font-bold tracking-tight text-gray-700 dark:text-white">
+                        <span *ngIf="pick.player_first_name" [ngClass]="{ 'text-xs': pick.player_last_name.length > 10, 'text-[10px]': pick.player_last_name.length > 12 }">
+                            {{ pick.player_last_name }}
+                        </span>
+
+                        <span *ngIf="!pick.player_first_name" class="text-red-800">
+                            Burned
+                        </span>
+                    </h5>
+                    <p class="text-[10px] mb-2 text-gray-500 dark:text-gray-400">
+                        <span *ngIf="pick.player_first_name">
+                            {{ pick.player_position }} - {{ pick.player_short_code }}
+                        </span>
+                        <span *ngIf="!pick.player_first_name">
+                            &nbsp;
+                        </span>
+                    </p>
+                    
+                    <p class="text-[10px] text-gray-700 font-semibold dark:text-gray-400 flex items-center justify-between relative">
+                        <span class="float-left">
+                            {{ pick.round }}.{{ pick.position }} ({{ pick.pick_number }})
+                        </span>
+                        <span *ngIf="pick.assigned_to !== pick.owned_by" 
+                            class="relative float-right w-7 h-7 mr-0.5 rounded-full overflow-hidden" 
+                            style="top: -10px; margin-bottom: -13px;">
+                            <img [src]="getTeamImage(pick)" alt="Icon" class="w-full h-full object-cover">
+                        </span>
+                    </p>                   
+                    
+                </div>
+
+            </ng-container>
         </div>
-        </ng-container>
-        <ng-template #burnedCard>
-          <a href="#" class="block p-1.5 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">
-              
-            </p>
-            <h5 class="text-sm font-bold tracking-tight text-gray-700 dark:text-white">
-              BURNED
-            </h5>
-            <p class="text-[10px] mb-2 text-gray-500 dark:text-gray-400">
-              
-            </p>
-            <p class="text-right text-[10px] text-gray-700 font-semibold dark:text-gray-400">
-                
-            </p>
-          </a>
-        </ng-template>
-      </div>
     </div>
-  </div>
+</div>
+
+
+<h2 class="font-semibold text-gray-500 text-lg mb-4 mt-8">
+    General Draft (2024)
+</h2>
+
+<div class="w-full">
+    <div class="flex w-full">
+        <div *ngFor="let team of general_order" class="w-1/12 text-center p-2">
+            <div class="max-w-[50px] mb-2 mx-auto block">
+                <img [src]="team.picture" class="w-[50px] h-[50px] rounded-full object-cover mx-auto">
+            </div>
+            <h5 class="text-center items-center text-xs font-semibold tracking-tight text-gray-500 dark:text-white">
+                {{ team.team_name }}
+            </h5>
+        </div>        
+    </div>    
+    <div *ngFor="let round of [].constructor(globalService.league?.general_draft_length); let row = index" class="flex w-full">
+        <div *ngFor="let team of general_order" class="w-1/12">
+            <!-- Get the pick information for the current team and round -->
+            <ng-container *ngIf="getPickInfo(team.team_id, row + 1, 'general') as pick">
+                <div class="block p-1.5 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+                    [ngClass]="{
+                        'bg-yellow-100 border-yellow-300': pick.player_first_name && pick.assigned_to !== pick.owned_by,
+                        'bg-red-300 border-red-500': !pick.player_first_name
+                    }">
+                    <!-- Display pick details -->
+                    <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                        <span *ngIf="pick.player_first_name">
+                            {{ pick.player_first_name }}
+                        </span>
+                        <span *ngIf="!pick.player_first_name">
+                            &nbsp;
+                        </span>
+                    </p>
+                    <h5 class="text-sm font-bold tracking-tight text-gray-700 dark:text-white">
+                        <span *ngIf="pick.player_first_name" [ngClass]="{ 'text-xs': pick.player_last_name.length > 10 }">
+                            {{ pick.player_last_name }}
+                        </span>
+
+                        <span *ngIf="!pick.player_first_name" class="text-red-800">
+                            Burned
+                        </span>
+                    </h5>
+                    <p class="text-[10px] mb-2 text-gray-500 dark:text-gray-400">
+                        <span *ngIf="pick.player_first_name">
+                            {{ pick.player_position }} - {{ pick.player_short_code }}
+                        </span>
+                        <span *ngIf="!pick.player_first_name">
+                            &nbsp;
+                        </span>
+                    </p>
+                    
+                    <p class="text-[10px] text-gray-700 font-semibold dark:text-gray-400 flex items-center justify-between relative">
+                        <span class="float-left">
+                            {{ pick.round }}.{{ pick.position }} ({{ pick.pick_number }})
+                        </span>
+                        <span *ngIf="pick.assigned_to !== pick.owned_by" 
+                            class="relative float-right w-7 h-7 mr-0.5 rounded-full overflow-hidden" 
+                            style="top: -10px; margin-bottom: -13px;">
+                            <img [src]="getTeamImage(pick)" alt="Icon" class="w-full h-full object-cover">
+                        </span>
+                    </p>                   
+                    
+                </div>
+
+            </ng-container>
+        </div>
+    </div>
+</div>
   
   
   

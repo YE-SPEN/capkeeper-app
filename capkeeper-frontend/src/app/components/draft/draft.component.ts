@@ -78,4 +78,13 @@ export class DraftComponent {
     return this.general_picks.find(pick => pick.round === round && pick.assigned_to === team_id);
   }
 
+  getTeamImage(pick: Draft_Pick): string {
+      for (let team of this.teams) {
+        if (team.team_id === pick.owned_by) {
+          return team.picture
+        }
+      }
+      return '';
+  }
+
 }
