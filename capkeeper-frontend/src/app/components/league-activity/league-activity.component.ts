@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild  } from '@angular/core';
 import { GlobalService } from '../../services/global.service';
 import { SortingService } from '../../services/sorting.service';
 import { User, Activity, Asset } from '../../types';
 import { ActivatedRoute } from '@angular/router';
 import { TeamService } from '../../services/team.service';
-import { firstValueFrom } from 'rxjs';
+declare const window: any;
 
 @Component({
   selector: 'app-league-activity',
@@ -13,7 +13,10 @@ import { firstValueFrom } from 'rxjs';
 })
 
 export class LeagueActivityComponent {
+  @ViewChild('datepickerRangeStart') datepickerRangeStart!: ElementRef;
+  @ViewChild('datepickerRangeEnd') datepickerRangeEnd!: ElementRef;
   league_id!: string;
+  searchKey: string = '';
   searchRangeInDays: number = 7;
   start_date: string = this.getSearchDate(7);
   end_date: string = this.getSearchDate(0);
@@ -58,31 +61,32 @@ export class LeagueActivityComponent {
       dropdownMenu.addEventListener('mouseleave', () => {
         dropdownMenu.classList.add('hidden');
       });
-
     }
   
-    const startDateInput = document.getElementById('datepicker-range-start') as HTMLInputElement;
-    const endDateInput = document.getElementById('datepicker-range-end') as HTMLInputElement;
+    const Datepicker = window.Flowbite.Datepicker;
+    const options = {
+      autoHide: true,
+      orientation: 'bottom',
+      autoSelectToday: true,
+      format: 'yyyy-mm-dd',
+      defaultDate: new Date(),
+    };
   
-    const datePicker = document.querySelector('.date-range-picker');
+    const startDatepicker = new Datepicker(this.datepickerRangeStart.nativeElement, options);
+    const endDatepicker = new Datepicker(this.datepickerRangeEnd.nativeElement, options);
   
-    if (startDateInput) {
-      startDateInput.addEventListener('click', () => {
-        if (datePicker) {
-          datePicker.classList.toggle('hidden'); 
-        }
-      });
-    }
+    this.datepickerRangeStart.nativeElement.addEventListener('focus', () => startDatepicker.show());
+    this.datepickerRangeEnd.nativeElement.addEventListener('focus', () => endDatepicker.show());
   
-    if (endDateInput) {
-      endDateInput.addEventListener('click', () => {
-        if (datePicker) {
-          datePicker.classList.toggle('hidden'); 
-        }
-      });
-    }
+    document.addEventListener('click', (event) => {
+      if (!this.datepickerRangeStart.nativeElement.contains(event.target) && !this.datepickerRangeEnd.nativeElement.contains(event.target)) {
+        startDatepicker.hide();
+        endDatepicker.hide();
+        this.getActivitiesByDate();
+      }
+    });
   }
-
+  
   getSearchDate(days: number): string {
       const today = new Date();
       today.setDate(today.getDate() - days);
@@ -148,6 +152,19 @@ export class LeagueActivityComponent {
     });
   }
 
+  searchActivities(): void {
+    if (this.searchKey === '') { this.resetSearch(); return; }
+    this.filterActivities();
+    this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
+    this.setPage(1);
+  }
+
+  resetSearch(): void {
+    this.searchKey = '';
+    this.filterActivities();
+    this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
+  }
+
   isNew(activity: Activity): boolean {
     if (this.globalService.loggedInUser) {
         if (activity.date > this.globalService.loggedInUser.log_out_date) {
@@ -179,10 +196,10 @@ export class LeagueActivityComponent {
   }
 
   filterActivities(): void {
-    this.filtered_activity_log = this.activity_log.filter(activity => this.inActivityTypeFilter(activity) && this.inUserFilter(activity));
+    this.filtered_activity_log = this.activity_log.filter(activity => this.inActivityTypeFilter(activity) && this.inUserFilter(activity) && activity.message.toLowerCase().includes(this.searchKey.toLowerCase()));
     this.sortingService.sort(this.filtered_activity_log, this.sortingService.sortColumn, this.sortingService.sortDirection);
     this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
-    this.currentPage = 1;
+    this.setPage(1);
   }
 
   inActivityTypeFilter(activity: Activity): boolean {

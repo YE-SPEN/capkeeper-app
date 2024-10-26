@@ -43,7 +43,7 @@ export class TradeReviewComponent extends TradeProposalComponent {
   
     this.assets_given = response.tradeItems.filter(asset => asset?.traded_to === this.recipient.team_id);
     this.assets_received = response.tradeItems.filter(asset => asset?.traded_to === this.requestor.team_id);
-    this.adjustSalaries;
+    this.adjustSalaries();
   }
   
   acceptTrade(): void {
@@ -65,6 +65,9 @@ export class TradeReviewComponent extends TradeProposalComponent {
           }
 
           this.router.navigate(['/' + this.league_id + '/teams/' + this.globalService.loggedInTeam?.team_id]).then(() => {
+            if (this.globalService.loggedInTeam) {
+              this.globalService.updateTeamCap(this.globalService.loggedInTeam);
+            }
             this.toastService.showToast('Trade confirmed!', true);
           });
         },
@@ -85,7 +88,10 @@ export class TradeReviewComponent extends TradeProposalComponent {
     .subscribe({
       next: (response) => {
         this.router.navigate(['/' + this.league_id + '/teams/' + this.globalService.loggedInTeam?.team_id]);
-          this.toastService.showToast('Trade rejected.', false)
+        if (this.globalService.loggedInTeam) {
+          this.globalService.updateTeamCap(this.globalService.loggedInTeam);
+        }
+        this.toastService.showToast('Trade rejected.', false);
       },
       error: (error) => {
         console.error('Error recording action:', error);

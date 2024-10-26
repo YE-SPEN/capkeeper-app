@@ -92,18 +92,52 @@
             <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap text-gray-200 dark:text-white">Capkeeper Leagues</span>
           </a>
         </div>
-        <div class="flex items-center">
-          <div class="relative flex items-center ms-3"
+
+        <div class="flex items-center space-x-3">
+          <!-- User Inbox -->
+          <div *ngIf="globalService.loggedInTeam" (mouseenter)="globalService.toggleInbox(true)" (mouseleave)="globalService.toggleInbox(false)" class="relative inline-block">
+            <!-- Inbox Button -->
+            <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" type="button" aria-expanded="false"
+              class="flex items-center w-auto px-4 py-2 text-xs font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-500 dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+              <svg class="w-4 h-4 text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M5.024 3.783A1 1 0 0 1 6 3h12a1 1 0 0 1 .976.783L20.802 12h-4.244a1.99 1.99 0 0 0-1.824 1.205 2.978 2.978 0 0 1-5.468 0A1.991 1.991 0 0 0 7.442 12H3.198l1.826-8.217ZM3 14v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5h-4.43a4.978 4.978 0 0 1-9.14 0H3Z" clip-rule="evenodd"/>
+              </svg>
+              Inbox
+              <span class="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                {{ globalService.loggedInTeam.inbox ? globalService.loggedInTeam.inbox.length : 0 }}
+              </span>
+              <svg class="w-2.5 h-2.5 ml-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+              </svg>
+            </button>
+        
+            <!-- Dropdown menu -->
+            <div *ngIf="globalService.inboxMenuIsOpen" id="dropdownUsers" class="absolute top-full right-0 z-50 bg-white rounded-lg shadow w-auto dark:bg-gray-700">
+              <ul class="text-xs font-semibold overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
+                <li *ngFor="let trade of globalService.loggedInTeam.inbox" class="border-gray-200 border-b rounded-lg">
+                  <a [routerLink]="['/', globalService.league?.league_id, 'trade', trade.trade_id]" class="rounded-lg flex items-center justify-between text-gray-900 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white whitespace-nowrap">
+                    <span>Trade Request received from {{ globalService.getTeamName(trade.requested_by) }}</span>
+                    <svg class="w-6 h-6 text-green-400 dark:text-white ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/>
+                    </svg> 
+                  </a>
+                </li>                                            
+              </ul>
+            </div>
+          </div>
+        
+          <!-- User Profile Icon -->
+          <div class="relative flex items-center"
                (mouseenter)="globalService.toggleUserMenu(true)" 
                (mouseleave)="globalService.toggleUserMenu(false)">
-            
+              
               <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false">
                 <span class="sr-only">Open user menu</span>
                 <div *ngIf="globalService.loggedInUser.picture">
                   <img class="w-10 h-10 rounded-full" src="{{ globalService.loggedInUser.picture }}" alt="user photo">
                 </div>
                 <div *ngIf="!globalService.loggedInUser.picture" class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                  <span class="font-bold text-lg text-gray-600 dark:text-gray-300">{{ globalService.getUserInitials(globalService.loggedInUser) }} </span>
+                  <span class="font-bold text-lg text-gray-600 dark:text-gray-300">{{ globalService.getUserInitials(globalService.loggedInUser) }}</span>
                 </div>
               </button>
         
@@ -131,6 +165,7 @@
             </div>
           </div>
         </div>
+        
               
       </div>
     </div>

@@ -32,28 +32,43 @@
                                         <hr class="border-0 border-t-2 border-gray-300">
                                     </div>
         
-                                    <h4 class="mb-6 text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400">
-                                        Active Roster:&nbsp;&nbsp;&nbsp;
-                                        <span class="font-semibold text-lg">
-                                        {{ recipient.roster_size - countRookies(recipient.roster) }}/{{ globalService.league?.max_roster_size}}
+                                    <h4 class="text-md font-normal text-gray-500 dark:text-gray-400">
+                                        Active Roster:
+                                        <span class="font-bold text-md ml-2">
+                                          {{ recipient.roster_size - countRookies(recipient.roster) }}/{{ globalService.league?.max_roster_size}}
                                         </span>
                                         <br>
-                                        Rookie Bank:&nbsp;&nbsp;&nbsp;
-                                        <span class="font-semibold text-lg">
-                                        {{ countRookies(recipient.roster) }}/{{ globalService.league?.rookie_bank_size }}
+                                        Rookie Bank:
+                                        <span class="font-bold text-md ml-2">
+                                          {{ countRookies(recipient.roster) }}/{{ globalService.league?.rookie_bank_size }}
                                         </span>
                                         <br>
-                                        Projected Cap Space:&nbsp;&nbsp;&nbsp;
+                                        Projected Cap Space:
                                         <span
                                         [ngClass]="{
-                                        'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': recipient.cap_space < 0,
-                                        'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': recipient.cap_space > 0 && recipient.cap_space < 7000000,
-                                        'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': recipient.cap_space >= 7000000
+                                            'text-md bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': recipient.cap_space < 0,
+                                            'text-md bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': recipient.cap_space > 0 && recipient.cap_space < 2000000,
+                                            'text-md bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': recipient.cap_space >= 2000000
                                         }"
-                                        class="text-sm font-medium me-2 px-2.5 py-0.5 rounded">
-                                        ${{ recipient.cap_space | number:'1.0-0' }}
+                                         class="p-2 font-bold text-md me-2 py-0.5 rounded ">
+                                          ${{ recipient.cap_space | number:'1.0-0' }}
                                         </span>
-                                    </h4>
+                                        <div class="py-2">
+                                            <hr class="border-0 border-t-2 border-gray-300">
+                                        </div>
+                                        Retaining Salary:
+                                        <span *ngIf="recipient.player_retained" class="font-bold text-md ml-2">
+                                            Yes ({{ recipient.player_retained }})
+                                        </span>
+                                        <span *ngIf="!recipient.player_retained" class="font-bold text-md ml-2">
+                                            No
+                                        </span>
+                                        <br>
+                                        Reduced Salary Contracts:
+                                        <span class="font-bold text-md ml-2">
+                                            {{ recipient_retention_slots }}/{{ globalService.league?.retention_slots }}
+                                        </span>
+                                      </h4>
                                 </td>
                             </tr>
                         </table>
@@ -92,28 +107,43 @@
                                         <hr class="border-0 border-t-2 border-gray-300">
                                     </div>
 
-                                    <h4 class="mb-6 text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400">
-                                        Active Roster:&nbsp;&nbsp;&nbsp;
-                                        <span class="font-semibold text-lg">
-                                        {{ requestor.roster_size - countRookies(requestor.roster) }}/{{ globalService.league?.max_roster_size}}
+                                    <h4 class="text-md font-normal text-gray-500 dark:text-gray-400">
+                                        Active Roster:
+                                        <span class="font-bold text-md ml-2">
+                                          {{ requestor.roster_size - countRookies(requestor.roster) }}/{{ globalService.league?.max_roster_size}}
                                         </span>
                                         <br>
-                                        Rookie Bank:&nbsp;&nbsp;&nbsp;
-                                        <span class="font-semibold text-lg">
-                                        {{ countRookies(requestor.roster) }}/{{ globalService.league?.rookie_bank_size }}
+                                        Rookie Bank:
+                                        <span class="font-bold text-md ml-2">
+                                          {{ countRookies(requestor.roster) }}/{{ globalService.league?.rookie_bank_size }}
                                         </span>
                                         <br>
-                                        Projected Cap Space:&nbsp;&nbsp;&nbsp;
+                                        Projected Cap Space:
                                         <span
                                         [ngClass]="{
-                                        'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': requestor.cap_space < 0,
-                                        'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': requestor.cap_space > 0 && requestor.cap_space < 7000000,
-                                        'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': requestor.cap_space >= 7000000
+                                            'text-md bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - requestor_salary) < 0,
+                                            'text-md bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - requestor_salary) > 0 && (salary_cap - requestor_salary) < 2000000,
+                                            'text-md bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - requestor_salary) >= 2000000
                                         }"
-                                        class="text-sm font-medium me-2 px-2.5 py-0.5 rounded">
-                                        ${{ requestor.cap_space | number:'1.0-0' }}
+                                         class="p-2 font-bold text-md me-2 py-0.5 rounded ">
+                                          ${{ requestor.cap_space | number:'1.0-0' }}
                                         </span>
-                                    </h4>
+                                        <div class="py-2">
+                                            <hr class="border-0 border-t-2 border-gray-300">
+                                        </div>
+                                        Retaining Salary:
+                                        <span *ngIf="requestor.player_retained" class="font-bold text-md ml-2">
+                                            Yes ({{ requestor.player_retained }})
+                                        </span>
+                                        <span *ngIf="!requestor.player_retained" class="font-bold text-md ml-2">
+                                            No
+                                        </span>
+                                        <br>
+                                        Reduced Salary Contracts:
+                                        <span class="font-bold text-md ml-2">
+                                            {{ requestor_retention_slots }}/{{ globalService.league?.retention_slots }}
+                                        </span>
+                                      </h4>
                                 </td>
                             </tr>
                         </table>

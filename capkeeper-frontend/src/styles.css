@@ -192,3 +192,15 @@ input[type="range"].range-slider::before {
   background-color: #31C48D; /* Green color */
   border-radius: 9999px;
 }
+
+#date-range-picker {
+  position: relative;
+}
+
+.datepicker-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+}
+

@@ -4,53 +4,66 @@
             Recent Activity
         </h1>
         <!-- Control Panel -->
-        <div class="flex flex-wrap items-start pt-6 space-y-4 md:space-y-0 md:space-x-4">
+        <div class="flex flex-wrap items-start pt-2 space-y-4 md:space-y-0 md:space-x-4">
 
             <!-- User Multi-Select -->
             <div class="relative flex flex-col w-full md:w-auto">
-                <label for="dateFilter" class="text-left block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">&nbsp;</label>
-                
-                <button id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-300" type="button">
-                  Select Users
-                  <span class="inline-flex items-center justify-center w-5 h-5 ms-2 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
-                    {{ selected_users.length }}
-                  </span>
-                  <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            <label for="dateFilter" class="text-left block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">&nbsp;</label>
+            
+            <button id="dropdownBgHoverButton" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-300" type="button">
+              Select Users
+              <span class="inline-flex items-center justify-center w-5 h-5 ms-2 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                {{ selected_users.length }}
+              </span>
+              <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+              </svg>
+            </button>
+          
+            <!-- Dropdown menu -->
+            <div id="dropdownBgHover" class="absolute z-10 hidden w-64 bg-white rounded-lg shadow dark:bg-gray-700" style="top: 100%; left: 10;">
+              <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBgHoverButton">
+                <li>
+                  <a *ngIf="selected_users.length > 0" (click)="deselectAllUsers()" class="cursor-pointer font-medium text-green-500 dark:text-green-500 hover:underline">
+                    Deselect All
+                  </a>
+                  <a *ngIf="selected_users.length === 0" (click)="selectAllUsers()" class="cursor-pointer font-medium text-green-500 dark:text-green-500 hover:underline">
+                    Select All
+                  </a>
+                  <div class="py-1">
+                    <hr class="border-0 border-t-2 border-gray-300">   
+                  </div>
+                </li>  
+                <li *ngFor="let user of users">
+                  <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                    <input             
+                      id="user-checkbox-{{ user.user_name }}"
+                      type="checkbox" 
+                      [checked]="isSelected(user)"
+                      (change)="toggleUserSelect($event, user)"
+                      class="w-4 h-4 text-green-400 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-500 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    >
+                    <label for="user-checkbox-{{ user.user_name }}" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
+                      {{ user.first_name }} {{ user.last_name }}
+                    </label>
+                  </div>
+                </li>                                                                              
+              </ul>
+            </div>
+          </div> 
+
+            <!-- Search Bar -->
+            <div class="w-full md:w-auto flex flex-col">
+              <label for="table-search" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">&nbsp;</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                  <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                   </svg>
-                </button>
-              
-                <!-- Dropdown menu -->
-                <div id="dropdownBgHover" class="absolute z-10 hidden w-64 bg-white rounded-lg shadow dark:bg-gray-700" style="top: 100%; left: 10;">
-                  <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBgHoverButton">
-                    <li>
-                      <a *ngIf="selected_users.length > 0" (click)="deselectAllUsers()" class="cursor-pointer font-medium text-green-500 dark:text-green-500 hover:underline">
-                        Deselect All
-                      </a>
-                      <a *ngIf="selected_users.length === 0" (click)="selectAllUsers()" class="cursor-pointer font-medium text-green-500 dark:text-green-500 hover:underline">
-                        Select All
-                      </a>
-                      <div class="py-1">
-                        <hr class="border-0 border-t-2 border-gray-300">   
-                      </div>
-                    </li>  
-                    <li *ngFor="let user of users">
-                      <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                        <input             
-                          id="user-checkbox-{{ user.user_name }}"
-                          type="checkbox" 
-                          [checked]="isSelected(user)"
-                          (change)="toggleUserSelect($event, user)"
-                          class="w-4 h-4 text-green-400 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-500 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        >
-                        <label for="user-checkbox-{{ user.user_name }}" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
-                          {{ user.first_name }} {{ user.last_name }}
-                        </label>
-                      </div>
-                    </li>                                                                              
-                  </ul>
                 </div>
-              </div>              
+                <input type="text" [(ngModel)]="searchKey" (input)="searchActivities()" id="table-search-users" class="block p-2.5 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-full md:w-80 bg-gray-50 focus:ring-green-400 focus:border-green-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400" placeholder="Search by keyword...">
+              </div>
+            </div>             
               
             <!-- Action Filter -->
             <div class="flex flex-col w-full md:w-auto">
@@ -77,37 +90,38 @@
                 </select>
             </div>
         
-            <!-- Custom Date Range -->
-            <div>
-                <div class="flex flex-col w-full md:w-auto ml-auto md:ml-0">
-                    <label for="date-range-picker" class="text-left block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Custom Date Range</label>
-                    
-                    <!-- Date Range Picker -->     
-                    <div id="date-range-picker" date-rangepicker class="relative flex items-center">
-                        <!-- Start Date -->
-                        <div class="relative">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                                </svg>
-                            </div>
-                            <input (change)="setStartDate($event)" id="datepicker-range-start" name="start" type="text" datepicker-format="yyyy-mm-dd" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400" placeholder="Select date start">
+            <!-- Custom Date Range 
+            <div class="relative">
+              <div class="flex flex-col w-full md:w-auto ml-auto md:ml-0">
+                <label for="date-range-picker" class="text-left block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Custom Date Range</label>
+                
+                <!-- Date Range Picker    
+                <div id="date-range-picker" date-rangepicker class="relative flex items-center">
+                    <!-- Start Date 
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                            </svg>
                         </div>
+                        <input #datepickerRangeStart (change)="setStartDate($event)" id="datepicker-range-start" name="start" type="text" datepicker-format="yyyy-mm-dd" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block w-full max-w-48 ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400" placeholder="Select date start">
+                    </div>
             
-                        <span class="mx-2 text-gray-500">to</span>
+                    <span class="mx-2 text-gray-500">to</span>
             
-                        <!-- End Date -->
-                        <div class="relative">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                                </svg>
-                            </div>
-                            <input (change)="setEndDate($event)" id="datepicker-range-end" name="end" type="text" datepicker-format="yyyy-mm-dd" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400" placeholder="Select date end">
+                    <!-- End Date 
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                            </svg>
                         </div>
+                        <input #datepickerRangeEnd (change)="setEndDate($event)" id="datepicker-range-end" name="end" type="text" datepicker-format="yyyy-mm-dd" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block w-full max-w-48 ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400" placeholder="Select date end">
                     </div>
                 </div>
-            </div>
+              </div>
+            
+            </div>-->
         </div>
                  
     </div>
@@ -209,7 +223,7 @@
                         <li *ngFor="let asset of getAssetsByTeam(activity.trade_id, team)" class="text-xs text-gray-500">
                             <ng-container *ngIf="asset?.asset_type === 'player'">
                                     {{ asset?.first_name }} {{ asset?.last_name }} 
-                                    <span class="font-normal text-[11px] text-gray-500">&nbsp;{{ asset?.position }} - {{ asset?.short_code }}&nbsp;&nbsp;</span>
+                                    <span class="font-normal text-[11px] text-gray-500">&nbsp;{{ asset?.position }} - {{ asset?.short_code }} &nbsp;<span *ngIf="asset?.retention_perc" class="font-semibold">({{ asset?.retention_perc }}% RET)</span>&nbsp;&nbsp;</span>
                             </ng-container>
 
                             <ng-container *ngIf="asset?.asset_type === 'draft_pick'">

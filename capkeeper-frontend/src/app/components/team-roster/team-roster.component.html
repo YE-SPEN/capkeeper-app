@@ -6,7 +6,7 @@
       <table>
          <tr>
              <td class="items-left p-4">
-                 <img [src]="team.picture" class="max-w-[150px]">
+                 <img [src]="team.picture" class="max-w-[150px] rounded-full">
              </td>
              <td>
                  <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ team.team_name }}</h1>
@@ -14,7 +14,7 @@
                  <div *ngIf="editRights">
                      <div class="relative inline-block">
                         <!-- Inbox Button -->
-                        <button (click)="toggleInbox()" id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" type="button"
+                        <button (mouseenter)="toggleInbox()" id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" type="button"
                           class="w-auto px-4 py-2 mr-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800 mb-3">
                           <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd" d="M5.024 3.783A1 1 0 0 1 6 3h12a1 1 0 0 1 .976.783L20.802 12h-4.244a1.99 1.99 0 0 0-1.824 1.205 2.978 2.978 0 0 1-5.468 0A1.991 1.991 0 0 0 7.442 12H3.198l1.826-8.217ZM3 14v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5h-4.43a4.978 4.978 0 0 1-9.14 0H3Z" clip-rule="evenodd"/>
@@ -1262,7 +1262,7 @@
                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
             </svg>
             <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Drop <b>{{selected.first_name }} {{ selected.last_name }}</b> from your roster?</h3>
-            <button type="submit" (click)="dropPlayer(selected); closeModal()" class="mr-3 text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+            <button type="submit" (click)="dropPlayer(selected); closeModal()" class="mr-4 bg-red-500 border border-red-500 hover:bg-red-600 text-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-500 dark:hover:bg-red-600">
                Drop Player
             </button>
             <button type="submit" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">

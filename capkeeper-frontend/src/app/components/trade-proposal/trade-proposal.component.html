@@ -43,34 +43,41 @@
                         <hr class="border-0 border-t-2 border-gray-300">
                       </div>
       
-                      <h4 class="text-lg font-semibold text-gray-500 lg:text-sm dark:text-gray-400">
-                        Active Roster:&nbsp;&nbsp;&nbsp;
-                        <span class="font-semibold text-lg">
+                      <h4 class="text-md font-normal text-gray-500 dark:text-gray-400">
+                        Active Roster:
+                        <span class="font-bold text-md ml-2">
                           {{ requestor.roster_size - countRookies(requestor.roster) }}/{{ globalService.league?.max_roster_size}}
                         </span>
                         <br>
-                        Rookie Bank:&nbsp;&nbsp;&nbsp;
-                        <span class="font-semibold text-lg">
+                        Rookie Bank:
+                        <span class="font-bold text-md ml-2">
                           {{ countRookies(requestor.roster) }}/{{ globalService.league?.rookie_bank_size }}
                         </span>
                         <br>
-                        Projected Cap Space:&nbsp;&nbsp;&nbsp;
+                        Projected Cap Space:
                         <span
                         [ngClass]="{
-                            'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - requestor_salary) < 0,
-                            'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - requestor_salary) > 0 && (salary_cap - requestor_salary) < 2000000,
-                            'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - requestor_salary) >= 2000000
+                            'text-md bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': requestor.cap_space < 0,
+                            'text-md bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': requestor.cap_space > 0 && requestor.cap_space < 2000000,
+                            'text-md bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': requestor.cap_space >= 2000000
                         }"
-                         class="p-2 font-semibold text-lg me-2 py-0.5 rounded">
+                         class="p-2 font-bold text-md me-2 py-0.5 rounded ">
                           ${{ requestor.cap_space | number:'1.0-0' }}
                         </span>
-                        <br>
+                        <div class="py-2">
+                            <hr class="border-0 border-t-2 border-gray-300">
+                        </div>
                         Retaining Salary:
-                        <span *ngIf="requestor.player_retained" class="font-semibold text-lg">
-                            Yes
+                        <span *ngIf="requestor.player_retained" class="font-bold text-md ml-2">
+                            Yes ({{ requestor.player_retained }})
                         </span>
-                        <span *ngIf="!requestor.player_retained" class="font-semibold text-lg">
+                        <span *ngIf="!requestor.player_retained" class="font-bold text-md ml-2">
                             No
+                        </span>
+                        <br>
+                        Reduced Salary Contracts:
+                        <span class="font-bold text-md ml-2">
+                            {{ requestor_retention_slots }}/{{ globalService.league?.retention_slots }}
                         </span>
                       </h4>
                     </td>
@@ -111,38 +118,43 @@
                         <hr class="border-0 border-t-2 border-gray-300">
                       </div>
       
-                      <h4 class="text-lg font-semibold text-gray-500 lg:text-sm dark:text-gray-400">
-                        Active Roster:&nbsp;&nbsp;&nbsp;
-                        <span class="font-semibold text-lg">
+                      <h4 class="text-md font-normal text-gray-500 dark:text-gray-400">
+                        Active Roster:
+                        <span class="font-bold text-md ml-2">
                           {{ recipient.roster_size - countRookies(recipient.roster) }}/{{ globalService.league?.max_roster_size}}
                         </span>
                         <br>
-                        Rookie Bank:&nbsp;&nbsp;&nbsp;
-                        <span class="font-semibold text-lg">
+                        Rookie Bank:
+                        <span class="font-bold text-md ml-2">
                           {{ countRookies(recipient.roster) }}/{{ globalService.league?.rookie_bank_size }}
                         </span>
                         <br>
-                        Projected Cap Space:&nbsp;&nbsp;&nbsp;
+                        Projected Cap Space:
                         <span
                         [ngClass]="{
-                            'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - recipient_salary) < 0,
-                            'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - recipient_salary) > 0 && (salary_cap - recipient_salary) < 2000000,
-                            'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - recipient_salary) >= 2000000
+                            'text-md bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': recipient.cap_space < 0,
+                            'text-md bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': recipient.cap_space > 0 && recipient.cap_space < 2000000,
+                            'text-md bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': recipient.cap_space >= 2000000
                         }"
-                          class="p-2 font-semibold text-lg me-2 py-0.5 rounded">
+                         class="p-2 font-bold text-md me-2 py-0.5 rounded ">
                           ${{ recipient.cap_space | number:'1.0-0' }}
                         </span>
-                        <br>
+                        <div class="py-2">
+                            <hr class="border-0 border-t-2 border-gray-300">
+                        </div>
                         Retaining Salary:
-                        <span *ngIf="recipient.player_retained" class="font-semibold text-lg">
-                            Yes
+                        <span *ngIf="recipient.player_retained" class="font-bold text-md ml-2">
+                            Yes ({{ recipient.player_retained }})
                         </span>
-                        <span *ngIf="!recipient.player_retained" class="font-semibold text-lg">
+                        <span *ngIf="!recipient.player_retained" class="font-bold text-md ml-2">
                             No
                         </span>
                         <br>
+                        Reduced Salary Contracts:
+                        <span class="font-bold text-md ml-2">
+                            {{ recipient_retention_slots }}/{{ globalService.league?.retention_slots }}
+                        </span>
                       </h4>
-                    </td>
                   </tr>
                 </table>
               </div>
@@ -362,7 +374,7 @@
                         <td class="px-6 py-4">
                             
                             <!-- Salary Retention Button -->
-                            <div *ngIf="(assets_given[i] && assets_given[i]?.player_id && !assets_given[i]?.isRookie && !requestor.player_retained) || (assets_given[i]?.retention_perc && requestor.salary_retained)" (click)="openModal(retainSalaryModal, assets_given[i])"  class="inline-flex items-center mr-3">
+                            <div *ngIf="(assets_given[i] && assets_given[i]?.player_id && !assets_given[i]?.isRookie && !requestor.player_retained && globalService.league && countRetentionSlots(requestor.roster) < globalService.league.retention_slots && recipient_retention_slots < globalService.league.retention_slots) || (assets_given[i]?.retention_perc)" (click)="openModal(retainSalaryModal, assets_given[i])"  class="inline-flex items-center mr-3">
                                 <svg class="w-6 h-6 text-blue-700 dark:text-white hover:fill-blue-700 hover:text-white hover:cursor-pointer"  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.891 15.107 15.11 8.89m-5.183-.52h.01m3.089 7.254h.01M14.08 3.902a2.849 2.849 0 0 0 2.176.902 2.845 2.845 0 0 1 2.94 2.94 2.849 2.849 0 0 0 .901 2.176 2.847 2.847 0 0 1 0 4.16 2.848 2.848 0 0 0-.901 2.175 2.843 2.843 0 0 1-2.94 2.94 2.848 2.848 0 0 0-2.176.902 2.847 2.847 0 0 1-4.16 0 2.85 2.85 0 0 0-2.176-.902 2.845 2.845 0 0 1-2.94-2.94 2.848 2.848 0 0 0-.901-2.176 2.848 2.848 0 0 1 0-4.16 2.849 2.849 0 0 0 .901-2.176 2.845 2.845 0 0 1 2.941-2.94 2.849 2.849 0 0 0 2.176-.901 2.847 2.847 0 0 1 4.159 0Z"/>
                                 </svg>
@@ -596,7 +608,7 @@
                         <td class="px-6 py-4">
                             
                             <!-- Salary Retention Button -->
-                            <div *ngIf="(assets_received[i] && assets_received[i]?.player_id && !assets_received[i]?.isRookie && !recipient.player_retained) || (assets_received[i]?.retention_perc && recipient.salary_retained)" (click)="openModal(retainSalaryModal, assets_received[i])"  class="inline-flex items-center mr-3">
+                            <div *ngIf="(assets_received[i] && assets_received[i]?.player_id && !assets_received[i]?.isRookie && !recipient.player_retained && globalService.league && countRetentionSlots(recipient.roster) < globalService.league.retention_slots && requestor_retention_slots < globalService.league.retention_slots) || (assets_received[i]?.retention_perc)" (click)="openModal(retainSalaryModal, assets_received[i])"  class="inline-flex items-center mr-3">
                                 <svg class="w-6 h-6 text-blue-700 dark:text-white hover:fill-blue-700 hover:text-white hover:cursor-pointer"  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.891 15.107 15.11 8.89m-5.183-.52h.01m3.089 7.254h.01M14.08 3.902a2.849 2.849 0 0 0 2.176.902 2.845 2.845 0 0 1 2.94 2.94 2.849 2.849 0 0 0 .901 2.176 2.847 2.847 0 0 1 0 4.16 2.848 2.848 0 0 0-.901 2.175 2.843 2.843 0 0 1-2.94 2.94 2.848 2.848 0 0 0-2.176.902 2.847 2.847 0 0 1-4.16 0 2.85 2.85 0 0 0-2.176-.902 2.845 2.845 0 0 1-2.94-2.94 2.848 2.848 0 0 0-.901-2.176 2.848 2.848 0 0 1 0-4.16 2.849 2.849 0 0 0 .901-2.176 2.845 2.845 0 0 1 2.941-2.94 2.849 2.849 0 0 0 2.176-.901 2.847 2.847 0 0 1 4.159 0Z"/>
                                 </svg>
@@ -726,51 +738,6 @@
                     </td>
                 </tr>
 
-                <!-- Retention Slots -->
-                <tr>
-                    <td class="text-right px-4">
-                        <h4 class="flex items-center text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400 justify-end">
-                            <span class="font-semibold text-lg mr-6">
-                                {{ requestor_retention_slots }}/{{ globalService.league?.retention_slots }}
-                            </span>
-                            <div *ngIf="!retentionIsValid(requestor_retention_slots)">
-                                <svg class="w-6 h-6 ms-2 text-red-500 dark:text-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                </svg>
-                            </div>
-                            <div *ngIf="retentionIsValid(requestor_retention_slots)">
-                                <svg class="w-6 h-6 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                </svg> 
-                            </div>
-                        </h4>
-                    </td>
-
-                    <td class="text-center px-4">    
-                        <h4 class="text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400">
-                            Retention Slots
-                        </h4>
-                    </td>
-
-                    <td class="text-left px-4"> 
-                        <h4 class="flex items-center text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400">
-                            <div *ngIf="!retentionIsValid(recipient_retention_slots)">
-                                <svg class="w-6 h-6 ms-2 text-red-500 dark:text-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                </svg>
-                            </div>
-                            <div *ngIf="retentionIsValid(recipient_retention_slots)">
-                                <svg class="w-6 h-6 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                </svg> 
-                            </div>
-                            <span class="font-semibold text-lg ml-6">
-                                {{ recipient_retention_slots }}/{{ globalService.league?.retention_slots }}
-                            </span>
-                        </h4>
-                    </td>
-                </tr>
-
                 <!-- Salary Cap -->
                 <tr>
                     <td class="text-right px-4"> 
@@ -890,7 +857,7 @@
  <!-- Retain Salary Modal -->
   <ng-template #retainSalaryModal id="retainSalaryModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-2xl max-h-full">
-          <form (ngSubmit)="setSalaryRet(selected_player); adjustSalaries(); adjustRetention(); closeModal()" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <form (ngSubmit)="setSalaryRet(selected_player); adjustSalaries(); closeModal()" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
  
              <div class="flex items-start justify-between p-4 rounded-t md:w-[400px]">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">

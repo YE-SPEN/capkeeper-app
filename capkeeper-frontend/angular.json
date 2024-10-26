@@ -28,7 +28,9 @@
               "src/assets/tailwind.css",
               "src/styles.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/flowbite/dist/flowbite.js"
+            ],
             "allowedCommonJsDependencies": [
               "@hapi/hapi",
               "@hapi/inert",

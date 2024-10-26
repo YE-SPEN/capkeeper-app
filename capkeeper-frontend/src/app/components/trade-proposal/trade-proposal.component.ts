@@ -73,12 +73,14 @@ export class TradeProposalComponent {
       this.teamService.getRosterByTeam(this.league_id, team_id).subscribe(
         response => {
           this.requestor = response.team;
+
+          this.requestor.roster_size = response.roster.length;
+          this.requestor.total_cap = this.getTotalCap(response.roster) + this.requestor.salary_retained;
+          this.requestor_retention_slots = this.countRetentionSlots(response.roster);
+
           this.requestor.roster = this.clearSalaryRetention(response.roster);
           this.requestor.draft_picks = response.draft_picks;
           this.requestor.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.requestor.team_id && !pick.player_taken);
-  
-          this.requestor.roster_size = this.requestor.roster.length;
-          this.requestor.total_cap = this.getTotalCap(this.requestor.roster);
   
           if (this.globalService.league) {
             this.salary_cap = this.globalService.league.salary_cap;
@@ -88,7 +90,6 @@ export class TradeProposalComponent {
           this.requestor_rookies = this.countRookies(this.requestor.roster);
           this.requestor_contracts = this.requestor.roster_size - this.requestor_rookies;
           this.requestor_salary = this.requestor.total_cap;
-          this.requestor_retention_slots = this.countRetentionSlots(this.requestor);
   
           resolve();
         },
@@ -107,12 +108,14 @@ export class TradeProposalComponent {
       this.teamService.getRosterByTeam(this.league_id, team_id).subscribe(
         response => {
           this.recipient = response.team;
+
+          this.recipient.roster_size = response.roster.length;
+          this.recipient.total_cap = this.getTotalCap(response.roster) + this.recipient.salary_retained;
+          this.recipient_retention_slots = this.countRetentionSlots(response.roster);
+
           this.recipient.roster = this.clearSalaryRetention(response.roster);
           this.recipient.draft_picks = response.draft_picks;
           this.recipient.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.recipient.team_id && !pick.player_taken);
-  
-          this.recipient.roster_size = this.recipient.roster.length;
-          this.recipient.total_cap = this.getTotalCap(this.recipient.roster) + this.recipient.salary_retained;
   
           if (this.globalService.league) {
             this.recipient.cap_space = this.globalService.league.salary_cap - this.recipient.total_cap;
@@ -121,7 +124,6 @@ export class TradeProposalComponent {
           this.recipient_rookies = this.countRookies(this.recipient.roster);
           this.recipient_contracts = this.recipient.roster_size - this.recipient_rookies;
           this.recipient_salary = this.recipient.total_cap;
-          this.recipient_retention_slots = this.countRetentionSlots(this.recipient);
   
           resolve();
         },
@@ -137,9 +139,11 @@ export class TradeProposalComponent {
     for (let player of roster) {
       if (!player.isRookie && !player.onIR) {
         if (player.retention_perc && player.retention_perc > 0) {
-          player.aav_current = player.aav_current * (1 - (player.retention_perc / 100))
+          sum += player.aav_current * (1 - (player.retention_perc / 100))
         }
-        sum += player.aav_current;
+        else{
+          sum += player.aav_current;
+        }
       }
     }
     return sum;
@@ -216,7 +220,6 @@ export class TradeProposalComponent {
         this.removeRetention(asset.player_id);
       } 
       this.adjustSalaries();
-      this.adjustRetention();
     }
   }
 
@@ -230,7 +233,6 @@ export class TradeProposalComponent {
       this.assets_received_types = Array(6).fill('');
     }
     this.resetAdjustments();
-    this.adjustRetention();
     return;
   }
 
@@ -262,16 +264,12 @@ export class TradeProposalComponent {
     for (let asset of this.assets_given) {
       if (asset?.player_id === player.player_id) {
         asset.retention_perc = player.retention_perc;
-        this.requestor.player_retained = player.player_id;
-        this.requestor.salary_retained = player.aav_current * (player.retention_perc / 100);
         return;
       }
     }
     for (let asset of this.assets_received) {
       if (asset?.player_id === player.player_id) {
         asset.retention_perc = player.retention_perc;
-        this.recipient.player_retained = player.player_id;
-        this.recipient.salary_retained = player.aav_current * (player.retention_perc / 100);
         return;
       }
     }
@@ -288,33 +286,14 @@ export class TradeProposalComponent {
     }
   }
 
-  countRetentionSlots(team: Team): number {
+  countRetentionSlots(roster: Player[]): number {
     let count = 0;
-    for (let player of team.roster) {
+    for (let player of roster) {
       if (player.retention_perc > 0) {
         ++count;
       }
     }
     return count;
-  }
-
-  adjustRetention(): void {
-    for (let asset of this.assets_given) {
-      if (asset?.player_id && asset.retention_perc > 0) {
-        this.recipient_retention_slots++;
-        if (this.requestor_retention_slots > 0) {
-          this.requestor_retention_slots--;
-        }
-      }
-    }
-    for (let asset of this.assets_received) {
-      if (asset?.player_id && asset.retention_perc > 0) {
-        this.requestor_retention_slots++;
-        if (this.recipient_retention_slots > 0) {
-          this.recipient_retention_slots--;
-        }
-      }
-    }
   }
 
   incrementSalaryRet(player: Player): number {
@@ -397,13 +376,6 @@ export class TradeProposalComponent {
     return salary < this.salary_cap;
   }
 
-  retentionIsValid(slots: number): boolean {
-    if (this.globalService.league) {
-      return slots <= this.globalService.league.retention_slots;
-    }
-    return slots <= 2;
-  }
-
   tradeIsValid(): boolean {
     return (this.rosterIsValid(this.requestor_contracts) && this.rookieIsValid(this.requestor_rookies) && this.salaryIsValid(this.requestor_salary)
             && this.rosterIsValid(this.recipient_contracts) && this.rookieIsValid(this.recipient_rookies) && this.salaryIsValid(this.recipient_salary)
@@ -417,13 +389,13 @@ export class TradeProposalComponent {
       sent_to: this.recipient.team_id,
       assets: [
           {
-              player_id: '',
-              draft_pick_id: '',
-              fa_id: '',
-              traded_to: '',
-              traded_from: '',
-              retention_perc: '',
-              asset_type: ''
+            player_id: '',
+            draft_pick_id: '',
+            fa_id: '',
+            traded_to: '',
+            traded_from: '',
+            retention_perc: '',
+            asset_type: ''
           }
       ]
     };

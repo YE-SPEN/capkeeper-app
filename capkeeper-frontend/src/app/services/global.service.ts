@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Team, League, NHL_Team, User, Activity, Asset } from '../types';
+import { Team, League, NHL_Team, User, Activity, Asset, Trade } from '../types';
 import { HttpParams, HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -10,6 +10,7 @@ export class GlobalService {
   userMenuIsOpen: boolean = false;
   teamsMenuIsOpen: boolean = false;
   toolsMenuIsOpen: boolean = false;
+  inboxMenuIsOpen: boolean = false;
   notifications: number = 0;
   loggedInUser: User | null = null;
   loggedInTeam: Team | null = null;
@@ -27,10 +28,10 @@ export class GlobalService {
     return this.http.get<{ userInfo: User }>(url, { params });
   }
 
-  initializeTeam(team: Team): Observable<{ teamInfo: Team }> {;
+  initializeTeam(team: Team): Observable<{ teamInfo: Team, inbox: Trade[] }> {;
     const url = 'api/login'
     const params = new HttpParams().set('team', team.team_id ).set('league', team.league_id)
-    return this.http.get<{ teamInfo: Team }>(url, { params });
+    return this.http.get<{ teamInfo: Team, inbox: Trade[] }>(url, { params });
   }
 
   updateTeamCap(team: Team): void {
@@ -40,6 +41,8 @@ export class GlobalService {
       if (this.loggedInTeam) {
         this.loggedInTeam.roster_size = temp.roster_size;
         this.loggedInTeam.total_cap = temp.total_cap + temp.salary_retained;
+        this.loggedInTeam.inbox = response.inbox;
+        console.log('logged in team inbox: ', this.loggedInTeam.inbox)
         
         if (this.league?.salary_cap) {
           this.loggedInTeam.cap_space = this.league.salary_cap - temp.total_cap;
@@ -58,6 +61,10 @@ export class GlobalService {
 
   toggleToolsMenu(): void {
     this.toolsMenuIsOpen = !this.toolsMenuIsOpen;
+  }
+
+  toggleInbox(isOpen: boolean): void {
+    this.inboxMenuIsOpen = ! this.inboxMenuIsOpen;
   }
 
   getDate(): string {
