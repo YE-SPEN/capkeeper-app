@@ -54,7 +54,14 @@ export const loginRoute = {
                  [league, team]
             );
 
-            return { userInfo, teamInfo };
+            const { results: inbox } = await db.query(
+                `SELECT * FROM trades
+                WHERE sent_to = ?
+                AND status = 'Pending'`,
+                [team]
+            )
+
+            return { userInfo, teamInfo, inbox };
 
         } catch (err) {
             console.error(err);
