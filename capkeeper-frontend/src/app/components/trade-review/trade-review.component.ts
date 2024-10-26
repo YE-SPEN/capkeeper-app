@@ -43,6 +43,7 @@ export class TradeReviewComponent extends TradeProposalComponent {
   
     this.assets_given = response.tradeItems.filter(asset => asset?.traded_to === this.recipient.team_id);
     this.assets_received = response.tradeItems.filter(asset => asset?.traded_to === this.requestor.team_id);
+    this.adjustSalaries;
   }
   
   acceptTrade(): void {

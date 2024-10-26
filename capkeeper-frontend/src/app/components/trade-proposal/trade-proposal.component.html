@@ -43,7 +43,7 @@
                         <hr class="border-0 border-t-2 border-gray-300">
                       </div>
       
-                      <h4 class="mb-6 text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400">
+                      <h4 class="text-lg font-semibold text-gray-500 lg:text-sm dark:text-gray-400">
                         Active Roster:&nbsp;&nbsp;&nbsp;
                         <span class="font-semibold text-lg">
                           {{ requestor.roster_size - countRookies(requestor.roster) }}/{{ globalService.league?.max_roster_size}}
@@ -56,13 +56,21 @@
                         <br>
                         Projected Cap Space:&nbsp;&nbsp;&nbsp;
                         <span
-                          [ngClass]="{
-                          'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': requestor.cap_space < 0,
-                          'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': requestor.cap_space > 0 && requestor.cap_space < 7000000,
-                          'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': requestor.cap_space >= 7000000
-                          }"
-                          class="text-sm font-medium me-2 px-2.5 py-0.5 rounded">
+                        [ngClass]="{
+                            'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - requestor_salary) < 0,
+                            'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - requestor_salary) > 0 && (salary_cap - requestor_salary) < 2000000,
+                            'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - requestor_salary) >= 2000000
+                        }"
+                         class="p-2 font-semibold text-lg me-2 py-0.5 rounded">
                           ${{ requestor.cap_space | number:'1.0-0' }}
+                        </span>
+                        <br>
+                        Retaining Salary:
+                        <span *ngIf="requestor.player_retained" class="font-semibold text-lg">
+                            Yes
+                        </span>
+                        <span *ngIf="!requestor.player_retained" class="font-semibold text-lg">
+                            No
                         </span>
                       </h4>
                     </td>
@@ -103,7 +111,7 @@
                         <hr class="border-0 border-t-2 border-gray-300">
                       </div>
       
-                      <h4 class="mb-6 text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400">
+                      <h4 class="text-lg font-semibold text-gray-500 lg:text-sm dark:text-gray-400">
                         Active Roster:&nbsp;&nbsp;&nbsp;
                         <span class="font-semibold text-lg">
                           {{ recipient.roster_size - countRookies(recipient.roster) }}/{{ globalService.league?.max_roster_size}}
@@ -116,14 +124,23 @@
                         <br>
                         Projected Cap Space:&nbsp;&nbsp;&nbsp;
                         <span
-                          [ngClass]="{
-                          'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': recipient.cap_space < 0,
-                          'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': recipient.cap_space > 0 && recipient.cap_space < 7000000,
-                          'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': recipient.cap_space >= 7000000
-                          }"
-                          class="text-sm font-medium me-2 px-2.5 py-0.5 rounded">
+                        [ngClass]="{
+                            'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - recipient_salary) < 0,
+                            'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - recipient_salary) > 0 && (salary_cap - recipient_salary) < 2000000,
+                            'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - recipient_salary) >= 2000000
+                        }"
+                          class="p-2 font-semibold text-lg me-2 py-0.5 rounded">
                           ${{ recipient.cap_space | number:'1.0-0' }}
                         </span>
+                        <br>
+                        Retaining Salary:
+                        <span *ngIf="recipient.player_retained" class="font-semibold text-lg">
+                            Yes
+                        </span>
+                        <span *ngIf="!recipient.player_retained" class="font-semibold text-lg">
+                            No
+                        </span>
+                        <br>
                       </h4>
                     </td>
                   </tr>
@@ -199,17 +216,17 @@
                                             <div class="text-sm font-semibold">{{ assets_given[i]?.first_name }} {{ assets_given[i]?.last_name }}</div>
                                             <div class="font-normal text-xs text-gray-500">
                                                 {{ assets_given[i]?.position }} - {{ assets_given[i]?.short_code }}
-                                                <span *ngIf="assets_given[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
-                                                    IR
-                                                </span>
                                                 <span *ngIf="assets_given[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
                                                     Rookie
+                                                </span>
+                                                <span *ngIf="assets_given[i]?.retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">
+                                                    {{ assets_given[i]?.retention_perc }}% RET
                                                 </span>
                                             </div>
                                         </div>
 
                                         <div class="text-sm text-left rtl:text-right text-gray-500 ml-8">
-                                            {{ assets_given[i] && assets_given[i]?.aav_current > 0 ? '$' + (assets_given[i]?.aav_current | number: '1.0-0') + ' x ' + assets_given[i]?.years_left_current : '' }}
+                                            {{ assets_given[i] && assets_given[i]?.aav_current > 0 ? '$' + (assets_given[i]?.aav_current - (assets_given[i]?.aav_current * (assets_given[i]?.retention_perc / 100)) | number: '1.0-0') : '' }}
                                         </div>
                                     </div>
                                 </ng-template>
@@ -343,13 +360,16 @@
                         </td>
         
                         <td class="px-6 py-4">
-                            <div *ngIf="assets_given[i] && assets_given[i]?.player_id && !assets_given[i]?.isRookie" (click)="openModal(retainSalaryModal, assets_given[i])"  class="inline-flex items-center mr-3">
+                            
+                            <!-- Salary Retention Button -->
+                            <div *ngIf="(assets_given[i] && assets_given[i]?.player_id && !assets_given[i]?.isRookie && !requestor.player_retained) || (assets_given[i]?.retention_perc && requestor.salary_retained)" (click)="openModal(retainSalaryModal, assets_given[i])"  class="inline-flex items-center mr-3">
                                 <svg class="w-6 h-6 text-blue-700 dark:text-white hover:fill-blue-700 hover:text-white hover:cursor-pointer"  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.891 15.107 15.11 8.89m-5.183-.52h.01m3.089 7.254h.01M14.08 3.902a2.849 2.849 0 0 0 2.176.902 2.845 2.845 0 0 1 2.94 2.94 2.849 2.849 0 0 0 .901 2.176 2.847 2.847 0 0 1 0 4.16 2.848 2.848 0 0 0-.901 2.175 2.843 2.843 0 0 1-2.94 2.94 2.848 2.848 0 0 0-2.176.902 2.847 2.847 0 0 1-4.16 0 2.85 2.85 0 0 0-2.176-.902 2.845 2.845 0 0 1-2.94-2.94 2.848 2.848 0 0 0-.901-2.176 2.848 2.848 0 0 1 0-4.16 2.849 2.849 0 0 0 .901-2.176 2.845 2.845 0 0 1 2.941-2.94 2.849 2.849 0 0 0 2.176-.901 2.847 2.847 0 0 1 4.159 0Z"/>
                                 </svg>
                                   
                             </div>
                               
+                            <!-- Remove Asset Button -->
                             <div *ngIf="assets_given[i]" (click)="removeAsset(assets_given, i); closeReqDropdown(i)"  class="inline-flex items-center">
                                 <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
                                       aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
@@ -359,6 +379,7 @@
                                          d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg>
                              </div> 
+
                         </td>
                     </tr>
                 </tbody>
@@ -398,7 +419,7 @@
                             <ng-container *ngIf="assets_received_types[i] === 'player'">
                                 <ng-container *ngIf="!assets_received[i]; else showPlayer">
                                     <div class="relative inline-flex items-center text-xs md:w-28 px-1.5 py-1.5">
-                                        <button (click)="toggleRecDropdown(i)" id="dropdownUsersButton" class="text-white bg-green-400 hover:bg-green-500 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-2.5 py-1.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800" type="button">
+                                        <button (click)="toggleReqDropdown(i)" id="dropdownUsersButton" class="text-white bg-green-400 hover:bg-green-500 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-2.5 py-1.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800" type="button">
                                             Select Player 
                                             <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
@@ -406,15 +427,15 @@
                                         </button>
                         
                                         <!-- Dropdown menu -->
-                                        <div *ngIf="dropdownOpenRec[i]" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-80 dark:bg-gray-700 mt-1 top-full">
+                                        <div *ngIf="dropdownOpenReq[i]" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-80 dark:bg-gray-700 mt-1 top-full">
                                             <ul class="text-sm font-semibold h-64 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
                                                 <li *ngFor="let player of recipient.roster | tradeAssetPipe: assets_received : getAssetType" class="border-gray-200 border-b">
                                                     <div (click)="selectAsset(assets_received, player, i)" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
-                                                        <img class="w-6 h-6 me-2 rounded-full" src="{{player.logo}}" alt="{{player.player_id}}">
+                                                        <img class="w-8 h-8 me-2 rounded-full" src="{{player.logo}}" alt="{{player.player_id}}">
                                                         {{ player.first_name }} {{ player.last_name }}
                                                         <span class="font-normal text-[11px] text-gray-500">&nbsp;&nbsp;{{ player.position }} - {{ player.short_code }}&nbsp;&nbsp;</span>
                                                         <div *ngIf="player.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">IR</div>
-                                                        <div *ngIf="player.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Rookie</div>
+                                                        <div *ngIf="player.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Rookie</div>                                                    
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -429,13 +450,17 @@
                                             <div class="text-sm font-semibold">{{ assets_received[i]?.first_name }} {{ assets_received[i]?.last_name }}</div>
                                             <div class="font-normal text-xs text-gray-500">
                                                 {{ assets_received[i]?.position }} - {{ assets_received[i]?.short_code }}
-                                                <span *ngIf="assets_received[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
-                                                    IR
-                                                </span>
                                                 <span *ngIf="assets_received[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
                                                     Rookie
                                                 </span>
+                                                <span *ngIf="assets_received[i]?.retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">
+                                                    {{ assets_received[i]?.retention_perc }}% RET
+                                                </span>
                                             </div>
+                                        </div>
+
+                                        <div class="text-sm text-left rtl:text-right text-gray-500 ml-8">
+                                            {{ assets_received[i] && assets_received[i]?.aav_current > 0 ? '$' + (assets_received[i]?.aav_current - (assets_received[i]?.aav_current * (assets_received[i]?.retention_perc / 100)) | number: '1.0-0') : '' }}
                                         </div>
                                     </div>
                                 </ng-template>
@@ -569,7 +594,17 @@
                         </td>
         
                         <td class="px-6 py-4">
-                            <div *ngIf="assets_received[i]" (click)="removeAsset(assets_received, i); closeRecDropdown(i)"  class="flex items-center">
+                            
+                            <!-- Salary Retention Button -->
+                            <div *ngIf="(assets_received[i] && assets_received[i]?.player_id && !assets_received[i]?.isRookie && !recipient.player_retained) || (assets_received[i]?.retention_perc && recipient.salary_retained)" (click)="openModal(retainSalaryModal, assets_received[i])"  class="inline-flex items-center mr-3">
+                                <svg class="w-6 h-6 text-blue-700 dark:text-white hover:fill-blue-700 hover:text-white hover:cursor-pointer"  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.891 15.107 15.11 8.89m-5.183-.52h.01m3.089 7.254h.01M14.08 3.902a2.849 2.849 0 0 0 2.176.902 2.845 2.845 0 0 1 2.94 2.94 2.849 2.849 0 0 0 .901 2.176 2.847 2.847 0 0 1 0 4.16 2.848 2.848 0 0 0-.901 2.175 2.843 2.843 0 0 1-2.94 2.94 2.848 2.848 0 0 0-2.176.902 2.847 2.847 0 0 1-4.16 0 2.85 2.85 0 0 0-2.176-.902 2.845 2.845 0 0 1-2.94-2.94 2.848 2.848 0 0 0-.901-2.176 2.848 2.848 0 0 1 0-4.16 2.849 2.849 0 0 0 .901-2.176 2.845 2.845 0 0 1 2.941-2.94 2.849 2.849 0 0 0 2.176-.901 2.847 2.847 0 0 1 4.159 0Z"/>
+                                </svg>
+                                  
+                            </div>
+                              
+                            <!-- Remove Asset Button -->
+                            <div *ngIf="assets_received[i]" (click)="removeAsset(assets_received, i); closeReqDropdown(i)"  class="inline-flex items-center">
                                 <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
                                       aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
                                       width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -578,6 +613,7 @@
                                          d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg>
                              </div> 
+
                         </td>
                     </tr>
                 </tbody>
@@ -690,6 +726,51 @@
                     </td>
                 </tr>
 
+                <!-- Retention Slots -->
+                <tr>
+                    <td class="text-right px-4">
+                        <h4 class="flex items-center text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400 justify-end">
+                            <span class="font-semibold text-lg mr-6">
+                                {{ requestor_retention_slots }}/{{ globalService.league?.retention_slots }}
+                            </span>
+                            <div *ngIf="!retentionIsValid(requestor_retention_slots)">
+                                <svg class="w-6 h-6 ms-2 text-red-500 dark:text-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                </svg>
+                            </div>
+                            <div *ngIf="retentionIsValid(requestor_retention_slots)">
+                                <svg class="w-6 h-6 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                </svg> 
+                            </div>
+                        </h4>
+                    </td>
+
+                    <td class="text-center px-4">    
+                        <h4 class="text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400">
+                            Retention Slots
+                        </h4>
+                    </td>
+
+                    <td class="text-left px-4"> 
+                        <h4 class="flex items-center text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400">
+                            <div *ngIf="!retentionIsValid(recipient_retention_slots)">
+                                <svg class="w-6 h-6 ms-2 text-red-500 dark:text-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                </svg>
+                            </div>
+                            <div *ngIf="retentionIsValid(recipient_retention_slots)">
+                                <svg class="w-6 h-6 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                </svg> 
+                            </div>
+                            <span class="font-semibold text-lg ml-6">
+                                {{ recipient_retention_slots }}/{{ globalService.league?.retention_slots }}
+                            </span>
+                        </h4>
+                    </td>
+                </tr>
+
                 <!-- Salary Cap -->
                 <tr>
                     <td class="text-right px-4"> 
@@ -697,8 +778,8 @@
                             <span
                                 [ngClass]="{
                                     'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - requestor_salary) < 0,
-                                    'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - requestor_salary) > 0 && (salary_cap - requestor_salary) < 7000000,
-                                    'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - requestor_salary) >= 7000000
+                                    'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - requestor_salary) > 0 && (salary_cap - requestor_salary) < 2000000,
+                                    'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - requestor_salary) >= 2000000
                                 }"
                                 class="p-2 font-semibold text-lg me-2 py-0.5 rounded ml-6">
                                 ${{ salary_cap - requestor_salary | number:'1.0-0' }}
@@ -737,8 +818,8 @@
                             <span
                                 [ngClass]="{
                                     'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - recipient_salary) < 0,
-                                    'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - recipient_salary) > 0 && (salary_cap - recipient_salary) < 7000000,
-                                    'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - recipient_salary) >= 7000000
+                                    'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - recipient_salary) > 0 && (salary_cap - recipient_salary) < 2000000,
+                                    'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - recipient_salary) >= 2000000
                                 }"
                                 class="p-2 font-semibold text-lg me-2 py-0.5 rounded ml-6">
                                 ${{ salary_cap - recipient_salary | number:'1.0-0' }}
@@ -809,7 +890,7 @@
  <!-- Retain Salary Modal -->
   <ng-template #retainSalaryModal id="retainSalaryModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-2xl max-h-full">
-          <form (ngSubmit)="setSalaryRet(selected_team, selected_player); closeModal()" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <form (ngSubmit)="setSalaryRet(selected_player); adjustSalaries(); adjustRetention(); closeModal()" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
  
              <div class="flex items-start justify-between p-4 rounded-t md:w-[400px]">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
@@ -825,7 +906,7 @@
              <div class="grid gap-4 p-6">
                 <div class="col-span-2">         
                     <div class="relative flex items-center mb-2">
-                        <button type="button" (click)="decrementSalaryRet(selected_player)" id="decrement-button" data-input-counter-decrement="bedrooms-input" class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                        <button type="button" (click)="decrementSalaryRet(selected_player)" [disabled]="selected_player.retention_perc <= 0" id="decrement-button" data-input-counter-decrement="bedrooms-input" class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                             <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
                             </svg>
@@ -834,7 +915,7 @@
                         <div class="absolute bottom-1 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 flex items-center text-sm text-gray-400 space-x-1 rtl:space-x-reverse">
                             <span>${{ selected_player.aav_current * (selected_player.retention_perc / 100) | number:'1.0-0' }}</span>
                         </div>
-                        <button type="button" id="increment-button" (click)="incrementSalaryRet(selected_player)" data-input-counter-increment="bedrooms-input" class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                        <button type="button" id="increment-button" [disabled]="selected_player.retention_perc >= 25" (click)="incrementSalaryRet(selected_player)" data-input-counter-increment="bedrooms-input" class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                             <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
                             </svg>

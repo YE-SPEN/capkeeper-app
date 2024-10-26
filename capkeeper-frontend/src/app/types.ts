@@ -29,6 +29,7 @@ export interface League {
     min_defense: number,
     min_goalies: number,
     ir_slots: number,
+    retention_slots: number,
     general_draft_length: number,
     rookie_draft_length: number,
 };
@@ -59,7 +60,7 @@ export interface Team {
     rookie_bank: Player[],
     rookie_count: number,
     salary_retained: number,
-    player_retained: string,
+    player_retained: string | null,
     trade_block: Player[],
     draft_picks: Draft_Pick[],
     fa_picks: FA_Pick[],
@@ -121,7 +122,8 @@ export interface FA_Pick {
 }
 
 export type Asset = (Player | Draft_Pick | FA_Pick) & {
-  traded_to?: string | null; 
+  traded_to?: string | null;
+  traded_from?: string | null; 
   asset_type?: 'player' | 'draft_pick' | 'fa';
   trade_id?: string | null;
 } | null;

@@ -580,9 +580,17 @@
        
                <!-- Salary Columns -->
                <ng-container *ngIf="forward.years_left_current">
-                  <td *ngFor="let aav of generateRange(forward.years_left_current)" class="px-6 py-2">
-                     {{ forward.aav_current | number:'1.0-0' }}
+
+                  <td *ngFor="let aav of generateRange(forward.years_left_current); let i = index" class="px-6 py-2">
+                     <ng-container *ngIf="i === 0; else noRetention">
+                        {{ forward.aav_current - (forward.aav_current * (forward.retention_perc / 100)) | number:'1.0-0' }}
+                     </ng-container>
+
+                     <ng-template #noRetention>
+                        {{ forward.aav_current | number:'1.0-0' }}
+                     </ng-template>
                   </td>
+
                </ng-container>
 
                <ng-container *ngIf="forward.years_left_next">
@@ -718,9 +726,17 @@
     
             <!-- Salary Columns -->
             <ng-container *ngIf="defensemen.years_left_current">
-               <td *ngFor="let aav of generateRange(defensemen.years_left_current)" class="px-6 py-2">
-                  {{ defensemen.aav_current | number:'1.0-0' }}
+
+               <td *ngFor="let aav of generateRange(defensemen.years_left_current); let i = index" class="px-6 py-2">
+                  <ng-container *ngIf="i === 0; else noRetention">
+                     {{ defensemen.aav_current - (defensemen.aav_current * (defensemen.retention_perc / 100)) | number:'1.0-0' }}
+                  </ng-container>
+
+                  <ng-template #noRetention>
+                     {{ defensemen.aav_current | number:'1.0-0' }}
+                  </ng-template>
                </td>
+
             </ng-container>
 
             <ng-container *ngIf="defensemen.years_left_next">
@@ -855,9 +871,17 @@
     
             <!-- Salary Columns -->
             <ng-container *ngIf="goalie.years_left_current">
-               <td *ngFor="let aav of generateRange(goalie.years_left_current)" class="px-6 py-2">
-                  {{ goalie.aav_current | number:'1.0-0' }}
-               </td>
+
+                  <td *ngFor="let aav of generateRange(goalie.years_left_current); let i = index" class="px-6 py-2">
+                     <ng-container *ngIf="i === 0; else noRetention">
+                        {{ goalie.aav_current - (goalie.aav_current * (goalie.retention_perc / 100)) | number:'1.0-0' }}
+                     </ng-container>
+
+                     <ng-template #noRetention>
+                        {{ goalie.aav_current | number:'1.0-0' }}
+                     </ng-template>
+                  </td>
+
             </ng-container>
 
             <ng-container *ngIf="goalie.years_left_next">
@@ -996,8 +1020,14 @@
             
                <!-- Salary Columns -->
                <ng-container *ngIf="team.injured_reserve[i].years_left_current">
-                  <td *ngFor="let aav of generateRange(team.injured_reserve[i].years_left_current)" class="px-6 py-2">
-                     {{ team.injured_reserve[i].aav_current | number:'1.0-0' }}
+                  <td *ngFor="let aav of generateRange(team.injured_reserve[i].years_left_current); let j = index" class="px-6 py-2">
+                     <ng-container *ngIf="j === 0; else noRetention">
+                        {{ team.injured_reserve[i].aav_current - (team.injured_reserve[i].aav_current * (team.injured_reserve[i].retention_perc / 100)) | number:'1.0-0' }}
+                     </ng-container>
+
+                     <ng-template #noRetention>
+                        {{ team.injured_reserve[i].aav_current | number:'1.0-0' }}
+                     </ng-template>
                   </td>
                </ng-container>
          

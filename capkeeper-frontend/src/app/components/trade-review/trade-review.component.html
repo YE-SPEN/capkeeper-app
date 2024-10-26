@@ -147,17 +147,22 @@
                                 <!-- Player Selection -->
                                 <ng-container *ngIf="assets_received[i]?.asset_type === 'player'">
                                     <div class="flex items-center text-sm font-semibold">
-                                        <img class="w-10 h-10 me-2 rounded-full" src="{{assets_received[i]?.logo}}" alt="{{assets_received[i]?.player_id}}">
-                                        {{ assets_received[i]?.first_name }} {{ assets_received[i]?.last_name }} 
-                                        <span class="font-normal text-[11px] text-gray-500">&nbsp;&nbsp;{{ assets_received[i]?.position }} - {{ assets_received[i]?.short_code }}&nbsp;&nbsp;</span>
-                                        <div *ngIf="assets_received[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
-                                            IR
+                                        <img class="w-10 h-10 rounded-full" src="{{assets_received[i]?.logo}}" alt="Player image">
+                                        <div class="ps-3">
+                                            <div class="text-sm font-semibold">{{ assets_received[i]?.first_name }} {{ assets_received[i]?.last_name }}</div>
+                                            <div class="font-normal text-xs text-gray-500">
+                                                {{ assets_received[i]?.position }} - {{ assets_received[i]?.short_code }}
+                                                <span *ngIf="assets_received[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                                                    Rookie
+                                                </span>
+                                                <span *ngIf="assets_received[i]?.retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">
+                                                    {{ assets_received[i]?.retention_perc }}% RET
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div *ngIf="assets_received[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
-                                            Rookie
-                                        </div>
+
                                         <div class="text-sm text-left rtl:text-right text-gray-500 ml-8">
-                                            {{ assets_received[i] && assets_received[i]?.aav_current > 0 ? '$' + (assets_received[i]?.aav_current | number: '1.0-0') + ' x ' + assets_received[i]?.years_left_current : '' }}
+                                            {{ assets_received[i] && assets_received[i]?.aav_current > 0 ? '$' + (assets_received[i]?.aav_current - (assets_received[i]?.aav_current * (assets_received[i]?.retention_perc / 100)) | number: '1.0-0') : '' }}
                                         </div>
                                     </div>
                                 </ng-container>
@@ -230,17 +235,22 @@
                                 <!-- Player Selection -->
                                 <ng-container *ngIf="assets_given[i]?.asset_type === 'player'">
                                     <div class="flex items-center text-sm font-semibold">
-                                        <img class="w-10 h-10 me-2 rounded-full" src="{{assets_given[i]?.logo}}" alt="{{assets_given[i]?.player_id}}">
-                                        {{ assets_given[i]?.first_name }} {{ assets_given[i]?.last_name }} 
-                                        <span class="font-normal text-[11px] text-gray-500">&nbsp;&nbsp;{{ assets_given[i]?.position }} - {{ assets_given[i]?.short_code }}&nbsp;&nbsp;</span>
-                                        <div *ngIf="assets_given[i]?.onIR" class="bg-red-100 text-red-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
-                                            IR
+                                        <img class="w-10 h-10 rounded-full" src="{{assets_given[i]?.logo}}" alt="Player image">
+                                        <div class="ps-3">
+                                            <div class="text-sm font-semibold">{{ assets_given[i]?.first_name }} {{ assets_given[i]?.last_name }}</div>
+                                            <div class="font-normal text-xs text-gray-500">
+                                                {{ assets_given[i]?.position }} - {{ assets_given[i]?.short_code }}
+                                                <span *ngIf="assets_given[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                                                    Rookie
+                                                </span>
+                                                <span *ngIf="assets_given[i]?.retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">
+                                                    {{ assets_given[i]?.retention_perc }}% RET
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div *ngIf="assets_given[i]?.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
-                                            Rookie
-                                        </div>
+
                                         <div class="text-sm text-left rtl:text-right text-gray-500 ml-8">
-                                            {{ assets_given[i] && assets_given[i]?.aav_current > 0 ? '$' + (assets_given[i]?.aav_current | number: '1.0-0') + ' x ' + assets_given[i]?.years_left_current : '' }}
+                                            {{ assets_given[i] && assets_given[i]?.aav_current > 0 ? '$' + (assets_given[i]?.aav_current - (assets_given[i]?.aav_current * (assets_given[i]?.retention_perc / 100)) | number: '1.0-0') : '' }}
                                         </div>
                                     </div>
                                 </ng-container>
@@ -308,18 +318,18 @@
             </thead>
             <tbody>
                 <tr>
-                    <!-- Requestor Data -->
+                    <!-- Recipient Data -->
                     <td class="text-right px-4 w-[40%]">
                         <h4 class="flex items-center text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400 justify-end">
                             <span class="font-semibold text-lg mr-6">
-                                {{ requestor_contracts }}/{{ globalService.league?.max_roster_size }}
+                                {{ recipient_contracts }}/{{ globalService.league?.max_roster_size }}
                             </span>                   
-                            <div *ngIf="!rosterIsValid(requestor_contracts)">
+                            <div *ngIf="!rosterIsValid(recipient_contracts)">
                                 <svg class="w-6 h-6 ms-2 text-red-500 dark:text-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg>
                             </div>
-                            <div *ngIf="rosterIsValid(requestor_contracts)">
+                            <div *ngIf="rosterIsValid(recipient_contracts)">
                                 <svg class="w-6 h-6 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg> 
@@ -335,18 +345,18 @@
 
                     <td class="text-left px-4 w-[40%]">
                         <h4 class="flex items-center text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400">
-                            <div *ngIf="!rosterIsValid(recipient_contracts)">
+                            <div *ngIf="!rosterIsValid(requestor_contracts)">
                                 <svg class="w-6 h-6 ms-2 text-red-500 dark:text-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg>
                             </div>
-                            <div *ngIf="rosterIsValid(recipient_contracts)">
+                            <div *ngIf="rosterIsValid(requestor_contracts)">
                                 <svg class="w-6 h-6 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg> 
                             </div>
                             <span class="font-semibold text-lg ml-6">
-                                {{ recipient_contracts }}/{{ globalService.league?.max_roster_size }}
+                                {{ requestor_contracts }}/{{ globalService.league?.max_roster_size }}
                             </span>
                         </h4>
                     </td>   
@@ -355,14 +365,14 @@
                     <td class="text-right px-4">
                         <h4 class="flex items-center text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400 justify-end">
                             <span class="font-semibold text-lg mr-6">
-                                {{ requestor_rookies }}/{{ globalService.league?.rookie_bank_size }}
+                                {{ recipient_rookies }}/{{ globalService.league?.rookie_bank_size }}
                             </span>
-                            <div *ngIf="!rookieIsValid(requestor_rookies)">
+                            <div *ngIf="!rookieIsValid(recipient_rookies)">
                                 <svg class="w-6 h-6 ms-2 text-red-500 dark:text-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg>
                             </div>
-                            <div *ngIf="rookieIsValid(requestor_rookies)">
+                            <div *ngIf="rookieIsValid(recipient_rookies)">
                                 <svg class="w-6 h-6 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg> 
@@ -378,18 +388,18 @@
 
                     <td class="text-left px-4"> 
                         <h4 class="flex items-center text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400">
-                            <div *ngIf="!rookieIsValid(recipient_rookies)">
+                            <div *ngIf="!rookieIsValid(requestor_rookies)">
                                 <svg class="w-6 h-6 ms-2 text-red-500 dark:text-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg>
                             </div>
-                            <div *ngIf="rookieIsValid(recipient_rookies)">
+                            <div *ngIf="rookieIsValid(requestor_rookies)">
                                 <svg class="w-6 h-6 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg> 
                             </div>
                             <span class="font-semibold text-lg ml-6">
-                                {{ recipient_rookies }}/{{ globalService.league?.rookie_bank_size }}
+                                {{ requestor_rookies }}/{{ globalService.league?.rookie_bank_size }}
                             </span>
                         </h4>
                     </td>
@@ -399,19 +409,19 @@
                         <h4 class="flex items-center text-lg font-bold text-gray-500 dark:text-gray-400 justify-end">
                             <span
                                 [ngClass]="{
-                                    'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - requestor_salary) < 0,
-                                    'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - requestor_salary) > 0 && (salary_cap - requestor_salary) < 7000000,
-                                    'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - requestor_salary) >= 7000000
+                                    'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - recipient_salary) < 0,
+                                    'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - recipient_salary) > 0 && (salary_cap - recipient_salary) < 7000000,
+                                    'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - recipient_salary) >= 7000000
                                 }"
                                 class="p-2 font-semibold text-lg me-2 py-0.5 rounded ml-6">
-                                ${{ salary_cap - requestor_salary | number:'1.0-0' }}
+                                ${{ salary_cap - recipient_salary | number:'1.0-0' }}
                             </span>
-                            <div *ngIf="!salaryIsValid(requestor_salary)">
+                            <div *ngIf="!salaryIsValid(recipient_salary)">
                                 <svg class="w-6 h-6 ms-2 text-red-500 dark:text-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg>
                             </div>
-                            <div *ngIf="salaryIsValid(requestor_salary)">
+                            <div *ngIf="salaryIsValid(recipient_salary)">
                                 <svg class="w-6 h-6 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg> 
@@ -427,24 +437,24 @@
 
                     <td class="text-left px-4"> 
                         <h4 class="flex items-center text-lg font-bold text-gray-500 dark:text-gray-400">
-                            <div *ngIf="!salaryIsValid(recipient_salary)">
+                            <div *ngIf="!salaryIsValid(requestor_salary)">
                                 <svg class="w-6 h-6 ms-2 text-red-500 dark:text-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg>
                             </div>
-                            <div *ngIf="salaryIsValid(recipient_salary)">
+                            <div *ngIf="salaryIsValid(requestor_salary)">
                                 <svg class="w-6 h-6 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg> 
                             </div>
                             <span
                                 [ngClass]="{
-                                    'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - recipient_salary) < 0,
-                                    'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - recipient_salary) > 0 && (salary_cap - recipient_salary) < 7000000,
-                                    'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - recipient_salary) >= 7000000
+                                    'text-lg bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - requestor_salary) < 0,
+                                    'text-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - requestor_salary) > 0 && (salary_cap - requestor_salary) < 7000000,
+                                    'text-lg bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - requestor_salary) >= 7000000
                                 }"
                                 class="p-2 font-semibold text-lg me-2 py-0.5 rounded ml-6">
-                                ${{ salary_cap - recipient_salary | number:'1.0-0' }}
+                                ${{ salary_cap - requestor_salary | number:'1.0-0' }}
                             </span>
                         </h4>
                     </td>

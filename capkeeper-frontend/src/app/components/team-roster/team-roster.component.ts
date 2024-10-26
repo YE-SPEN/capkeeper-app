@@ -140,9 +140,11 @@ export class TeamRosterComponent {
     let sum = 0;
     for (let player of array) {
       if (player.retention_perc && player.retention_perc > 0) {
-        player.aav_current = player.aav_current * (1 - (player.retention_perc / 100))
+        sum += player.aav_current * (1 - (player.retention_perc / 100))
       }
-      sum += player.aav_current;
+      else {
+        sum += player.aav_current;
+      }
     }
     return sum;
   }
@@ -322,7 +324,7 @@ export class TeamRosterComponent {
     let message = '';
     
     if (player.onIR) {
-      if (player.aav_current > this.team.cap_space) {
+      if ((player.aav_current - (player.aav_current * player.retention_perc / 100)) > this.team.cap_space) {
         this.ngOnInit();  
         return false;
       }
@@ -397,7 +399,7 @@ export class TeamRosterComponent {
   }
 
   capIsValid(player: Player): boolean {
-    if (this.team.cap_space && player.aav_current > this.team.cap_space) {
+    if (this.team.cap_space && (player.aav_current - (player.aav_current * player.retention_perc / 100)) > this.team.cap_space) {
       return false;
     }
     return true;
