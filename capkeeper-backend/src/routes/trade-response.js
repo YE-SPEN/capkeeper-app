@@ -33,16 +33,31 @@ export const confirmTradeRoute = {
                 const tradeItems = await db.query(tradeItemsQuery, [trade_id]);
 
                 for (const item of tradeItems.results) {
-                    const { asset_type, traded_to, player_id, draft_pick_id, fa_id } = item;
+                    const { asset_type, traded_to, traded_from, player_id, draft_pick_id, fa_id, retention_perc } = item;
 
                     if (asset_type === 'player') {
                         const updatePlayerQuery = `
                         UPDATE player_owned_by
-                        SET team_id = ?
+                        SET team_id = ?,
+                            retention_perc = ?
                         WHERE player_id = ?
                         AND league_id = ?
                         `;
-                        await db.query(updatePlayerQuery, [traded_to, player_id, league_id]);
+                        await db.query(updatePlayerQuery, [traded_to, retention_perc, player_id, league_id]);
+
+                        if (retention_perc > 0) {
+                            const updateTeamQuery = `
+                            UPDATE teams
+                            SET player_retained = ?,
+                                salary_retained = (SELECT ROUND(p.aav_current * (ti.retention_perc / 100)) AS salary_retained
+                                                FROM players p 
+                                                JOIN trade_items ti ON p.player_id = ti.player_id
+                                                WHERE ti.trade_id = ?
+                                                AND p.player_id = ?
+                                                LIMIT 1)
+                            WHERE team_id = ?`;
+                            await db.query(updateTeamQuery, [player_id, trade_id, player_id, traded_from])
+                        }
 
                     } else if (asset_type === 'draft_pick') {
                         const updateDraftPickQuery = `

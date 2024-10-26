@@ -18,13 +18,13 @@ export const sendTradeRoute = {
 
             if (assets && assets.length > 0) {
                 const insertAssetQuery = `
-                    INSERT INTO trade_items (trade_id, draft_pick_id, fa_id, player_id, traded_to, asset_type)
-                    VALUES (?, ?, ?, ?, ?, ?);
+                    INSERT INTO trade_items (trade_id, draft_pick_id, fa_id, player_id, traded_to, traded_from, retention_perc, asset_type)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?);
                 `;
 
                 for (const asset of assets) {
                     console.log('Asset object: ', asset)
-                    await db.query(insertAssetQuery, [trade_id, asset.draft_pick_id, asset.fa_id, asset.player_id, asset.traded_to, asset.asset_type]);
+                    await db.query(insertAssetQuery, [trade_id, asset.draft_pick_id, asset.fa_id, asset.player_id, asset.traded_to, asset.traded_from, asset.retention_perc, asset.asset_type]);
                 }
             }
 
