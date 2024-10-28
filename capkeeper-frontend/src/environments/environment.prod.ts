@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://dolphin-app-f5yuy.ondigitalocean.app',
+    apiUrl: 'https://capkeeperleagues.com',
     firebase: {
       apiKey: "AIzaSyBwoVvCfhdsRnRyiPWrgrfqeAwTQcOJ5oI",
       authDomain: "capkeeper-8824f.firebaseapp.com",

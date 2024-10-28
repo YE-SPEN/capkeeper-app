@@ -15,6 +15,7 @@ declare const window: any;
 export class LeagueActivityComponent {
   @ViewChild('datepickerRangeStart') datepickerRangeStart!: ElementRef;
   @ViewChild('datepickerRangeEnd') datepickerRangeEnd!: ElementRef;
+  userSelectOpen: boolean = false;
   league_id!: string;
   searchKey: string = '';
   searchRangeInDays: number = 7;
@@ -63,7 +64,7 @@ export class LeagueActivityComponent {
       });
     }
   
-    const Datepicker = window.Flowbite.Datepicker;
+    /*const Datepicker = window.Flowbite.Datepicker;
     const options = {
       autoHide: true,
       orientation: 'bottom',
@@ -84,8 +85,12 @@ export class LeagueActivityComponent {
         endDatepicker.hide();
         this.getActivitiesByDate();
       }
-    });
+    });*/
   }
+
+  toggleUserSelectMenu(isOpen: boolean): void {
+    this.userSelectOpen = isOpen;
+  } 
   
   getSearchDate(days: number): string {
       const today = new Date();
