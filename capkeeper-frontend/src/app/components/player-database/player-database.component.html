@@ -487,9 +487,16 @@
                                  [(ngModel)]="fa_to_use"
                                  class="max-h-[200px] overflow-y-auto bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-400 focus:border-green-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-400"
                                  >
-                                 <option *ngFor="let pick of fa_picks" [value]="pick.asset_id">
-                                    FA Week {{ pick.week }} ({{ pick.year }})
-                                 </option>
+                                 <ng-container *ngIf="fa_picks.length > 0; else noFaAvailable">
+                                    <option *ngFor="let pick of fa_picks" [value]="pick.asset_id">
+                                       FA Week {{ pick.week }} ({{ pick.year }})
+                                    </option>
+                                 </ng-container>
+
+                                 <!-- Dummy option when fa_picks is empty -->
+                                 <ng-template #noFaAvailable>
+                                    <option value="" disabled>--No FA available--</option>
+                                 </ng-template>
                               </select>
                            </div>
                            
@@ -530,8 +537,8 @@
                   (click)="addPlayer(selected, false); closeModal()" 
                   class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800"
                   [ngClass]="{
-                     'bg-green-400 hover:bg-green-500 focus:ring-green-300': validatePickup(selected),
-                     'bg-green-300 cursor-not-allowed': !validatePickup(selected)
+                     'bg-green-400 hover:bg-green-500 focus:ring-green-300': validatePickup(selected) && faIsValid(),
+                     'bg-green-300 cursor-not-allowed': !validatePickup(selected) || !faIsValid()
                  }" 
                  [disabled]="!validatePickup(selected) || !fa_to_use">
                      Add Player

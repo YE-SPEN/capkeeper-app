@@ -82,8 +82,10 @@ export class PlayerDatabaseComponent {
       if (this.globalService.loggedInTeam) {
         this.teamService.getFAsByTeam(this.league_id, this.globalService.loggedInTeam.team_id)
           .subscribe(response => {
-            this.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.globalService.loggedInTeam?.team_id && !pick.player_taken);
-            console.log('Picks: ', this.fa_picks)
+            this.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.globalService.loggedInTeam?.team_id && !pick.player_taken && this.faInRange(pick));
+            if (this.fa_picks.length > 0) {
+              this.fa_to_use = this.fa_picks[0].asset_id.toString();
+            }
           })
       }
 
@@ -96,6 +98,22 @@ export class PlayerDatabaseComponent {
     this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
     this.setPage(1);
   }
+
+  faInRange(fa: FA_Pick): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+  
+    const twoDaysBefore = new Date(today);
+    twoDaysBefore.setDate(today.getDate() - 2);
+  
+    const tenDaysAfter = new Date(today);
+    tenDaysAfter.setDate(today.getDate() + 10);
+  
+    const expiryDate = new Date(fa.expiry_date);
+  
+    return expiryDate >= twoDaysBefore && expiryDate <= tenDaysAfter;
+  }
+  
 
   filterPlayers(): void {
     this.filteredPlayers = this.allPlayers
@@ -226,6 +244,13 @@ export class PlayerDatabaseComponent {
       return false;
     }
     return true;
+  }
+
+  faIsValid(): boolean {
+    if (this.fa_to_use) {
+      return true;
+    }
+    return false;
   }
 
   contractIsValid(): boolean {
