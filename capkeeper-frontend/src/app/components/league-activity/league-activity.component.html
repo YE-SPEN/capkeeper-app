@@ -256,8 +256,8 @@
 </div>
 
 <!-- Pagination -->
-<div class="grid grid-cols-3 gap-4 mb-16">
-  <div class="flex items-left rounded text-gray-500">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
+  <div class="flex justify-center md:justify-start rounded text-gray-500">
      <p>Showing {{ getPageStart() }} to {{ getPageEnd() }} of {{ filtered_activity_log.length }} results</p>
   </div>
   <div class="flex items-center justify-center rounded dark:bg-gray-800">
@@ -289,7 +289,7 @@
       </nav>
   </div>
 
-  <div class="flex justify-end items-center rounded dark:bg-gray-800">
+  <div class="flex justify-center md:justify-end items-center rounded dark:bg-gray-800">
      <select [(ngModel)]="pageSize" (ngModelChange)="setPageSize($event)" class="inline-flex items-center min-w-[60px] text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
            <option value="25">25</option>
            <option value="50">50</option>

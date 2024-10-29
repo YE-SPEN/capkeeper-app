@@ -1,4 +1,4 @@
-import { Component, TemplateRef } from '@angular/core';
+import { Component, TemplateRef, HostListener, OnInit } from '@angular/core';
 import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { Router } from '@angular/router';
@@ -12,11 +12,13 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   modalRef!: BsModalRef;
   email: string = '';
   password: string = '';
   loginError: boolean = false;
+  isLargeScreen: boolean = window.innerWidth >= 1024;
+  mobileMenuOpen: boolean = false;
 
   constructor(
     private router: Router,
@@ -24,6 +26,10 @@ export class LoginComponent {
     public globalService: GlobalService,
     private teamService: TeamService,
   ) { initializeApp(environment.firebase) }
+
+  ngOnInit() {
+    this.isLargeScreen = window.innerWidth >= 1024;
+  }
 
   signIn() {
     const auth = getAuth();
@@ -139,6 +145,15 @@ export class LoginComponent {
 
   closeModal() {
     this.modalRef.hide();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.isLargeScreen = window.innerWidth >= 1024;
+  }
+
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
   }
   
 

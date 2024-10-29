@@ -6,10 +6,10 @@
            </h1>
         </div>
 
-     <div class="w-full grid grid-cols-12 gap-3 pt-6">
+     <div class="w-full grid grid-cols-1 md:grid-cols-12 gap-3 pt-6">
         
         <!-- Recipient Team Info -->
-        <div class="col-span-5 flex items-center">
+        <div class="md:col-span-5 flex items-center">
             <div class="flex h-auto w-full bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
                 <div class="w-full">
                     <div class="p-4">
@@ -77,14 +77,14 @@
             </div>
           </div>
       
-        <div class="col-span-2 flex items-center justify-center">
+        <div class="hidden md:col-span-2 md:flex items-center justify-center">
             <svg class="w-48 h-48 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/>
             </svg>              
         </div>   
 
         <!-- Requestor Team Info -->
-        <div class="col-span-5 flex items-center">
+        <div class="hidden md:col-span-5 md:flex items-center">
             <div class="flex h-auto w-full bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
                 <div class="w-full">
                     <div class="p-4">
@@ -154,7 +154,7 @@
 
     </div>
 
-    <div class="grid grid-cols-2 gap-4 pt-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
 
         <!-- Recipient Asset Table -->
         <div class="mb-4">
@@ -242,6 +242,75 @@
                 </tbody>
             </table>            
 
+        </div>
+
+        <!-- Requestor Team Info Mobile -->
+        <div class="flex md:col-span-5 md:hidden items-center">
+            <div class="flex h-auto w-full bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
+                <div class="w-full">
+                    <div class="p-4">
+                        <table class="w-full">
+                            <tr>
+                                <td class="items-left align-top">
+                                    <table>
+                                        <tr>
+                                            <td class="items-left p-4">
+                                                <img [src]="requestor.picture" class="max-w-[150px]">
+                                            </td>
+                                            <td>
+                                                <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ requestor.team_name }}</h1>
+                                                <h3 class="pb-4"><b>Managed by:</b><br> {{ requestor.managed_by }}</h3>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <div class="py-2">
+                                        <hr class="border-0 border-t-2 border-gray-300">
+                                    </div>
+
+                                    <h4 class="text-md font-normal text-gray-500 dark:text-gray-400">
+                                        Active Roster:
+                                        <span class="font-bold text-md ml-2">
+                                          {{ requestor.roster_size - countRookies(requestor.roster) }}/{{ globalService.league?.max_roster_size}}
+                                        </span>
+                                        <br>
+                                        Rookie Bank:
+                                        <span class="font-bold text-md ml-2">
+                                          {{ countRookies(requestor.roster) }}/{{ globalService.league?.rookie_bank_size }}
+                                        </span>
+                                        <br>
+                                        Projected Cap Space:
+                                        <span
+                                        [ngClass]="{
+                                            'text-md bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': (salary_cap - requestor_salary) < 0,
+                                            'text-md bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': (salary_cap - requestor_salary) > 0 && (salary_cap - requestor_salary) < 2000000,
+                                            'text-md bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': (salary_cap - requestor_salary) >= 2000000
+                                        }"
+                                         class="p-2 font-bold text-md me-2 py-0.5 rounded ">
+                                          ${{ requestor.cap_space | number:'1.0-0' }}
+                                        </span>
+                                        <div class="py-2">
+                                            <hr class="border-0 border-t-2 border-gray-300">
+                                        </div>
+                                        Retaining Salary:
+                                        <span *ngIf="requestor.player_retained" class="font-bold text-md ml-2">
+                                            Yes ({{ requestor.player_retained }})
+                                        </span>
+                                        <span *ngIf="!requestor.player_retained" class="font-bold text-md ml-2">
+                                            No
+                                        </span>
+                                        <br>
+                                        Reduced Salary Contracts:
+                                        <span class="font-bold text-md ml-2">
+                                            {{ requestor_retention_slots }}/{{ globalService.league?.retention_slots }}
+                                        </span>
+                                      </h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Requestor Asset Table -->
@@ -334,7 +403,7 @@
 
     </div>
     
-    <div>
+    <div class="hidden md:block">
         <table class="w-full table-auto border-collapse pt-6">
             <thead>
                 <tr>
@@ -507,18 +576,18 @@
                 </tr>                
             </tbody>
         </table>
-
-        <div class="flex items-right justify-end rounded">
-            <button (click)="openModal(rejectTradeModal)" type="button" class="mr-4 text-red-500 bg-white border border-red-500 hover:bg-red-600 hover:text-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-500 dark:hover:bg-red-600">
-                Reject Trade
-            </button>
-            
-            <button (click)="openModal(acceptTradeModal)" type="button" class="text-white bg-green-400 hover:bg-green-500 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500">
-                Accept Trade
-            </button>
-        </div>
         
     </div>  
+
+    <div class="flex items-right justify-end rounded">
+        <button (click)="openModal(rejectTradeModal)" type="button" class="mr-4 text-red-500 bg-white border border-red-500 hover:bg-red-600 hover:text-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-500 dark:hover:bg-red-600">
+            Reject Trade
+        </button>
+        
+        <button (click)="openModal(acceptTradeModal)" type="button" class="text-white bg-green-400 hover:bg-green-500 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500">
+            Accept Trade
+        </button>
+    </div>
       
 </div>
 
