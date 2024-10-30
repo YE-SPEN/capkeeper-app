@@ -124,6 +124,8 @@ export class PlayerDatabaseComponent {
               && this.inSalaryFilter(player) 
               && (player.first_name.toLowerCase().includes(this.searchKey.toLowerCase()) || player.last_name.toLowerCase().includes(this.searchKey.toLowerCase()))
             );
+    this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
+    this.setPage(1);
     this.sortingService.sort(this.filteredPlayers, this.sortingService.sortColumn, this.sortingService.sortDirection);
   }
 
