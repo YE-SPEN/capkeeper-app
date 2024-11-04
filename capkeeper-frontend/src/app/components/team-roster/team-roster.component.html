@@ -1345,7 +1345,7 @@
                      <div class="flex items-center">
                         <div class="flex w-[50%] bg-gray-200 h-0.5 dark:bg-gray-700"></div>
                         <div class="z-10 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0"
-                           [ngClass]="{'bg-green-400': capIsValid(selected), 'bg-red-500': !capIsValid(selected)}">
+                           [ngClass]="{'bg-green-400': (capIsValid(selected) && !toSwap) || (toSwap && swapIsValid(selected, toSwap)), 'bg-red-500': (!capIsValid(selected) && !toSwap) || (toSwap && !swapIsValid(selected, toSwap))}">
                            <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
                             </svg>                               
@@ -1390,7 +1390,8 @@
                    </div>
                </div>
 
-               <div *ngIf="!capIsValid(selected)">
+               <!-- Cap space warning -->
+               <div *ngIf="!capIsValid(selected) && !toSwap || toSwap && !swapIsValid(selected, toSwap)">
                   <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
                      <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -1402,6 +1403,30 @@
                   </div>
                </div>
 
+               <!-- IR Swap Dropdown Option -->
+               <div *ngIf="!capIsValid(selected) && selected.onIR || toSwap">
+                  <div class="grid grid-cols-6 gap-6">
+                     <div class="col-span-6 sm:col-span-3">
+                        <label for="fa_pick" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                           Swap with another player?
+                        </label>
+                        
+                        <div class="relative max-h-[200px] overflow-y-auto">
+                           <select
+                              name="fa_pick"
+                              [(ngModel)]="toSwap"
+                              class="max-h-[200px] overflow-y-auto bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-400"
+                              >
+                              <option *ngFor="let player of team.roster" [ngValue]="player">
+                                 {{ player.first_name }} {{ player.last_name }} ({{ player.aav_current| number:'1.0-0' }} AAV)
+                              </option>
+                           </select>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Unsigned player warning -->
                <div *ngIf="!hasContract(selected)">
                   <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
                      <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -1414,6 +1439,7 @@
                   </div>
                </div>
 
+               <!-- Rookie callup warning -->
                <div *ngIf="validateCallup(selected) && selected.isRookie">
                   <div class="flex items-center p-4 mb-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800" role="alert">
                      <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -1442,7 +1468,7 @@
                >
                Call Up Player
             </button>
-            <button type="submit" (click)="closeModal(); ngOnInit()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+            <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
          </div>
       </form>
    </div>

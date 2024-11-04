@@ -25,6 +25,7 @@ export class TeamRosterComponent {
   team_id!: string;
   team!: Team;
   selected!: Player;
+  toSwap: Player | null = null;
   currentSeason: string = '2024-25'; 
   sortColumn: string | null = 'points';
   sortDirection: 'asc' | 'desc' = 'desc';
@@ -64,6 +65,7 @@ export class TeamRosterComponent {
         this.teamService.getRosterByTeam(this.league_id, this.team_id)
           .subscribe(response => {
             this.team = response.team;
+            this.team.roster = response.roster.filter(player => !player.isRookie && !player.onIR);
             this.team.rookie_bank = response.roster.filter(player => player.isRookie);
             this.team.forwards = response.roster.filter(player => player.position === 'F' && !player.isRookie && !player.onIR);
             this.team.defense = response.roster.filter(player => player.position === 'D' && !player.isRookie && !player.onIR);
@@ -322,47 +324,53 @@ export class TeamRosterComponent {
 
   toggleIR(player: Player): boolean {
     let message = '';
-    
+  
     if (player.onIR) {
-      if ((player.aav_current - (player.aav_current * player.retention_perc / 100)) > this.team.cap_space) {
-        this.ngOnInit();  
-        return false;
+      message = player.first_name + ' ' + player.last_name + ' activated from IR by ' + this.team.team_name;   
+      if (!this.toSwap) {
+        this.toastService.showToast(player.first_name + ' ' + player.last_name + ' activated from IR.', true); 
       }
-      message = player.first_name + ' ' + player.last_name + ' activated from IR by ' + this.team.team_name;
-      this.toastService.showToast(player.first_name + ' ' + player.last_name + ' activated from IR.', true) 
-    } 
+    }
+  
     if (!player.onIR) {
       if (this.team.injured_reserve.length >= 3) {
         this.ngOnInit();
-        this.toastService.showToast('Action could not be completed. Your IR slots are full.', false)
+        this.toastService.showToast('Action could not be completed. Your IR slots are full.', false);
         return false;
       }
       message = player.first_name + ' ' + player.last_name + ' placed on IR by ' + this.team.team_name;
-      this.toastService.showToast(player.first_name + ' ' + player.last_name + ' moved to IR.', true) 
+      this.toastService.showToast(player.first_name + ' ' + player.last_name + ' moved to IR.', true); 
     }
-
+  
     const payload = {
       player_id: player.player_id,
       league_id: this.league_id,
       action: 'ir',
-    }
-
+    };
+  
     this.http.post('api/players/roster-move', payload)
     .subscribe({
       next: (response) => {
         if (this.globalService.loggedInTeam && this.globalService.loggedInUser) {
-          this.globalService.updateTeamCap(this.globalService.loggedInTeam); 
-   
+          this.globalService.updateTeamCap(this.globalService.loggedInTeam);
+  
           let action = 'ir';
           this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
+  
           this.ngOnInit();
+  
+          if (this.toSwap) {
+            const temp = this.toSwap
+            this.toSwap = null;
+            this.toggleIR(temp);
+          }
         }
       },
       error: (error) => {
         console.error('Error recording action:', error);
       }
     });
-
+  
     return true;
   }
   
@@ -395,7 +403,15 @@ export class TeamRosterComponent {
   }
 
   validateCallup(player: Player): boolean {
-    return this.capIsValid(player) && this.contractIsValid() && this.hasContract(player);
+    return (this.capIsValid(player) || (this.toSwap ? this.swapIsValid(player, this.toSwap) : false)) && this.contractIsValid() && this.hasContract(player);
+  }
+  
+  swapIsValid(player: Player, swap: Player): boolean {
+    let diff = (swap.aav_current - (swap.aav_current * swap.retention_perc / 100)) - (player.aav_current - (player.aav_current * player.retention_perc / 100));
+    if (this.team.cap_space && this.team.cap_space + diff >= 0) {
+      return true;
+    }
+    return false;
   }
 
   capIsValid(player: Player): boolean {
@@ -430,11 +446,9 @@ export class TeamRosterComponent {
       next: (response) => {
         if (this.globalService.loggedInTeam && this.globalService.loggedInUser) {
 
-          if (!player.onTradeBlock) {
-            let message = player.first_name + ' ' + player.last_name + ' called up from the rookie bank by ' + this.team.team_name;
-            let action = 'callup';
-            this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
-          }
+          let message = player.first_name + ' ' + player.last_name + ' called up from the rookie bank by ' + this.team.team_name;
+          let action = 'callup';
+          this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
 
           this.ngOnInit();
           this.toastService.showToast(player.first_name + ' ' + player.last_name + ' activated to main roster.', true)
@@ -481,8 +495,8 @@ export class TeamRosterComponent {
   }
 
   closeModal() {
-    this.ngOnInit();
     this.modalRef.hide();
+    this.ngOnInit();
   }
 
 

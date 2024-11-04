@@ -76,7 +76,6 @@ export class PlayerDatabaseComponent {
           this.allPlayers = response.players;
           this.filterPlayers();
 
-          this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
       });
 
       if (this.globalService.loggedInTeam) {
@@ -95,8 +94,6 @@ export class PlayerDatabaseComponent {
   searchPlayers(): void {
     if (this.searchKey === '') { this.resetSearch(); return; }
     this.filterPlayers();
-    this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
-    this.setPage(1);
   }
 
   faInRange(fa: FA_Pick): boolean {
@@ -106,12 +103,12 @@ export class PlayerDatabaseComponent {
     const twoDaysBefore = new Date(today);
     twoDaysBefore.setDate(today.getDate() - 2);
   
-    const tenDaysAfter = new Date(today);
-    tenDaysAfter.setDate(today.getDate() + 10);
+    const eightDaysAfter = new Date(today);
+    eightDaysAfter.setDate(today.getDate() + 8);
   
     const expiryDate = new Date(fa.expiry_date);
   
-    return expiryDate >= twoDaysBefore && expiryDate <= tenDaysAfter;
+    return expiryDate >= twoDaysBefore && expiryDate <= eightDaysAfter;
   }
   
 
@@ -124,9 +121,9 @@ export class PlayerDatabaseComponent {
               && this.inSalaryFilter(player) 
               && (player.first_name.toLowerCase().includes(this.searchKey.toLowerCase()) || player.last_name.toLowerCase().includes(this.searchKey.toLowerCase()))
             );
+    this.sortingService.sort(this.filteredPlayers, this.sortingService.sortColumn, this.sortingService.sortDirection);
     this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
     this.setPage(1);
-    this.sortingService.sort(this.filteredPlayers, this.sortingService.sortColumn, this.sortingService.sortDirection);
   }
 
   clearFilter(): void {
@@ -169,7 +166,6 @@ export class PlayerDatabaseComponent {
   resetSearch(): void {
     this.searchKey = '';
     this.filterPlayers();
-    this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
   }
 
   previousPage(): void {
@@ -227,7 +223,7 @@ export class PlayerDatabaseComponent {
   
   setPageSize(size: number): void {
     this.pageSize = size;
-    this.currentPage = 1;
+    this.setPage(1);
     this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
   }
 
@@ -301,55 +297,55 @@ export class PlayerDatabaseComponent {
   }
 
   playerFormSubmit(event: Event) {
-      const formElement = event.target as HTMLFormElement;
-      const action = formElement.getAttribute('data-action');
+    const formElement = event.target as HTMLFormElement;
+    const action = formElement.getAttribute('data-action');
 
-      const submissionData = {
-        action: action,
-        player_id: action === 'edit' ? this.selected.player_id : this.generateID(this.formData.first_name, this.formData.last_name),
-        first_name: this.formData.first_name,
-        last_name: this.formData.last_name,
-        position: this.formData.position,
-        short_code: this.formData.short_code,
-        last_updated: this.globalService.getDate(),
-        updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name,
-      };
+    const submissionData = {
+      action: action,
+      player_id: action === 'edit' ? this.selected.player_id : this.generateID(this.formData.first_name, this.formData.last_name),
+      first_name: this.formData.first_name,
+      last_name: this.formData.last_name,
+      position: this.formData.position,
+      short_code: this.formData.short_code,
+      last_updated: this.globalService.getDate(),
+      updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name,
+    };
 
-      let message;
-      let action_type;
-      if (submissionData.action === 'add') {
-        message = submissionData.first_name + ' ' + submissionData.last_name + ' added to the player database.';
-        action_type = 'create-player';
-      }
-      else {
-        message = 'Saved changes to player profile for ' + submissionData.first_name + ' ' + submissionData.last_name + '.';
-        action_type = 'edit-player';
+    let message;
+    let action_type;
+    if (submissionData.action === 'add') {
+      message = submissionData.first_name + ' ' + submissionData.last_name + ' added to the player database.';
+      action_type = 'create-player';
+    }
+    else {
+      message = 'Saved changes to player profile for ' + submissionData.first_name + ' ' + submissionData.last_name + '.';
+      action_type = 'edit-player';
+    }
+    
+    this.http.post('/api/players/create-player', submissionData)
+      .subscribe({
+        next: (response) => {
+          
+          this.toastService.showToast(message, true);
+          console.log('Changes saved.', response);
+
+          this.formSubmitted = true;
+          setTimeout(() => {
+            this.formSubmitted = false;
+          }, 3000);
+          this.resetForm();
+        },
+        error: (error) => {
+          console.error('Error submitting form', error, submissionData);
+        }
+      });
+
+      if (this.globalService.loggedInUser) {
+        this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action_type, message);
       }
       
-      this.http.post('/api/players/create-player', submissionData)
-        .subscribe({
-          next: (response) => {
-            
-            this.toastService.showToast(message, true);
-            console.log('Changes saved.', response);
-  
-            this.formSubmitted = true;
-            setTimeout(() => {
-              this.formSubmitted = false;
-            }, 3000);
-            this.resetForm();
-          },
-          error: (error) => {
-            console.error('Error submitting form', error, submissionData);
-          }
-        });
-
-        if (this.globalService.loggedInUser) {
-          this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action_type, message);
-        }
-        
-       this.closeModal();
-       this.ngOnInit();
+      this.closeModal();
+      this.ngOnInit();
   }
 
   contractFormSubmit(event: Event) {
@@ -364,21 +360,17 @@ export class PlayerDatabaseComponent {
       updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name,
     };
 
-    console.log(submissionData);
-
     let message = '';
     if (this.selected) {
       message = 'Player contract information updated for ' + this.selected.first_name + ' ' + this.selected.last_name + '.';
     }
     
     let action_type = 'edit-contract';
-    
     this.http.post('/api/players/edit-contract', submissionData)
       .subscribe({
         next: (response) => {
           
           this.toastService.showToast(message, true);
-          console.log('Changes saved.', response);
 
           this.formSubmitted = true;
           setTimeout(() => {
@@ -414,7 +406,6 @@ export class PlayerDatabaseComponent {
     this.formData.years_left_next = this.selected.years_left_next;
     this.formData.aav_next = this.selected.aav_next;
     this.formData.expiry_status = this.selected.expiry_status;
-    console.log(this.formData)
   }
 
   resetForm() {
