@@ -69,6 +69,7 @@ export class GlobalService {
 
   getDate(): string {
     const today = new Date();
+    today.setDate(today.getDate() + 1);
     const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
     return formattedDate;    
   }
@@ -83,6 +84,7 @@ export class GlobalService {
 
   formatDateTime(dateString: string, timeString: string): string {
     const date = new Date(dateString);
+    date.setDate(date.getDate() + 1);
 
     const [hours, minutes] = timeString.split(':').map(Number);
     date.setHours(hours, minutes);
