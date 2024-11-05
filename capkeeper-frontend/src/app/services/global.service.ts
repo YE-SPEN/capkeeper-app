@@ -80,6 +80,13 @@ export class GlobalService {
     return formattedDate;    
   }
 
+  getToday():string {
+    const today = new Date();
+    today.setDate(today.getDate());
+    const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+    return formattedDate;  
+  }
+
   getTime(): string {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, '0');
@@ -156,7 +163,7 @@ export class GlobalService {
     const actionData = {
       league_id: league_id,
       message: message,
-      date: this.getDate(),
+      date: this.getToday(),
       time: this.getTime(),
       user_id: uid,
       action_type: action,
@@ -178,7 +185,7 @@ export class GlobalService {
   recordSession(uid: string, action: 'login' | 'logout'): void {
     const sessionData = {
       user_id: uid, 
-      date: this.getDate(),
+      date: this.getToday(),
       time: this.getTime(),
       action: action
     }

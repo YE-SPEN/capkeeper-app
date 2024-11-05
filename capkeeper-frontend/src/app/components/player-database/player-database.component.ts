@@ -268,7 +268,7 @@ export class PlayerDatabaseComponent {
       isRookie: rookie,
       fa_used: this.fa_to_use,
       action: 'add',
-      last_updated: this.globalService.getDate(),
+      last_updated: this.globalService.getToday(),
       updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name
     }
 
@@ -307,7 +307,7 @@ export class PlayerDatabaseComponent {
       last_name: this.formData.last_name,
       position: this.formData.position,
       short_code: this.formData.short_code,
-      last_updated: this.globalService.getDate(),
+      last_updated: this.globalService.getToday(),
       updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name,
     };
 
@@ -356,7 +356,7 @@ export class PlayerDatabaseComponent {
       aav_next: this.formData.aav_next,
       years_left_next: this.formData.years_left_next,
       expiry_status: this.formData.expiry_status,
-      last_updated: this.globalService.getDate(),
+      last_updated: this.globalService.getToday(),
       updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name,
     };
 

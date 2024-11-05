@@ -257,7 +257,7 @@ export class TeamRosterComponent {
       player_id: player.player_id,
       league_id: this.league_id,
       action: 'drop',
-      last_updated: this.globalService.getDate(),
+      last_updated: this.globalService.getToday(),
       updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name
     }
 
