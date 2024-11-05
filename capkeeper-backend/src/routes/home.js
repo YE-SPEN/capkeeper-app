@@ -24,7 +24,20 @@ export const leagueHomeRoute = {
                 [league_id]
             );
 
-            return { recentActivity, teamPoints };
+            const { results: faPicks } = await db.query(
+                `SELECT fa.asset_id, fa.assigned_to, fa.owned_by, fa.year, fa.week, fa.expiry_date, 
+                    CASE 
+                        WHEN fa.player_taken = 'Penalty' THEN fa.player_taken
+                        ELSE CONCAT(UPPER(SUBSTRING(p.first_name, 1, 1)), '. ', p.last_name) 
+                    END AS player_taken
+                FROM fa_picks fa
+                    LEFT JOIN players p ON fa.player_taken = p.player_id
+                WHERE fa.league_id = ?
+                AND fa.year = 2024`,
+                [league_id]
+            )
+
+            return { recentActivity, teamPoints, faPicks };
 
         } catch (err) {
             console.error(err);
