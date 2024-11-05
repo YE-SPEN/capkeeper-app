@@ -125,7 +125,10 @@
                    <tr *ngFor="let team of allTeams" class="border-b">
                         <td class="px-2 py-0.5 text-left border-r text-xs font-semibold text-gray-900">
                             <a [routerLink]="['/', globalService.league?.league_id, 'teams', team.team_id]" class="hover:underline font-semibold">
-                                {{ team.team_name }}
+                                <div class="flex items-center">
+                                    <img [src]="team.picture" class="w-c h-[32px] rounded-full mr-2">
+                                    <span>{{ team.team_name }}</span>
+                                </div>
                             </a>
                         </td>
                         <td class="px-2 py-0.5 text-center border-r font-normal text-sm">
@@ -157,6 +160,62 @@
     </div>
  </div>
 
+<!-- FA Summary Card -->
+<div class="grid grid-cols-1 gap-4 mb-4 w-full">
+    <div class="flex h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md w-full">
+       <div class="w-full">
+            <!-- Header Row with Dark Background -->
+            <div class="bg-green-400 text-white p-2 rounded-t-md flex justify-between items-center">
+                <h3 class="font-semibold text-lg">FA Summary</h3>
+            </div>
+
+            <!-- FA Picks Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md md:border-1">
+                    <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr class="border-b">
+                            <th class="px-2 py-1.5 text-left border-r-2 font-bold sticky left-0 bg-gray-50 dark:bg-gray-700">
+                                Week
+                            </th>
+                            <th *ngFor="let week of [].constructor(maxFAWeek); let i = index" class="px-2 py-1.5 text-left border-r-1 font-bold">
+                                {{ i }}
+                            </th>
+                        </tr>                  
+                    </thead>
+                    <tbody>
+                        <tr class="border-b" *ngFor="let team of allTeams">
+                            <!-- Sticky Team Name Column -->
+                            <td class="px-2 py-0.5 text-left border-r-2 text-xs font-semibold text-gray-900 min-w-[200px] sticky left-0 bg-gray-50 dark:bg-gray-800">
+                                <a [routerLink]="['/', globalService.league?.league_id, 'teams', team.team_id]" class="hover:underline font-semibold">
+                                    <div class="flex items-center">
+                                        <img [src]="team.picture" class="w-[32px] h-[32px] rounded-full mr-2">
+                                        <span>{{ team.team_name }}</span>
+                                    </div>
+                                </a>
+                            </td>
+                            
+                            <!-- Other Columns -->
+                            <td *ngFor="let i of [].constructor(maxFAWeek); let week = index" 
+                                class="px-2 py-0.5 text-left border-r text-xs text-gray-900 min-w-[140px]"
+                                [ngClass]="{'bg-yellow-100' : pickTraded(team, week),
+                                            'bg-red-200 font-semibold text-red-600' : pickNotUsed(team, week)}">
+                                <div class="flex items-center justify-between">
+                                    <span>
+                                        {{ (pickNotUsed(team, week) && getPlayerTaken(team, week) === '-') ? 'Not Used' : getPlayerTaken(team, week) }}
+                                    </span>                                    
+                                    
+                                    <div *ngIf="pickTraded(team, week)" class="ml-auto">
+                                        <img [src]="getTeamPicture(team, week)" class="w-[32px] h-[32px] rounded-full">
+                                    </div>                                  
+                                </div>                                                                  
+                            </td>                                           
+                        </tr>
+                    </tbody>
+                </table>  
+            </div>            
+       </div>
+    </div>
+</div>
 
 <div>
     <ul class="flex flex-wrap justify-center pb-10">

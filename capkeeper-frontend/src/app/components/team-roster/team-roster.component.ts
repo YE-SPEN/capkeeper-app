@@ -221,12 +221,6 @@ export class TeamRosterComponent {
     return picksInMonth;
   }
 
-  isExpired(pick: FA_Pick): boolean {
-    const currentDate = new Date();
-    const expiryDate = new Date(pick.expiry_date);
-    return expiryDate < currentDate;
-  }
-
   editTeamFormSubmit(event: Event): void {
     let new_id;
     if (this.formData.team_name) {

@@ -21,6 +21,7 @@ import { TradeReviewComponent } from './components/trade-review/trade-review.com
 import { ToastComponent } from './components/toast/toast.component';
 import { TradeAssetPipe } from './pipes/trade-assets.pipe';
 import { DraftComponent } from './components/draft/draft.component';
+import { ProtectionSheetComponent } from './components/protection-sheet/protection-sheet.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { DraftComponent } from './components/draft/draft.component';
     TradeReviewComponent,
     ToastComponent,
     TradeAssetPipe, 
-    DraftComponent
+    DraftComponent,
+    ProtectionSheetComponent
   ],
   imports: [
     BrowserModule,

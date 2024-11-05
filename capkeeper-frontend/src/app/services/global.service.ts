@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Team, League, NHL_Team, User, Activity, Asset, Trade } from '../types';
+import { Team, League, NHL_Team, User, Activity, Asset, Trade, FA_Pick } from '../types';
 import { HttpParams, HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -135,15 +135,21 @@ export class GlobalService {
     return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
-  getLeagueHomeData(league_id: string): Observable<{ recentActivity: Activity[], teamPoints: Team[] }> {
+  getLeagueHomeData(league_id: string): Observable<{ recentActivity: Activity[], teamPoints: Team[], faPicks: FA_Pick[] }> {
     const url = `api/${league_id}/home`;
-    return this.http.get<{ recentActivity: Activity[], teamPoints: Team[] }>(url);
+    return this.http.get<{ recentActivity: Activity[], teamPoints: Team[], faPicks: FA_Pick[] }>(url);
   }
 
   getActivitiesByLeague(league_id: string, start: string, end: string): Observable<{ action_log: Activity[], users: User[], tradeItems: Asset[] }> {
     const url = `api/${league_id}/activity-log`;
     const params = new HttpParams().set('start', start).set('end', end);
     return this.http.get<{ action_log: Activity[], users: User[], tradeItems: Asset[] }>(url, { params });
+  }
+
+  faIsExpired(pick: FA_Pick): boolean {
+    const currentDate = new Date();
+    const expiryDate = new Date(pick.expiry_date);
+    return expiryDate < currentDate;
   }
 
   recordAction(league_id: string, uid: string, action: string, message: string, trade_id?: string) {
