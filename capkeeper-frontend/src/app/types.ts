@@ -87,7 +87,7 @@ export interface Player {
     aav_next: number,
     owned_by: string,
     retention_perc: number,
-    last_updated: string,
+    last_updated: Date,
     updated_by: string,
 };
 

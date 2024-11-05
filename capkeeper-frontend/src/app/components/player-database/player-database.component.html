@@ -225,7 +225,7 @@
                </ng-template>
            </td>           
            <td class="px-6 py-4 text-xs">
-               {{ player.last_updated | date:'MM-dd-yyyy' }}<br>
+               {{ globalService.getDate(player.last_updated) | date:'MM-dd-yyyy' }}<br>
                <span class="italic">by {{ player.updated_by }}</span>
             </td>
             <td class="px-6 py-4">

@@ -67,10 +67,16 @@ export class GlobalService {
     this.inboxMenuIsOpen = ! this.inboxMenuIsOpen;
   }
 
-  getDate(): string {
-    const today = new Date();
-    today.setDate(today.getDate() + 1);
-    const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+  getDate(date?: Date): string {
+    let newDate;
+    if (date) {
+      newDate = new Date(date);
+    }
+    else {
+      newDate = new Date();
+    }
+    newDate.setDate(newDate.getDate() + 1);
+    const formattedDate = `${newDate.getFullYear()}-${(newDate.getMonth() + 1).toString().padStart(2, '0')}-${newDate.getDate().toString().padStart(2, '0')}`;
     return formattedDate;    
   }
 
