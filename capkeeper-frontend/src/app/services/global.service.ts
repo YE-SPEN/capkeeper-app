@@ -82,7 +82,6 @@ export class GlobalService {
 
   getToday():string {
     const today = new Date();
-    today.setDate(today.getDate());
     const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
     return formattedDate;  
   }
