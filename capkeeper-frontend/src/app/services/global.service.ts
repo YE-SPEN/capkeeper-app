@@ -80,10 +80,10 @@ export class GlobalService {
     return formattedDate;    
   }
 
-  getToday():string {
+  getToday(): string {
     const today = new Date();
-    const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
-    return formattedDate;  
+    const formattedDate = `${today.getUTCFullYear()}-${(today.getUTCMonth() + 1).toString().padStart(2, '0')}-${today.getUTCDate().toString().padStart(2, '0')}`;
+    return formattedDate;
   }
 
   getTime(): string {
