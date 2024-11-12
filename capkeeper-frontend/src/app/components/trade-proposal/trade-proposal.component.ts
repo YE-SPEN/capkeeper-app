@@ -1,5 +1,4 @@
-import { Component, TemplateRef, ViewChild, ElementRef } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Component, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from '../../services/global.service';
 import { TeamService } from '../../services/team.service';

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TeamService } from './services/team.service';
 import { GlobalService } from './services/global.service';
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, User } from 'firebase/auth';
-//import { User } from './types';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
+import { User } from './types';
 
 
 @Component({
@@ -13,7 +13,7 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, User 
 export class AppComponent implements OnInit {
   title = 'capkeeper-app';
   user: User | null = null;
-  /*temp: User = {
+  temp: User = {
     user_name: 'e_spen',
     first_name: 'Eric',
     last_name: 'Spensieri',
@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
     log_out_date: this.globalService.getDate(),
     log_out_time: this.globalService.getTime(),
     uid: 'CXdGkVsa1ERGAmm0ue2Rr7LxvGW2'
-  }*/
+  }
   email = '';
   password = ''
 
@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     
-    /*
+    
     // remove for sign-in to work again
     this.globalService.loggedInUser = this.temp;
     if (this.globalService.loggedInUser) {
@@ -69,8 +69,8 @@ export class AppComponent implements OnInit {
               }
             }
         });
-    } */
-    
+    } 
+    /*
     const auth = getAuth();
     
     // Subscribe to the authentication state
@@ -82,7 +82,7 @@ export class AppComponent implements OnInit {
         // No user is signed in
         this.user = null;
       }
-    });
+    });*/
     
   }
 

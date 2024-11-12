@@ -24,7 +24,7 @@ const routes: Routes = [
     { path: ':league_id/players', component: PlayerDatabaseComponent },
     { path: ':league_id/draft', component: DraftComponent },
     { path: ':league_id/rules', component: RulesComponent },
-    { path: ':league_id/protection-sheet/:team_id', component: ProtectionSheetComponent },
+    { path: ':league_id/protection-sheet', component: ProtectionSheetComponent },
     { path: 'user/:user_name', component: UserProfileComponent },
 
     { path: '', redirectTo: 'login', pathMatch: 'full' },

@@ -272,8 +272,6 @@ export class PlayerDatabaseComponent {
       updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name
     }
 
-    console.log('sending add payload: ', payload)
-
     this.http.post('api/players/add-drop', payload)
     .subscribe({
       next: (response) => {

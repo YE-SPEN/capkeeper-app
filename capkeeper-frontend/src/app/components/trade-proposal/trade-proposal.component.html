@@ -31,7 +31,7 @@
                       <table>
                         <tr>
                           <td class="items-left p-4">
-                            <img [src]="requestor.picture" class="max-w-[150px]">
+                            <img [src]="requestor.picture" class="max-w-[150px] rounded-full">
                           </td>
                           <td>
                             <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ requestor.team_name }}</h1>
@@ -106,7 +106,7 @@
                       <table>
                         <tr>
                           <td class="items-left p-4">
-                            <img [src]="recipient.picture" class="max-w-[150px]">
+                            <img [src]="recipient.picture" class="max-w-[150px] rounded-full">
                           </td>
                           <td>
                             <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ recipient.team_name }}</h1>
@@ -411,11 +411,11 @@
                         <table>
                         <tr>
                             <td class="items-left p-4">
-                            <img [src]="recipient.picture" class="max-w-[150px]">
+                                <img [src]="recipient.picture" class="max-w-[150px] rounded-full">
                             </td>
                             <td>
-                            <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ recipient.team_name }}</h1>
-                            <h3 class="pb-4"><b>Managed by:</b><br> {{ recipient.managed_by }}</h3>
+                                <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ recipient.team_name }}</h1>
+                                <h3 class="pb-4"><b>Managed by:</b><br> {{ recipient.managed_by }}</h3>
                             </td>
                         </tr>
                         </table>
