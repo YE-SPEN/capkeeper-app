@@ -179,6 +179,11 @@ export class ProtectionSheetComponent {
         return false;
     };
 
+    if (player === this.franchise_player) {
+      this.toggleFranchise(player);
+      return;
+    }
+
     let removed = false;
     if (player.position === 'F') {
         removed = removeFromArray(this.protected_forwards);
