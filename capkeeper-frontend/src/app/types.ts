@@ -78,6 +78,8 @@ export interface Player {
     isRookie: boolean,
     onIR: boolean,
     onTradeBlock: boolean,
+    onBench: boolean,
+    isFranchise: boolean,
     contract_status: string,
     contract_end: string,
     expiry_status: string, 

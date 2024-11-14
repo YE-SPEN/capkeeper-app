@@ -28,15 +28,38 @@
                 <tr>
                 <td class="items-left align-top">
                     <table>
-                    <tr>
-                        <td class="items-left p-4">
-                            <img [src]="team.picture" class="max-w-[150px] rounded-full">
-                        </td>
-                        <td>
-                        <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ team.team_name }}</h1>
-                        <h3 class="pb-4"><b>Managed by:</b><br> {{ team.managed_by }}</h3>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td class="items-left p-4">
+                                <img [src]="team.picture" class="max-w-[150px] rounded-full">
+                            </td>
+                            <td>
+                                <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ team.team_name }}</h1>
+                                <h3 class="pb-4"><b>Managed by:</b><br> {{ team.managed_by }}</h3>
+                                <div>
+                                    <div *ngIf="editRights" class="relative inline-block mr-3">
+                                        <button type="button" (click)="openModal(saveProtectionSheetModal)"
+                                            class="w-auto px-4 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 dark:bg-green-400 dark:hover:bg-green-500">
+                                            <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                                <path fill-rule="evenodd" d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7.414A2 2 0 0 0 20.414 6L18 3.586A2 2 0 0 0 16.586 3H5Zm3 11a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v6H8v-6Zm1-7V5h6v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+                                                <path fill-rule="evenodd" d="M14 17h-4v-2h4v2Z" clip-rule="evenodd"/>
+                                            </svg>
+                                            Save Sheet
+                                        </button>
+                                    
+                                    </div>
+                                        
+                                    <button type="button" (click)="loadSheet(team.team_id)"
+                                        class="w-auto px-4 py-2 text-xs font-medium hover:text-white text-center border border-green-400 inline-flex items-center text-green-400 bg-white rounded-lg hover:bg-green-500 dark:bg-green-400 dark:hover:bg-green-500">
+                                        <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                            <path fill-rule="evenodd" d="M13 11.15V4a1 1 0 1 0-2 0v7.15L8.78 8.374a1 1 0 1 0-1.56 1.25l4 5a1 1 0 0 0 1.56 0l4-5a1 1 0 1 0-1.56-1.25L13 11.15Z" clip-rule="evenodd"/>
+                                            <path fill-rule="evenodd" d="M9.657 15.874 7.358 13H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2.358l-2.3 2.874a3 3 0 0 1-4.685 0ZM17 16a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z" clip-rule="evenodd"/>
+                                        </svg>
+                                          
+                                        Load Sheet
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
                     </table>
                 </td>
                 </tr>
@@ -782,5 +805,58 @@
      </div>
 
 </div>
+
+
+<!-- Save Protection Sheet Modal -->
+<ng-template #saveProtectionSheetModal id="saveProtectionSheetModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] max-h-full">
+    <div id="popup-modal" tabindex="-1" class="relative p-4 w-full max-w-md max-h-full">
+       <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <button (click)="closeModal()" type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal"> 
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+             </svg>
+             <span class="sr-only">Close modal</span>
+          </button>
+          <div class="p-4 md:p-5 text-left">
+            <div *ngIf="sheetIsValid()">
+                <svg class="mb-4 w-16 h-16 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg> 
+            </div>
+            <div *ngIf="!sheetIsValid()">
+                <svg class="mb-4 w-16 h-16 text-red-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg> 
+            </div>            
+            
+             <h3 class="mb-5 text-lg font-semibold text-gray-900">Save your protection sheet?</h3>
+             <div *ngIf="!sheetIsValid()">
+                <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                      <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                      </svg>
+                      <span class="sr-only">Info</span>
+                      <div>
+                         <span class="font-bold">There are errors in your sheet!</span> Please ensure you are respecting the cap limit & positional protection minimum.<br> 
+                      </div>
+                 </div>
+             </div>
+             <button type="submit" 
+                    [disabled]="!sheetIsValid()" 
+                    (click)="submitSheet(); closeModal()" 
+                    class="mr-4 bg-green-400 hover:bg-green-500 text-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-500 dark:hover:bg-red-600"
+                    [ngClass]="{
+                        'bg-green-400 hover:bg-green-500 focus:ring-green-300': sheetIsValid(),
+                        'bg-green-300 cursor-not-allowed': !sheetIsValid()
+                     }" >
+                Save Sheet
+             </button>
+             <button type="submit" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+                Cancel
+             </button>
+          </div>
+       </div>
+    </div>
+ </ng-template>
 
 

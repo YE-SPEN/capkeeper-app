@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef } from '@angular/core';
 import { GlobalService } from '../../services/global.service';
 import { TeamService } from '../../services/team.service';
 import { ToastService } from '../../services/toast-service.service';
 import { SortingService } from '../../services/sorting.service';
+import { PlayerService } from '../../services/player.service';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
@@ -14,6 +15,8 @@ import { Team, Player } from '../../types';
   styleUrl: './protection-sheet.component.css'
 })
 export class ProtectionSheetComponent {
+  modalRef!: BsModalRef;
+  editRights: boolean = false;
   league_id!: string;
   salary_cap: number = 0;
   team!: Team;
@@ -37,6 +40,7 @@ export class ProtectionSheetComponent {
 
   constructor(
     protected teamService: TeamService,
+    protected playerService: PlayerService,
     public globalService: GlobalService,
     public sortingService: SortingService,
     protected modalService: BsModalService,
@@ -62,6 +66,13 @@ export class ProtectionSheetComponent {
       this.teamService.getRosterByTeam(this.league_id, team_id).subscribe(
         response => {
           this.team = response.team;
+
+          if (team_id === this.globalService.loggedInTeam?.team_id) {
+            this.editRights = true;
+          } else {
+            this.editRights = false;
+          }
+
           this.team.roster = response.roster.filter(player => !player.isRookie);
           this.sortingService.sort(this.team.roster, 'aav_current', 'desc');
           resolve();
@@ -270,6 +281,107 @@ export class ProtectionSheetComponent {
     this.sheet_total = 0;
     this.bench_total = 0;
     this.bench_cap = 5000000 + ((this.sheet_cap - this.sheet_total) / 2);
+  }
+
+  sheetIsValid(): boolean {
+    if (this.franchise_player && this.f_protected === this.max_f && this.d_protected === this.max_d && this.g_protected === this.max_g && this.bench_total < this.bench_cap) {
+      return true;
+    }
+    return false;
+  }
+
+  submitSheet(): void {
+    const payload: { players: { player_id: string; onBench: boolean; isFranchise: boolean }[] } = {
+      players: []
+    };
+  
+    const addPlayers = (playersArray: any[], onBench: boolean, isFranchise: boolean) => {
+      for (let player of playersArray) {
+        if (player && player.player_id) { 
+          payload.players.push({
+            player_id: player.player_id,
+            isFranchise,
+            onBench
+          });
+        }
+      }
+    };
+    
+    payload.players.push({
+      player_id: this.franchise_player ? this.franchise_player.player_id : '',
+      isFranchise: true,
+      onBench: false
+    });
+    addPlayers(this.protected_forwards, false, false);
+    addPlayers(this.protected_defense, false, false);
+    addPlayers(this.protected_goalies, false, false);
+  
+    addPlayers(this.bench, true, false);
+
+    console.log('Submitting: ', payload)
+  
+    const url = `/api/${this.league_id}/${this.team?.team_id}/protection-sheet`;
+    
+    this.http.post(url, payload)
+      .subscribe({
+        next: () => {
+          this.toastService.showToast('Protection Sheet Saved!', true);
+        },
+        error: (error) => {
+          console.error('Error submitting protection sheet:', error);
+        }
+      });
+  }
+
+  loadSheet(team_id: string): Promise<void> {
+    this.clearSheet();
+
+    return new Promise((resolve, reject) => {
+      this.playerService.getProtectionSheet(this.league_id, team_id).subscribe(
+        response => {
+          
+          if (response.players.length > 0) {
+            for (let player of response.players) {
+              const rosterPlayer = this.team.roster.find(p => p.player_id === player.player_id);
+              
+              if (!rosterPlayer) {
+                console.warn(`Player with ID ${player.player_id} not found in the roster.`);
+                continue;
+              }
+          
+              if (player.isFranchise) {
+                this.toggleFranchise(rosterPlayer);
+                continue;
+              }
+          
+              if (player.onBench) {
+                this.addToBench(rosterPlayer);
+              } else {
+                this.protectPlayer(rosterPlayer);
+              }
+            }
+            this.toastService.showToast('Protection Sheet loaded successfully.', true);
+
+          } else {
+            this.toastService.showToast('No protection sheet found.', false);
+          }
+
+          resolve();
+        },
+        error => {
+          reject(error);
+        }
+      );
+    });
+  }
+  
+
+  openModal(template: TemplateRef<any>): void {
+    this.modalRef = this.modalService.show(template);
+  }
+
+  closeModal() {
+    this.modalRef.hide();
   }
 
 

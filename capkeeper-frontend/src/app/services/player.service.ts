@@ -28,5 +28,10 @@ export class PlayerService {
     const params = new HttpParams().set('year', year);
     return this.http.get<{ draft: Draft_Pick[] }>(url, { params });
   }
+
+  getProtectionSheet(league_id: string, team_id: string): Observable<{ players: Player[] }> {
+    const url = `api/${league_id}/${team_id}/protection-sheet`;
+    return this.http.get<{ players: Player[] }>(url);
+  }
   
 }
