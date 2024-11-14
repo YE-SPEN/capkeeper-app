@@ -17,6 +17,8 @@ import { tradeReviewRoute } from "./trade-review.js";
 import { confirmTradeRoute } from "./trade-response.js";
 import { leagueHomeRoute } from "./home.js";
 import { draftHistoryRoute } from "./draft-history.js";
+import { submitProtectionsRoute } from "./submit-protection-sheet.js";
+import { loadProtectionsRoute } from "./load-protection-sheet.js";
 
 export default [
     leagueRoute,
@@ -37,5 +39,7 @@ export default [
     sendTradeRoute,
     tradeReviewRoute,
     confirmTradeRoute,
-    draftHistoryRoute
+    draftHistoryRoute,
+    submitProtectionsRoute,
+    loadProtectionsRoute
 ]

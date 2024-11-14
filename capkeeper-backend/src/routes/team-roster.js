@@ -9,7 +9,7 @@ export const teamRosterRoute = {
         const league_id = req.params.league_id;
 
         try {
-            const { results: roster} = await db.query( 
+            const { results: roster } = await db.query( 
                 `SELECT p.*, pob.isRookie, pob.onIR, pob.onTradeBlock, pob.retention_perc, nl.logo 
                 FROM nhl_logos nl
                     JOIN players p ON
