@@ -217,7 +217,7 @@
                      }">
                   </div> 
                   {{ player.contract_status }}
-                  <span *ngIf="player.isRookie" class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-1 px-py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Rookie Bank</span>
+                  <span *ngIf="player.isRookie" class="inline-flex md:hidden bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-1 px-py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Rookie Bank</span>
                </div>               
             </td>
             <td class="hidden md:table-cell px-6 py-4">
@@ -236,7 +236,7 @@
                   Unowned
                </ng-template>
            </td>           
-           <td class="hidden md:table cell px-6 py-4 text-xs">
+           <td class="hidden md:table-cell px-6 py-4 text-xs">
                {{ globalService.getDate(player.last_updated) | date:'MM-dd-yyyy' }}<br>
                <span class="italic">by {{ player.updated_by }}</span>
             </td>
