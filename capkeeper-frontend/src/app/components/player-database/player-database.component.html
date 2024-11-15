@@ -226,7 +226,7 @@
             <td class="hidden md:table-cell px-6 py-4">
                {{ player.years_left_current }}
             </td>
-            <td class="p-1 md:px-6 md:py-4 text-xs md:text-sm">
+            <td class="p-1 md:px-6 md:py-4 text-xs md:text-sm text-right md:text-left">
                <ng-container *ngIf="player.owned_by; else unownedTemplate">
                    <a [routerLink]="['/', league_id, 'teams', globalService.getTeamID(player.owned_by)]" class="cursor-pointer font-medium text-green-500 dark:text-green-500 hover:underline">
                        {{ player.owned_by }}
