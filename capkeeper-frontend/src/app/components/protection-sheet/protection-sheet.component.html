@@ -36,7 +36,7 @@
                                 <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ team.team_name }}</h1>
                                 <h3 class="pb-4"><b>Managed by:</b><br> {{ team.managed_by }}</h3>
                                 <div>
-                                    <div *ngIf="editRights" class="relative inline-block mr-3">
+                                    <div *ngIf="editRights" class="relative inline-block mr-3 mb-2">
                                         <button type="button" (click)="openModal(saveProtectionSheetModal)"
                                             class="w-auto px-4 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 dark:bg-green-400 dark:hover:bg-green-500">
                                             <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -427,7 +427,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"> 
+                        <tr class="border-b dark:bg-gray-800 dark:border-gray-700"> 
                             <ng-container *ngIf="franchise_player; else emptyRow">
                                 <!-- Display row with player data if protected_goalies[i] exists -->
                                 <td class="py-1 md:px-4 dark:bg-gray-800 z-10">
