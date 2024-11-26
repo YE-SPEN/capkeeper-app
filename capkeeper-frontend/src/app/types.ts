@@ -41,6 +41,8 @@ export interface Team {
     team_name: string,
     managed_by: string,
     picture: string,
+    seasons: Season[],
+    total_points: number,
     roster_size: number,
     total_cap: number,
     cap_space: number,
@@ -157,4 +159,15 @@ export interface Activity {
     time: string,
     user_id: string,
     trade_id: string,
+}
+
+export interface Season {
+    [key: string]: any;
+    team_id: string,
+    league_id: number,
+    season: string,
+    start_year: number,
+    end_year: number,
+    playoffs: boolean,
+    points: number,
 }

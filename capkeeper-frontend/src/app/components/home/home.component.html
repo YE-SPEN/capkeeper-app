@@ -109,8 +109,8 @@
             </div>
          </div>
  
-          <!-- Rookie Draft Picks -->
-          <div>
+          <!-- Cap Summary Tab Picks -->
+          <div *ngIf="displaying === 'cap'">
              <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 border-1">
                 <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr class="border-b-2">
@@ -123,22 +123,22 @@
                 </thead>
                  <tbody>
                    <tr *ngFor="let team of allTeams" class="border-b">
-                        <td class="px-2 py-0.5 text-left border-r text-xs font-semibold text-gray-900">
+                        <td class="px-2 py-0.5 text-left border-r-2 text-xs font-semibold text-gray-900 min-w-[160px] sticky left-0 bg-gray-50 dark:bg-gray-800">
                             <a [routerLink]="['/', globalService.league?.league_id, 'teams', team.team_id]" class="hover:underline font-semibold">
                                 <div class="flex items-center">
-                                    <img [src]="team.picture" class="w-c h-[32px] rounded-full mr-2">
+                                    <img [src]="team.picture" class="w-[32px] h-[32px] rounded-full mr-2">
                                     <span>{{ team.team_name }}</span>
                                 </div>
                             </a>
                         </td>
                         <td class="px-2 py-0.5 text-center border-r font-normal text-sm">
-                            {{ team.roster_size }}/{{ globalService.league?.max_roster_size}}
+                            {{ team.roster_size }}/{{ globalService.league?.max_roster_size }}
                         </td>                   
                         <td class="px-2 py-0.5 text-center border-r font-normal text-sm">
-                            {{ team.rookie_count }}/{{ globalService.league?.rookie_bank_size}}
+                            {{ team.rookie_count }}/{{ globalService.league?.rookie_bank_size }}
                         </td>
                         <td class="px-2 py-0.5 text-center border-r font-normal text-sm">
-                            {{ team.ir_count }}/{{ globalService.league?.ir_slots}}
+                            {{ team.ir_count }}/{{ globalService.league?.ir_slots }}
                         </td>
                         <td class="px-2 py-1 text-center border-r font-extrabold text-sm">
                             <span 
@@ -155,6 +155,60 @@
                 </tbody>
               </table>  
           </div>
+
+          <!-- Points Summary Tab Picks -->
+          <div *ngIf="displaying === 'points'">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 border-1">
+               <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                   <tr class="bg-gray-700 text-white">
+                       <th class="px-2 py-1.5 text-left border-r-1 font-bold"></th>
+                       <th *ngFor="let season of rolling_seasons; let i = index" class="py-1.5 text-center border-r-1 border-white font-bold" colspan="2">{{ rolling_seasons[i] }}</th>
+                       <th class="py-1.5 text-center border-r-1 font-bold"></th>
+                   </tr>
+                    <tr class="border-b-2">
+                        <th class="px-2 py-1.5 text-left border-r-2 font-bold">Team</th>
+                        <ng-container *ngFor="let season of rolling_seasons">
+                            <th class="py-0.5 text-center border-r-1 font-semibold text-xs text-gray-500">REG</th>
+                            <th class="py-0.5 text-center border-r-2 font-semibold text-xs text-gray-500">PO</th>
+                        </ng-container>
+                        <th class="py-1.5 text-center border-r-1 font-bold">Total</th>
+                    </tr>                           
+               </thead>
+                <tbody>
+                  <tr *ngFor="let team of allTeams" class="border-b">
+                       <td class="px-2 py-0.5 text-left border-r-2 text-xs font-semibold text-gray-900 sticky left-0 bg-gray-50 dark:bg-gray-800">
+                           <a [routerLink]="['/', globalService.league?.league_id, 'teams', team.team_id]" class="hover:underline font-semibold">
+                               <div class="flex items-center">
+                                   <img [src]="team.picture" class="w-[32px] h-[32px] rounded-full mr-2">
+                                   <span>{{ team.team_name }}</span>
+                               </div>
+                           </a>
+                       </td>
+                       <ng-container *ngFor="let season of rolling_seasons">
+                            <td class="px-1 py-0.5 text-center border-r font-normal text-sm">
+                                <div *ngIf="getTeamPointsBySeason(team, season, false) === -1">
+                                    -
+                                </div>
+                                <div *ngIf="getTeamPointsBySeason(team, season, false) !== -1">
+                                    {{ getTeamPointsBySeason(team, season, false) }}
+                                </div>
+                            </td>                   
+                            <td class="px-1 py-0.5 text-center border-r font-normal text-sm">
+                                <div *ngIf="getTeamPointsBySeason(team, season, true) === -1">
+                                    -
+                                </div>
+                                <div *ngIf="getTeamPointsBySeason(team, season, true) !== -1">
+                                    {{ getTeamPointsBySeason(team, season, true) }}
+                                </div>
+                            </td>
+                       </ng-container>
+                       <td class="px-2 py-0.5 text-center border-r font-bold text-sm">
+                           {{ team.total_points }}
+                       </td>                   
+                  </tr>
+               </tbody>
+             </table>  
+         </div>
  
        </div>
     </div>

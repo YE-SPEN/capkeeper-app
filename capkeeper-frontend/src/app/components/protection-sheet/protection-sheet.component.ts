@@ -351,7 +351,7 @@ export class ProtectionSheetComponent {
           
               if (player.isFranchise) {
                 this.toggleFranchise(rosterPlayer);
-                continue;
+                continue;5
               }
           
               if (player.onBench) {
