@@ -13,7 +13,7 @@ export const leagueHomeRoute = {
                     WHERE league_id = ?
                         AND action_type IN ('add-player', 'drop-player')
                     ORDER BY date DESC, time DESC
-                    LIMIT 10`,
+                    LIMIT 11`,
                      [league_id]
                 );
 
