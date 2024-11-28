@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { GlobalService } from '../../services/global.service';
 import { Team, Activity, FA_Pick, Season } from '../../types';
+import { Router, ActivatedRoute } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -19,9 +21,22 @@ export class HomeComponent {
 
   constructor(
     public globalService: GlobalService,
+    private router: Router,
+    protected route: ActivatedRoute,
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    const params = await firstValueFrom(this.route.paramMap);
+    this.league_id = params.get('league_id')!;
+  
+    if (!this.globalService.league) {
+      try {
+        await this.globalService.initializeLeague(this.league_id, this.router.url);
+      } catch (error) {
+        console.error('Error during league initialization:', error);
+      }
+    }
+
     if (this.globalService.league) {
       this.globalService.getLeagueHomeData(this.globalService.league?.league_id)
         .subscribe(response => {

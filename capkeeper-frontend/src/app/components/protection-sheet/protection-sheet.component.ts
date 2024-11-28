@@ -1,13 +1,14 @@
 import { Component, TemplateRef } from '@angular/core';
 import { GlobalService } from '../../services/global.service';
 import { TeamService } from '../../services/team.service';
+import { PlayerService } from '../../services/player.service';
 import { ToastService } from '../../services/toast-service.service';
 import { SortingService } from '../../services/sorting.service';
-import { PlayerService } from '../../services/player.service';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { Team, Player } from '../../types';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-protection-sheet',
@@ -46,19 +47,27 @@ export class ProtectionSheetComponent {
     protected modalService: BsModalService,
     protected toastService: ToastService,
     protected route: ActivatedRoute,
+    private router: Router,
     protected http: HttpClient,
   ) { }
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      this.league_id = params.get('league_id')!;
+  async ngOnInit(): Promise<void> {
+    const params = await firstValueFrom(this.route.paramMap);
+    this.league_id = params.get('league_id')!;
   
-      if (this.globalService.loggedInTeam) {
-        this.setProtectionSheet(this.globalService.loggedInTeam.team_id);
+    if (!this.globalService.loggedInTeam) {
+      try {
+        await this.globalService.initializeLeague(this.league_id, this.router.url);
+      } catch (error) {
+        console.error('Error during league initialization:', error);
       }
-      
-    });
+    }
+  
+    if (this.globalService.loggedInTeam) {
+      this.setProtectionSheet(this.globalService.loggedInTeam.team_id);
+    }
   }
+  
     
   setProtectionSheet(team_id: string): Promise<void> {
     this.clearSheet();

@@ -52,50 +52,60 @@ export class TeamRosterComponent {
   ) { }
 
   ngOnInit(): void {
-      this.route.paramMap.subscribe(params => {
-        this.league_id = params.get('league_id')!;
-        this.team_id = params.get('team_id')!;
-
-        if (this.team_id === this.globalService.loggedInTeam?.team_id) {
-          this.editRights = true;
-        } else {
-          this.editRights = false;
+    this.route.paramMap.subscribe(async (params) => {
+      this.league_id = params.get('league_id')!;
+      this.team_id = params.get('team_id')!;
+  
+      if (!this.globalService.loggedInTeam) {
+        try {
+          await this.globalService.initializeLeague(this.league_id, this.router.url);
+        } catch (error) {
+          console.error("Error during league initialization:", error);
+          return;
         }
-
-        this.teamService.getRosterByTeam(this.league_id, this.team_id)
-          .subscribe(response => {
-            this.team = response.team;
-            this.team.roster = response.roster.filter(player => !player.isRookie && !player.onIR);
-            this.team.rookie_bank = response.roster.filter(player => player.isRookie);
-            this.team.forwards = response.roster.filter(player => player.position === 'F' && !player.isRookie && !player.onIR);
-            this.team.defense = response.roster.filter(player => player.position === 'D' && !player.isRookie && !player.onIR);
-            this.team.goalies = response.roster.filter(player => player.position === 'G' && !player.isRookie && !player.onIR);
-            this.team.trade_block = response.roster.filter(player => player.onTradeBlock);
-            this.team.injured_reserve = response.roster.filter(player => player.onIR);
-
-            this.team.draft_picks = response.draft_picks;
-            this.team.fa_picks = response.fa_picks;
-            this.team.inbox = response.trades;
-
-            this.team.roster_size = this.team.forwards.length + this.team.defense.length + this.team.goalies.length;
-
-            this.team.forward_salary = this.getTotalSalary(this.team.forwards);
-            this.team.defense_salary = this.getTotalSalary(this.team.defense);
-            this.team.goalie_salary = this.getTotalSalary(this.team.goalies);
-            this.team.ir_salary = this.getTotalSalary(this.team.injured_reserve);
-
-            this.team.total_cap = this.team.forward_salary + this.team.defense_salary + this.team.goalie_salary + this.team.salary_retained;
-            if (this.globalService.league?.salary_cap) {
-              this.team.cap_space = this.globalService.league?.salary_cap - this.team.total_cap;
-            }
-
-            this.sortingService.sort(this.team.forwards, 'aav_current', 'desc');
-            this.sortingService.sort(this.team.defense, 'aav_current', 'desc');
-            this.sortingService.sort(this.team.goalies, 'aav_current', 'desc');
-            this.sortingService.sort(this.team.injured_reserve, 'aav_current', 'desc');
-        });
-      });
+      }
+  
+      this.editRights = this.team_id === this.globalService.loggedInTeam?.team_id;
+  
+      this.initializeTeam(this.league_id, this.team_id);
+    });
   }
+  
+  private initializeTeam(leagueId: string, teamId: string): void {
+    this.teamService.getRosterByTeam(leagueId, teamId).subscribe((response) => {
+      this.team = response.team;
+  
+      this.team.roster = response.roster.filter((player) => !player.isRookie && !player.onIR);
+      this.team.rookie_bank = response.roster.filter((player) => player.isRookie);
+      this.team.forwards = response.roster.filter((player) => player.position === 'F' && !player.isRookie && !player.onIR);
+      this.team.defense = response.roster.filter((player) => player.position === 'D' && !player.isRookie && !player.onIR);
+      this.team.goalies = response.roster.filter((player) => player.position === 'G' && !player.isRookie && !player.onIR);
+      this.team.trade_block = response.roster.filter((player) => player.onTradeBlock);
+      this.team.injured_reserve = response.roster.filter((player) => player.onIR);
+  
+      this.team.draft_picks = response.draft_picks;
+      this.team.fa_picks = response.fa_picks;
+      this.team.inbox = response.trades;
+  
+      this.team.roster_size = this.team.forwards.length + this.team.defense.length + this.team.goalies.length;
+  
+      this.team.forward_salary = this.getTotalSalary(this.team.forwards);
+      this.team.defense_salary = this.getTotalSalary(this.team.defense);
+      this.team.goalie_salary = this.getTotalSalary(this.team.goalies);
+      this.team.ir_salary = this.getTotalSalary(this.team.injured_reserve);
+      this.team.total_cap = this.team.forward_salary + this.team.defense_salary + this.team.goalie_salary + this.team.salary_retained;
+  
+      if (this.globalService.league?.salary_cap) {
+        this.team.cap_space = this.globalService.league.salary_cap - this.team.total_cap;
+      }
+  
+      this.sortingService.sort(this.team.forwards, 'aav_current', 'desc');
+      this.sortingService.sort(this.team.defense, 'aav_current', 'desc');
+      this.sortingService.sort(this.team.goalies, 'aav_current', 'desc');
+      this.sortingService.sort(this.team.injured_reserve, 'aav_current', 'desc');
+    });
+  }
+  
 
   setDisplay(display: 'general' | 'rookie' | 'fa'): void {
     this.displaying = display;

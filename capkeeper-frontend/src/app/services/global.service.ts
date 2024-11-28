@@ -2,11 +2,15 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Team, League, NHL_Team, User, Activity, Asset, Trade, FA_Pick, Season } from '../types';
 import { HttpParams, HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { TeamService } from './team.service';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root', 
 })
 export class GlobalService {
+  loading: boolean = false;
   userMenuIsOpen: boolean = false;
   teamsMenuIsOpen: boolean = false;
   toolsMenuIsOpen: boolean = false;
@@ -19,7 +23,9 @@ export class GlobalService {
   nhl_teams: NHL_Team[] = [];
 
   constructor(
+    private teamService: TeamService,
     private http: HttpClient,
+    private router: Router
   ) { }
 
   openSession(email: string): Observable<{ userInfo: User }> {
@@ -27,6 +33,41 @@ export class GlobalService {
     const params = new HttpParams().set('email', email);
     return this.http.get<{ userInfo: User }>(url, { params });
   }
+
+  initializeLeague(leagueId: string, currentRoute: string): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await firstValueFrom(this.teamService.getTeamsByLeague(leagueId));
+  
+        this.teams = response.teams;
+        this.league = response.league;
+        this.nhl_teams = response.nhl_teams;
+  
+        const loggedInUser = this.loggedInUser;
+  
+        if (loggedInUser) {
+          const matchedTeam = this.teams.find(
+            (team) => team.team_id === loggedInUser.team_managed
+          );
+  
+          if (matchedTeam) {
+            this.loggedInTeam = matchedTeam;
+            this.updateTeamCap(matchedTeam);
+          }
+        }
+  
+        if (currentRoute === '/' || currentRoute === '/login') {
+          await this.router.navigate(['/' + leagueId + '/home']);
+        }
+  
+        resolve(); 
+      } catch (error) {
+        console.error('Failed to initialize league:', error);
+        reject(error); 
+      }
+    });
+  }
+  
 
   initializeTeam(team: Team): Observable<{ teamInfo: Team, inbox: Trade[] }> {;
     const url = 'api/login'
@@ -42,7 +83,6 @@ export class GlobalService {
         this.loggedInTeam.roster_size = temp.roster_size;
         this.loggedInTeam.total_cap = temp.total_cap + temp.salary_retained;
         this.loggedInTeam.inbox = response.inbox;
-        console.log('logged in team inbox: ', this.loggedInTeam.inbox)
         
         if (this.league?.salary_cap) {
           this.loggedInTeam.cap_space = this.league.salary_cap - temp.total_cap;

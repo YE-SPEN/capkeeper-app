@@ -1,11 +1,13 @@
 import { Component, TemplateRef, HostListener, OnInit } from '@angular/core';
-import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { GlobalService } from '../../services/global.service';
 import { TeamService } from '../../services/team.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Idle } from '@ng-idle/core';
+import { DEFAULT_INTERRUPTSOURCES } from '@ng-idle/core';
 
 @Component({
   selector: 'app-login',
@@ -21,59 +23,46 @@ export class LoginComponent implements OnInit {
   mobileMenuOpen: boolean = false;
 
   constructor(
+    private idle: Idle,
     private router: Router,
     private modalService: BsModalService,
     public globalService: GlobalService,
     private teamService: TeamService,
-  ) { initializeApp(environment.firebase) }
+  ) { 
+    initializeApp(environment.firebase);
+    this.initIdleTimeout(); 
+  }
 
   ngOnInit() {
     this.isLargeScreen = window.innerWidth >= 1024;
   }
 
+  private initIdleTimeout() {
+    const TIMEOUT_IN_SECONDS = 600;
+
+    this.idle.setIdle(TIMEOUT_IN_SECONDS);
+    this.idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
+
+    this.idle.onTimeout.subscribe(() => {
+        this.signOutClicked();
+    });
+
+    this.idle.watch();
+  }
+
   signIn() {
     const auth = getAuth();
-
-    signInWithEmailAndPassword(auth, this.email, this.password)
+  
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        return signInWithEmailAndPassword(auth, this.email, this.password);
+      })
       .then((userCredential) => {
         this.loginError = false;
         const user = userCredential.user;
-        
-        // use logged in email to retrieve user profile
+  
         if (user.email) {
-          this.globalService.openSession(user.email)
-            .subscribe(response => {
-              this.globalService.loggedInUser = response.userInfo[0];
-
-              // use logged user to find associated league(s)
-              if (this.globalService.loggedInUser) {
-                this.globalService.recordSession(this.globalService.loggedInUser.user_name, 'login');
-                this.globalService.notifications = this.globalService.loggedInUser?.notification_count
-                const league = this.globalService.loggedInUser.league_id;
-
-                // use league id to retrieve associated teams
-                this.teamService.getTeamsByLeague(league)
-                  .subscribe(response => {
-                      this.globalService.teams = response.teams;
-                      this.globalService.league = response.league;
-                      this.globalService.nhl_teams = response.nhl_teams;
-
-                      // match logged in user to their corresponding team
-                      for (let team of this.globalService.teams) {
-                        if (team.team_id === this.globalService.loggedInUser?.team_managed) {
-                          this.globalService.loggedInTeam = team;
-                          console.log('Matched ' + this.globalService.loggedInUser.user_name + ' to ' + this.globalService.loggedInTeam.team_name);
-
-                          // initialize cap space & contract variables for logged in team
-                          this.globalService.updateTeamCap(this.globalService.loggedInTeam);
-                        }
-                      }
-
-                      // redirect logged in user to main app
-                      this.router.navigate(['/' + league + '/home']);
-                  });
-              }
-            })
+          this.globalService.recordSession(user.displayName || user.email, 'login');
         }
       })
       .catch((error) => {
@@ -84,11 +73,41 @@ export class LoginComponent implements OnInit {
       });
   }
 
+  private loadTeamsAndInitialize(leagueId: string) {
+    this.teamService.getTeamsByLeague(leagueId).subscribe((response) => {
+        this.globalService.teams = response.teams;
+        this.globalService.league = response.league;
+        this.globalService.nhl_teams = response.nhl_teams;
+
+        const loggedInUser = this.globalService.loggedInUser;
+
+        if (loggedInUser) {
+            const matchedTeam = this.globalService.teams.find(
+                (team) => team.team_id === loggedInUser.team_managed
+            );
+
+            if (matchedTeam) {
+                this.globalService.loggedInTeam = matchedTeam;
+                this.globalService.updateTeamCap(matchedTeam);
+            }
+        }
+
+        this.router.navigate(['/' + leagueId + '/home']);
+    });
+  }
+
   signOutClicked(): void {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
-        console.log('User signed out');
+
+        // clear the idle object
+        if (this.idle) {
+          this.idle.stop();
+          console.log('Idle service stopped.');
+        }
+
+        // close user sessionn & redirect
         if (this.globalService.loggedInUser) {
           this.globalService.recordSession(this.globalService.loggedInUser.user_name, 'logout');
         }
@@ -107,8 +126,6 @@ export class LoginComponent implements OnInit {
       .then((userCredential) => {
         const user = userCredential.user;
         console.log('Registration successful:', user);
-
-        this.signIn();
       })
       .catch((error) => {
         const errorCode = error.code;

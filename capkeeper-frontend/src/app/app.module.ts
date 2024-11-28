@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ModalModule, BsModalService } from 'ngx-bootstrap/modal';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -45,6 +46,7 @@ import { ProtectionSheetComponent } from './components/protection-sheet/protecti
     AppRoutingModule,
     FormsModule,
     ModalModule,
+    NgIdleKeepaliveModule.forRoot(),
     HttpClientModule,
   ],
   exports: [

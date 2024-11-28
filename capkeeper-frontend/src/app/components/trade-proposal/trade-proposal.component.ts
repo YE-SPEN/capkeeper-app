@@ -49,16 +49,27 @@ export class TradeProposalComponent {
     protected router: Router,
   ) { }
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+  async ngOnInit(): Promise<void> {
+    this.route.paramMap.subscribe(async (params) => {
       this.league_id = params.get('league_id')!;
   
+      if (!this.globalService.loggedInTeam) {
+        try {
+          await this.globalService.initializeLeague(this.league_id, this.router.url);
+        } catch (error) {
+          console.error("Error during league initialization:", error);
+          return;
+        }
+      }
+  
       if (this.globalService.loggedInTeam) {
-        this.teams = this.globalService.teams.filter(team => team.team_id !== this.globalService.loggedInTeam?.team_id);
+        this.teams = this.globalService.teams.filter(
+          (team) => team.team_id !== this.globalService.loggedInTeam?.team_id
+        );
         this.setRequestor(this.globalService.loggedInTeam.team_id);
       }
-      
-      this.route.queryParamMap.subscribe(queryParams => {
+  
+      this.route.queryParamMap.subscribe((queryParams) => {
         const recipient_id = queryParams.get('team');
         if (recipient_id) {
           this.setRecipient(recipient_id);
@@ -66,6 +77,7 @@ export class TradeProposalComponent {
       });
     });
   }
+  
     
   setRequestor(team_id: string): Promise<void> {
     return new Promise((resolve, reject) => {
