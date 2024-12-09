@@ -264,6 +264,10 @@
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
                                                         &nbsp;({{ globalService.capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
+                                                        <div *ngIf="pick?.assigned_to !== pick?.owned_by" class="text-[9px] text-gray-500">
+                                                            &nbsp;&nbsp;via {{ globalService.getTeamName(pick.assigned_to) }} 
+                                                        </div>
+                                                        &nbsp;
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -283,6 +287,9 @@
                                             Round {{ assets_given[i]?.round }}
                                             <div *ngIf="assets_given[i]?.pick_number">&nbsp;#{{ assets_given[i]?.pick_number }}</div>
                                             &nbsp;- {{ globalService.capitalizeFirstLetter(assets_given[i]?.type) }} ({{ assets_given[i]?.year}})
+                                            <div *ngIf="assets_given[i]?.assigned_to !== assets_given[i]?.owned_by" class="text-[9px] text-gray-500">
+                                                &nbsp;&nbsp;via {{ globalService.getTeamName(assets_given[i]?.assigned_to) }} 
+                                            </div>
                                         </div>                                       
                                     </div>                                    
                                 </ng-template>
@@ -307,6 +314,9 @@
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
                                                         &nbsp;({{ globalService.capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
+                                                        <div *ngIf="pick?.assigned_to !== pick?.owned_by" class="text-[9px] text-gray-500">
+                                                            &nbsp;&nbsp;via {{ globalService.getTeamName(pick.assigned_to) }} 
+                                                        </div>
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -326,6 +336,9 @@
                                             Round {{ assets_given[i]?.round }}
                                             <div *ngIf="assets_given[i]?.pick_number">&nbsp;#{{ assets_given[i]?.pick_number }}</div>
                                             &nbsp;- {{ globalService.capitalizeFirstLetter(assets_given[i]?.type) }} ({{ assets_given[i]?.year}})
+                                            <div *ngIf="assets_given[i]?.assigned_to !== assets_given[i]?.owned_by" class="text-[9px] text-gray-500">
+                                                &nbsp;&nbsp;via {{ globalService.getTeamName(assets_given[i]?.assigned_to) }} 
+                                            </div>
                                         </div>                                       
                                     </div>                                    
                                 </ng-template>
@@ -348,6 +361,9 @@
                                                 <li *ngFor="let pick of requestor.fa_picks | tradeAssetPipe: assets_given : getAssetType" class="border-gray-200 border-b">
                                                     <div (click)="selectAsset(assets_given, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         FA Week {{ pick?.week }} ({{ pick?.year }})
+                                                        <div *ngIf="pick?.assigned_to !== pick?.owned_by" class="text-[9px] text-gray-500">
+                                                            &nbsp;&nbsp;via {{ globalService.getTeamName(pick.assigned_to) }} 
+                                                        </div>
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -365,6 +381,9 @@
                                         &nbsp;&nbsp;
                                         <div class="flex items-center text-sm font-semibold">
                                             FA Week {{ assets_given[i]?.week }} ({{ assets_given[i]?.year }})
+                                            <div *ngIf="assets_given[i]?.assigned_to !== assets_given[i]?.owned_by" class="text-[9px] text-gray-500">
+                                                &nbsp;&nbsp;via {{ globalService.getTeamName(assets_given[i]?.assigned_to) }} 
+                                            </div>
                                         </div>                                       
                                     </div>                                    
                                 </ng-template>
@@ -566,6 +585,9 @@
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
                                                         &nbsp;({{ globalService.capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
+                                                        <div *ngIf="pick?.assigned_to !== pick?.owned_by" class="text-[9px] text-gray-500">
+                                                            &nbsp;&nbsp;via {{ globalService.getTeamName(pick.assigned_to) }} 
+                                                        </div>
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -585,6 +607,9 @@
                                             Round {{ assets_received[i]?.round }}
                                             <div *ngIf="assets_received[i]?.pick_number">&nbsp;#{{ assets_received[i]?.pick_number }}</div>
                                             &nbsp;- {{ globalService.capitalizeFirstLetter(assets_received[i]?.type) }} ({{ assets_received[i]?.year}})
+                                            <div *ngIf="assets_received[i]?.assigned_to !== assets_received[i]?.owned_by" class="text-[9px] text-gray-500">
+                                                &nbsp;&nbsp;via {{ globalService.getTeamName(assets_received[i]?.assigned_to) }} 
+                                            </div>
                                         </div>                                       
                                     </div>                                    
                                 </ng-template>
@@ -609,6 +634,9 @@
                                                         &nbsp;&nbsp;Round {{ pick?.round }}
                                                         <div *ngIf="pick?.pick_number">&nbsp;- #{{ pick?.pick_number }}</div>
                                                         &nbsp;({{ globalService.capitalizeFirstLetter(pick?.type) }}, {{ pick?.year}})
+                                                        <div *ngIf="pick?.assigned_to !== pick?.owned_by" class="text-[9px] text-gray-500">
+                                                            &nbsp;&nbsp;via {{ globalService.getTeamName(pick.assigned_to) }} 
+                                                        </div>
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -628,6 +656,9 @@
                                             Round {{ assets_received[i]?.round }}
                                             <div *ngIf="assets_received[i]?.pick_number">&nbsp;#{{ assets_received[i]?.pick_number }}</div>
                                             &nbsp;- {{ globalService.capitalizeFirstLetter(assets_received[i]?.type) }} ({{ assets_received[i]?.year}})
+                                            <div *ngIf="assets_received[i]?.assigned_to !== assets_received[i]?.owned_by" class="text-[9px] text-gray-500">
+                                                &nbsp;&nbsp;via {{ globalService.getTeamName(assets_received[i]?.assigned_to) }} 
+                                            </div>
                                         </div>                                       
                                     </div>                                    
                                 </ng-template>
@@ -650,6 +681,9 @@
                                                 <li *ngFor="let pick of recipient.fa_picks | tradeAssetPipe: assets_received : getAssetType" class="border-gray-200 border-b">
                                                     <div (click)="selectAsset(assets_received, pick, i)" class="text-gray-900 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
                                                         FA Week {{ pick?.week }} ({{ pick?.year }})
+                                                        <div *ngIf="pick?.assigned_to !== pick?.owned_by" class="text-[9px] text-gray-500">
+                                                            &nbsp;&nbsp;via {{ globalService.getTeamName(pick.assigned_to) }} 
+                                                        </div>
                                                     </div>
                                                 </li>                                            
                                             </ul>
@@ -667,6 +701,9 @@
                                         &nbsp;&nbsp;
                                         <div class="flex items-center text-sm font-semibold">
                                             FA Week {{ assets_received[i]?.week }} ({{ assets_received[i]?.year }})
+                                            <div *ngIf="assets_received[i]?.assigned_to !== assets_received[i]?.owned_by" class="text-[9px] text-gray-500">
+                                                &nbsp;&nbsp;via {{ globalService.getTeamName(assets_received[i]?.assigned_to) }} 
+                                            </div>
                                         </div>                                       
                                     </div>                                    
                                 </ng-template>

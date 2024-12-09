@@ -101,13 +101,11 @@ export class LoginComponent implements OnInit {
     signOut(auth)
       .then(() => {
 
-        // clear the idle object
         if (this.idle) {
           this.idle.stop();
           console.log('Idle service stopped.');
         }
 
-        // close user sessionn & redirect
         if (this.globalService.loggedInUser) {
           this.globalService.recordSession(this.globalService.loggedInUser.user_name, 'logout');
         }

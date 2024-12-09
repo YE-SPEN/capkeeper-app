@@ -29,7 +29,6 @@ export class AppComponent implements OnInit {
           this.globalService.loading = true;
 
           if (user) {
-            // User is signed in, retrieve session data
             this.user = user;
 
             this.globalService.openSession(user.email!).subscribe((response) => {
@@ -48,6 +47,9 @@ export class AppComponent implements OnInit {
               }
             });
           } else {
+            if (this.globalService.loggedInUser) {
+              this.globalService.recordSession(this.globalService.loggedInUser.user_name, 'logout');
+            }
             this.user = null;
             this.globalService.loggedInUser = null;
             this.globalService.loading = false;

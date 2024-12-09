@@ -210,6 +210,9 @@
                                             Round {{ assets_received[i]?.round }}
                                             <div *ngIf="assets_received[i]?.pick_number">&nbsp;#{{ assets_received[i]?.pick_number }}</div>
                                             &nbsp;- {{ globalService.capitalizeFirstLetter(assets_received[i]?.type) }} ({{ assets_received[i]?.year }})
+                                            <div *ngIf="assets_received[i]?.assigned_to !== assets_received[i]?.owned_by" class="text-[9px] text-gray-500">
+                                                &nbsp;&nbsp;via {{ globalService.getTeamName(assets_received[i]?.assigned_to) }} 
+                                            </div>
                                         </div>                                       
                                     </div>                                    
                                 </ng-container>
@@ -225,6 +228,9 @@
                                         &nbsp;&nbsp;
                                         <div class="flex items-center text-sm font-semibold">
                                             FA Week {{ assets_received[i]?.week }} ({{ assets_received[i]?.year }})
+                                            <div *ngIf="assets_received[i]?.assigned_to !== assets_received[i]?.owned_by" class="text-[9px] text-gray-500">
+                                                &nbsp;&nbsp;via {{ globalService.getTeamName(assets_received[i]?.assigned_to) }} 
+                                            </div>
                                         </div>                                       
                                     </div>                                    
                                 </ng-container>
@@ -367,6 +373,9 @@
                                             Round {{ assets_given[i]?.round }}
                                             <div *ngIf="assets_given[i]?.pick_number">&nbsp;#{{ assets_given[i]?.pick_number }}</div>
                                             &nbsp;- {{ globalService.capitalizeFirstLetter(assets_given[i]?.type) }} ({{ assets_given[i]?.year }})
+                                            <div *ngIf="assets_given[i]?.assigned_to !== assets_given[i]?.owned_by" class="text-[9px] text-gray-500">
+                                                &nbsp;&nbsp;via {{ globalService.getTeamName(assets_given[i]?.assigned_to) }} 
+                                            </div>
                                         </div>                                       
                                     </div>                                    
                                 </ng-container>
@@ -382,6 +391,9 @@
                                         &nbsp;&nbsp;
                                         <div class="flex items-center text-sm font-semibold">
                                             FA Week {{ assets_given[i]?.week }} ({{ assets_given[i]?.year }})
+                                            <div *ngIf="assets_given[i]?.assigned_to !== assets_given[i]?.owned_by" class="text-[9px] text-gray-500">
+                                                &nbsp;&nbsp;via {{ globalService.getTeamName(assets_given[i]?.assigned_to) }} 
+                                            </div>
                                         </div>                                       
                                     </div>                                    
                                 </ng-container>
