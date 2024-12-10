@@ -270,18 +270,18 @@
         
          
          <!-- General Draft Picks -->
-         <div *ngIf="displaying === 'general'" class="md:p-4">
+         <div *ngIf="displaying === 'general'" class="md:p-4 overflow-x-auto md:overflow-visible">
                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md md:border-2 max-w-full">
                   <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                      <tr class="border-b-2">
-                        <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold">Round</th>
+                        <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold sticky left-0 z-10 bg-gray-100">Round</th>
                         <th *ngFor="let round of [].constructor(globalService.league?.general_draft_length); let i = index"  class="px-4 py-2 text-center border-r-2 font-bold text-sm">{{ i + 1 }}</th>
                         <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold">Total</th>
                      </tr>                   
                   </thead>
                   <tbody>
                      <tr *ngFor="let year of getDraftYears()" class="border-b-2">
-                        <td class="py-1.5 text-center border-r-2">
+                        <td class="py-0.5 px-2.5 text-center border-r-2 sticky left-0 bg-white z-10">
                            <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
                               {{ year }}
                            </span>
@@ -344,18 +344,18 @@
          </div>
 
          <!-- Rookie Draft Picks -->
-         <div *ngIf="displaying === 'rookie'" class="md:p-4">
+         <div *ngIf="displaying === 'rookie'" class="md:p-4 overflow-x-auto md:overflow-visible">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md md:border-2">
                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr class="border-b-2">
-                     <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold">Round</th>
+                     <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold sticky left-0">Round</th>
                      <th *ngFor="let round of [].constructor(globalService.league?.rookie_draft_length); let i = index"  class="px-4 py-2 text-center border-r-2 font-bold text-sm">{{ i + 1 }}</th>
                      <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold">Total</th>
                   </tr>                   
                </thead>
                <tbody>
                   <tr *ngFor="let year of getDraftYears()" class="border-b-2">
-                     <td class="py-1.5 text-center border-r-2">
+                     <td class="py-0.5 px-2.5 text-center border-r-2 sticky left-0 bg-white z-10">
                         <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
                            {{ year }}
                         </span>
@@ -421,7 +421,7 @@
          </div>
 
          <!-- FA Picks -->
-         <div *ngIf="displaying === 'fa'" class="md:p-4">
+         <div *ngIf="displaying === 'fa'" class="overflow-x-auto md:overflow-visible">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md md:border-2">
                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr class="border-b-2">
@@ -491,10 +491,10 @@
                </th>
        
                <!-- Player Column -->
-               <th scope="col" class="md:p-4 bg-gray-50 md:sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
+               <th scope="col" class="p-4 bg-gray-50 md:sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
                [ngClass]="{
                   'left-12' : editRights,
-                  'left-0 border-r-2 px-6 min-w-[275px]': !editRights,
+                  'left-0 md:border-r-2 px-6 min-w-[275px]': !editRights,
                   'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
                }"
                (click)="sortingService.toggleSort(team.forwards, 'first_name')"
@@ -510,19 +510,17 @@
                </th>
        
                <!-- Action Column -->
-               <th *ngIf="editRights" scope="col" class="text-center md:p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
+               <th *ngIf="editRights" scope="col" class="text-center md:p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 z-10 md:border-r-2">
                  
                </th>
        
                <!-- Dynamic Columns -->
                <th *ngFor="let year of getContractSeasons(team.forwards); let i = index" 
                   scope="col" 
-                  class="px-6 py-3 min-w-32"
+                  class="px-6 py-3 min-w-32 hidden md:table-cell"
                   [ngClass]="{
                      'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
                      'hover:cursor-pointer hover:text-gray-500': i === 0,
-                     'hidden': i !== 0,
-                     'md:table-cell': i !== 0
                    }"                   
                   (click)="i === 0 && sortingService.toggleSort(team.forwards, 'aav_current')"
                >
@@ -557,7 +555,7 @@
                <td class="flex items-left px-2 py-2 md:min-w-52 text-gray-900 md:sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
                   [ngClass]="{
                      'md:left-12' : editRights,
-                     'md:left-0 border-r-2 md:px-6' : !editRights
+                     'md:left-0 md:border-r-2 md:px-6' : !editRights
                   }"
                >
                   <img class="w-10 h-10 rounded-full" src="{{forward.logo}}" alt="Player image">
@@ -565,13 +563,23 @@
                      <div class="text-sm font-semibold">{{ forward.first_name }} {{ forward.last_name }}</div>
                      <div class="font-normal text-xs text-gray-500">
                         {{ forward.position }} - {{ forward.short_code }}
+                        
+                        <!-- Mobile Display -->
+                        <div class="inline-flex md:hidden font-normal text-gray-500 text-xs">
+                           <div *ngIf="forward.contract_status === 'Active'" class="md:hidden inline-flex font-semibold">
+                              &nbsp;| {{ forward.aav_current > 0 ? '$' +(forward.aav_current | number:'1.0-0') : 'N/A' }} x {{ forward.years_left_current }}
+                           </div>
+                        </div>
+
+                        <!-- Salary Retention Tag -->
                         <span *ngIf="forward.retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ forward.retention_perc }}% RET</span>
                      </div>
+
                   </div>
                </td>
 
                <!-- Action Column -->
-               <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 border-r-2">
+               <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 md:border-r-2">
                   <select (change)="rosterMove(forward, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
                      <option value="">Action</option>
                      <option value="ir">Place on IR</option>
@@ -583,11 +591,7 @@
                <!-- Salary Columns -->
                <ng-container *ngIf="forward.years_left_current">
 
-                  <td *ngFor="let aav of generateRange(forward.years_left_current); let i = index" class="px-6 py-2"
-                  [ngClass]="{
-                     'hidden': i !== 0,
-                     'md:table-cell': i !== 0
-                   }" >
+                  <td *ngFor="let aav of generateRange(forward.years_left_current); let i = index" class="px-6 py-2 hidden md:table-cell">
                      <ng-container *ngIf="i === 0; else noRetention">
                         {{ forward.aav_current - (forward.aav_current * (forward.retention_perc / 100)) | number:'1.0-0' }}
                      </ng-container>
@@ -642,10 +646,10 @@
             </th>
     
             <!-- Player Column -->
-            <th scope="col" class="md:p-4 bg-gray-50 md:sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
+            <th scope="col" class="p-4 bg-gray-50 md:sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
             [ngClass]="{
                'left-12' : editRights,
-               'left-0 border-r-2 px-6 min-w-[275px]': !editRights,
+               'left-0 md:border-r-2 px-6 min-w-[275px]': !editRights,
                'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
             }"
             (click)="sortingService.toggleSort(team.defense, 'first_name')"
@@ -661,19 +665,17 @@
             </th>
     
             <!-- Action Column -->
-            <th *ngIf="editRights" scope="col" class="text-center md:p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
+            <th *ngIf="editRights" scope="col" class="text-center md:p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 z-10 md:border-r-2">
               
             </th>
     
             <!-- Dynamic Columns -->
             <th *ngFor="let year of getContractSeasons(team.defense); let i = index" 
                scope="col" 
-               class="px-6 py-3 min-w-32"
+               class="px-6 py-3 min-w-32 hidden md:table-cell"
                [ngClass]="{
                   'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
                   'hover:cursor-pointer hover:text-gray-500': i === 0,
-                  'hidden': i !== 0,
-                  'md:table-cell': i !== 0
                 }"                   
                (click)="i === 0 && sortingService.toggleSort(team.defense, 'aav_current')"
             >
@@ -708,7 +710,7 @@
             <td class="flex items-left px-2 py-2 md:min-w-52 text-gray-900 md:sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
                [ngClass]="{
                   'md:left-12' : editRights,
-                  'md:left-0 border-r-2 md:px-6' : !editRights
+                  'md:left-0 md:border-r-2 md:px-6' : !editRights
                }"
             >
                <img class="w-10 h-10 rounded-full" src="{{defenseman.logo}}" alt="Player image">
@@ -716,13 +718,23 @@
                   <div class="text-sm font-semibold">{{ defenseman.first_name }} {{ defenseman.last_name }}</div>
                   <div class="font-normal text-xs text-gray-500">
                      {{ defenseman.position }} - {{ defenseman.short_code }}
+                     
+                     <!-- Mobile Display -->
+                     <div class="inline-flex md:hidden font-normal text-gray-500 text-xs">
+                        <div *ngIf="defenseman.contract_status === 'Active'" class="md:hidden inline-flex font-semibold">
+                           &nbsp;| {{ defenseman.aav_current > 0 ? '$' +(defenseman.aav_current | number:'1.0-0') : 'N/A' }} x {{ defenseman.years_left_current }}
+                        </div>
+                     </div>
+
+                     <!-- Salary Retention Tag -->
                      <span *ngIf="defenseman.retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ defenseman.retention_perc }}% RET</span>
                   </div>
+
                </div>
             </td>
 
             <!-- Action Column -->
-            <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 border-r-2">
+            <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 md:border-r-2">
                <select (change)="rosterMove(defenseman, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
                   <option value="">Action</option>
                   <option value="ir">Place on IR</option>
@@ -734,11 +746,7 @@
             <!-- Salary Columns -->
             <ng-container *ngIf="defenseman.years_left_current">
 
-               <td *ngFor="let aav of generateRange(defenseman.years_left_current); let i = index" class="px-6 py-2"
-               [ngClass]="{
-                  'hidden': i !== 0,
-                  'md:table-cell': i !== 0
-                }" >
+               <td *ngFor="let aav of generateRange(defenseman.years_left_current); let i = index" class="px-6 py-2 hidden md:table-cell">
                   <ng-container *ngIf="i === 0; else noRetention">
                      {{ defenseman.aav_current - (defenseman.aav_current * (defenseman.retention_perc / 100)) | number:'1.0-0' }}
                   </ng-container>
@@ -793,10 +801,10 @@
             </th>
     
             <!-- Player Column -->
-            <th scope="col" class="md:p-4 bg-gray-50 md:sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
+            <th scope="col" class="p-4 bg-gray-50 md:sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
             [ngClass]="{
                'left-12' : editRights,
-               'left-0 border-r-2 px-6 min-w-[275px]': !editRights,
+               'left-0 md:border-r-2 px-6 min-w-[275px]': !editRights,
                'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
             }"
             (click)="sortingService.toggleSort(team.goalies, 'first_name')"
@@ -812,19 +820,17 @@
             </th>
     
             <!-- Action Column -->
-            <th *ngIf="editRights" scope="col" class="text-center md:p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 z-10 border-r-2">
+            <th *ngIf="editRights" scope="col" class="text-center md:p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 z-10 md:border-r-2">
               
             </th>
     
             <!-- Dynamic Columns -->
             <th *ngFor="let year of getContractSeasons(team.goalies); let i = index" 
                scope="col" 
-               class="px-6 py-3 min-w-32"
+               class="px-6 py-3 min-w-32 hidden md:table-cell"
                [ngClass]="{
                   'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
                   'hover:cursor-pointer hover:text-gray-500': i === 0,
-                  'hidden': i !== 0,
-                  'md:table-cell': i !== 0
                 }"                   
                (click)="i === 0 && sortingService.toggleSort(team.goalies, 'aav_current')"
             >
@@ -859,7 +865,7 @@
             <td class="flex items-left px-2 py-2 md:min-w-52 text-gray-900 md:sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
                [ngClass]="{
                   'md:left-12' : editRights,
-                  'md:left-0 border-r-2 md:px-6' : !editRights
+                  'md:left-0 md:border-r-2 md:px-6' : !editRights
                }"
             >
                <img class="w-10 h-10 rounded-full" src="{{goalie.logo}}" alt="Player image">
@@ -867,13 +873,23 @@
                   <div class="text-sm font-semibold">{{ goalie.first_name }} {{ goalie.last_name }}</div>
                   <div class="font-normal text-xs text-gray-500">
                      {{ goalie.position }} - {{ goalie.short_code }}
+                     
+                     <!-- Mobile Display -->
+                     <div class="inline-flex md:hidden font-normal text-gray-500 text-xs">
+                        <div *ngIf="goalie.contract_status === 'Active'" class="md:hidden inline-flex font-semibold">
+                           &nbsp;| {{ goalie.aav_current > 0 ? '$' +(goalie.aav_current | number:'1.0-0') : 'N/A' }} x {{ goalie.years_left_current }}
+                        </div>
+                     </div>
+
+                     <!-- Salary Retention Tag -->
                      <span *ngIf="goalie.retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ goalie.retention_perc }}% RET</span>
                   </div>
+
                </div>
             </td>
 
             <!-- Action Column -->
-            <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 border-r-2">
+            <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 md:border-r-2">
                <select (change)="rosterMove(goalie, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
                   <option value="">Action</option>
                   <option value="ir">Place on IR</option>
@@ -885,11 +901,7 @@
             <!-- Salary Columns -->
             <ng-container *ngIf="goalie.years_left_current">
 
-               <td *ngFor="let aav of generateRange(goalie.years_left_current); let i = index" class="px-6 py-2"
-               [ngClass]="{
-                  'hidden': i !== 0,
-                  'md:table-cell': i !== 0
-                }">
+               <td *ngFor="let aav of generateRange(goalie.years_left_current); let i = index" class="px-6 py-2 hidden md:table-cell">
                   <ng-container *ngIf="i === 0; else noRetention">
                      {{ goalie.aav_current - (goalie.aav_current * (goalie.retention_perc / 100)) | number:'1.0-0' }}
                   </ng-container>
@@ -949,7 +961,7 @@
             <th scope="col" class="p-4 bg-gray-50 md:sticky dark:bg-gray-700 md:z-10 hover:text-gray-500 hover:cursor-pointer"
             [ngClass]="{
                'md:left-12' : editRights,
-               'md:left-0 border-r-2 px-6 min-w-[275px]': !editRights,
+               'md:left-0 md:border-r-2 px-6 min-w-[275px]': !editRights,
                'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
             }"
             (click)="sortingService.toggleSort(team.injured_reserve, 'first_name')"
@@ -965,19 +977,17 @@
             </th>
     
             <!-- Action Column -->
-            <th *ngIf="editRights" scope="col" class="text-center p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 md:z-10 border-r-2">
+            <th *ngIf="editRights" scope="col" class="text-center p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 md:z-10 md:border-r-2">
               
             </th>
     
             <!-- Dynamic Columns -->
             <th *ngFor="let year of getContractSeasons(team.injured_reserve); let i = index" 
                scope="col" 
-               class="px-6 py-3 hover:text-gray-500 hover:cursor-pointer min-w-32"
+               class="px-6 py-3 hover:text-gray-500 hover:cursor-pointer min-w-32 hidden md:table-cell"
                [ngClass]="{
                   'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
                   'hover:cursor-pointer hover:text-gray-500': i === 0,
-                  'hidden': i !== 0,
-                  'md:table-cell': i !== 0
                }"
                (click)="i === 0 && sortingService.toggleSort(team.injured_reserve, 'aav_current')"
             >
@@ -997,81 +1007,85 @@
             <tr *ngFor="let row of [].constructor(globalService.league?.ir_slots); let i = index" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                <!-- Check if a player exists at this index -->
                <ng-container *ngIf="team.injured_reserve[i]; else emptyRow">
-               <!-- Checkbox Column -->
-               <td *ngIf="editRights" class="p-2 md:p-4 md:sticky md:left-0 bg-white dark:bg-gray-800 md:z-10">
-                  <div (click)="openModal(dropPlayerModal, team.injured_reserve[i])" class="flex items-center">
-                     <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
-                           aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
-                           width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
-                              stroke-width="2" 
-                              d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                     </svg>
-                  </div>                    
-               </td>
-         
-               <!-- Player Column -->
-               <td class="flex items-left px-2 py-2 md:min-w-52 text-gray-900 md:sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
-                  [ngClass]="{
-                     'md:left-12' : editRights,
-                     'md:left-0 border-r-2 px-6 min-w-[275px]' : !editRights
-                  }"
-               >
-                  <img class="w-10 h-10 rounded-full" [src]="team.injured_reserve[i].logo" alt="Player image">
-                  <div class="ps-3 bg-white">
-                     <div class="text-sm font-semibold">
-                        {{ team.injured_reserve[i].first_name }} {{ team.injured_reserve[i].last_name }}
-                     </div>
-                     <div class="font-normal text-xs text-gray-500">
-                        {{ team.injured_reserve[i].position }} - {{ team.injured_reserve[i].short_code }} 
-                        <span class="bg-red-100 text-red-800 text-[9px] font-medium ml-2 me-1 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">IR</span>
-                        <span *ngIf="team.injured_reserve[i].retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ team.injured_reserve[i].retention_perc }}% RET</span>
-                     </div>
-                  </div>
-               </td>
-         
-               <!-- Action Column -->
-               <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 border-r-2">
-                  <select (change)="rosterMove(team.injured_reserve[i], $event, callUpModal)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
-                     <option value="">Action</option>
-                     <option value="ir">Activate to Main Roster</option>
-                     <option *ngIf="!team.injured_reserve[i]?.onTradeBlock" value="trade-block">Add to Trade Block</option>
-                     <option *ngIf="team.injured_reserve[i]?.onTradeBlock" value="trade-block">Remove from Trade Block</option>         
-                  </select> 
-               </td>
+                  <!-- Checkbox Column -->
+                  <td *ngIf="editRights" class="p-2 md:p-4 md:sticky md:left-0 bg-white dark:bg-gray-800 md:z-10">
+                     <div (click)="openModal(dropPlayerModal, team.injured_reserve[i])" class="flex items-center">
+                        <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
+                              aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                              width="24" height="24" fill="none" viewBox="0 0 24 24">
+                           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
+                                 stroke-width="2" 
+                                 d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                        </svg>
+                     </div>                    
+                  </td>
             
-               <!-- Salary Columns -->
-               <ng-container *ngIf="team.injured_reserve[i].years_left_current">
-                  <td *ngFor="let aav of generateRange(team.injured_reserve[i].years_left_current); let j = index" class="px-6 py-2"
+                  <!-- Player Column -->
+                  <td class="flex items-left px-2 py-2 md:min-w-52 text-gray-900 md:sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
                      [ngClass]="{
-                        'hidden': j !== 0,
-                        'md:table-cell': j !== 0
-                     }">
-                     <ng-container *ngIf="j === 0; else noRetention">
-                        {{ team.injured_reserve[i].aav_current - (team.injured_reserve[i].aav_current * (team.injured_reserve[i].retention_perc / 100)) | number:'1.0-0' }}
-                     </ng-container>
+                        'md:left-12' : editRights,
+                        'md:left-0 md:border-r-2 px-6 min-w-[275px]' : !editRights
+                     }"
+                  >
+                     <img class="w-10 h-10 rounded-full" [src]="team.injured_reserve[i].logo" alt="Player image">
+                     <div class="ps-3 pe-3 bg-white">
+                        <div class="text-sm font-semibold">{{ team.injured_reserve[i].first_name }} {{ team.injured_reserve[i].last_name }}</div>
+                        <div class="font-normal text-xs text-gray-500">
+                           {{ team.injured_reserve[i].position }} - {{ team.injured_reserve[i].short_code }}
+                           
+                           <!-- Mobile Display -->
+                           <div class="inline-flex md:hidden font-normal text-gray-500 text-xs">
+                              <div *ngIf="team.injured_reserve[i].contract_status === 'Active'" class="md:hidden inline-flex font-semibold">
+                                 &nbsp;| {{ team.injured_reserve[i].aav_current > 0 ? '$' +(team.injured_reserve[i].aav_current | number:'1.0-0') : 'N/A' }} x {{ team.injured_reserve[i].years_left_current }}
+                              </div>
+                           </div>
+   
+                           <!-- Salary Retention Tag -->
+                           <span *ngIf="team.injured_reserve[i].retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ team.injured_reserve[i].retention_perc }}% RET</span>
+                           <span *ngIf="team.injured_reserve[i].retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ team.injured_reserve[i].retention_perc }}% RET</span>
+                        </div>
+   
+                     </div>
+                  </td>
+            
+                  <!-- Action Column -->
+                  <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 md:border-r-2">
+                     <select (change)="rosterMove(team.injured_reserve[i], $event, callUpModal)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                        <option value="">Action</option>
+                        <option value="ir">Activate to Main Roster</option>
+                        <option *ngIf="!team.injured_reserve[i]?.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                        <option *ngIf="team.injured_reserve[i]?.onTradeBlock" value="trade-block">Remove from Trade Block</option>         
+                     </select> 
+                  </td>
+               
+                  <!-- Salary Columns -->
+                  <ng-container *ngIf="team.injured_reserve[i].years_left_current">
+                     <td *ngFor="let aav of generateRange(team.injured_reserve[i].years_left_current); let j = index" class="px-6 py-2 hidden md:table-cell">
+                        <ng-container *ngIf="j === 0; else noRetention">
+                           {{ team.injured_reserve[i].aav_current - (team.injured_reserve[i].aav_current * (team.injured_reserve[i].retention_perc / 100)) | number:'1.0-0' }}
+                        </ng-container>
 
-                     <ng-template #noRetention>
-                        {{ team.injured_reserve[i].aav_current | number:'1.0-0' }}
-                     </ng-template>
+                        <ng-template #noRetention>
+                           {{ team.injured_reserve[i].aav_current | number:'1.0-0' }}
+                        </ng-template>
+                     </td>
+                  </ng-container>
+            
+                  <ng-container *ngIf="team.injured_reserve[i]?.years_left_next">
+                     <td *ngFor="let aav of generateRange(team.injured_reserve[i].years_left_next)" class="px-6 py-2 hidden md:table-cell">
+                        {{ team.injured_reserve[i].aav_next | number:'1.0-0' }}
+                     </td>
+                  </ng-container>
+            
+                  <td class="px-6 py-2 hidden md:table-cell">
+                     <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                           [ngClass]="{
+                           'bg-red-600': team.injured_reserve[i].expiry_status === 'UFA',
+                           'bg-blue-600': team.injured_reserve[i].expiry_status === 'RFA'
+                           }">
+                        {{ team.injured_reserve[i].expiry_status }}
+                     </span>
                   </td>
-               </ng-container>
-         
-               <ng-container *ngIf="team.injured_reserve[i]?.years_left_next">
-                  <td *ngFor="let aav of generateRange(team.injured_reserve[i].years_left_next)" class="px-6 py-2 hidden md:table-cell">
-                     {{ team.injured_reserve[i].aav_next | number:'1.0-0' }}
-                  </td>
-               </ng-container>
-         
-               <td class="px-6 py-2 hidden md:table-cell">
-                  <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
-                        [ngClass]="{
-                        'bg-red-600': team.injured_reserve[i].expiry_status === 'UFA',
-                        'bg-blue-600': team.injured_reserve[i].expiry_status === 'RFA'
-                        }">
-                     {{ team.injured_reserve[i].expiry_status }}
-                  </span>
-               </td>
                </ng-container>
          
                <!-- Empty Row Template -->
@@ -1080,7 +1094,7 @@
                   <td class="flex items-left px-2 py-4 md:sticky md:min-w-52 text-gray-900 whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
                      [ngClass]="{
                         'left-12' : editRights,
-                        'left-0 border-r-2 px-6 min-w-[275px]' : !editRights
+                        'left-0 md:border-r-2 px-6 min-w-[275px]' : !editRights
                      }"
                   >
                      <div class="text-sm font-semibold">
@@ -1121,7 +1135,7 @@
             <th scope="col" class="p-4 bg-gray-50 md:sticky dark:bg-gray-700 md:z-10 hover:text-gray-500 hover:cursor-pointer"
             [ngClass]="{
                'md:left-12' : editRights,
-               'md:left-0 border-r-2 px-6 min-w-[275px]': !editRights,
+               'md:left-0 md:border-r-2 px-6 min-w-[275px]': !editRights,
                'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
             }"
             (click)="sortingService.toggleSort(team.rookie_bank, 'first_name')"
@@ -1137,19 +1151,17 @@
             </th>
     
             <!-- Action Column -->
-            <th *ngIf="editRights" scope="col" class="text-center p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 md:z-10 border-r-2">
+            <th *ngIf="editRights" scope="col" class="text-center p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 md:z-10 md:border-r-2">
               
             </th>
     
             <!-- Dynamic Columns -->
             <th *ngFor="let year of getContractSeasons(team.rookie_bank); let i = index" 
                scope="col" 
-               class="px-6 py-3 hover:text-gray-500 hover:cursor-pointer min-w-32"
+               class="px-6 py-3 hover:text-gray-500 hover:cursor-pointer min-w-32 hidden md:table-cell"
                [ngClass]="{
                   'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
                   'hover:cursor-pointer hover:text-gray-500': i === 0,
-                  'hidden': i !== 0,
-                  'md:table-cell': i !== 0
                }"
                (click)="i === 0 && sortingService.toggleSort(team.rookie_bank, 'aav_current')"
             >
@@ -1184,23 +1196,31 @@
             <td class="flex items-left px-2 py-2 md:min-w-52 text-gray-900 md:sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
                [ngClass]="{
                   'left-12' : editRights,
-                  'left-0 border-r-2 px-6 min-w-[275px]': !editRights
+                  'left-0 md:border-r-2 px-6 min-w-[275px]': !editRights
                }"
             >
                <img class="w-10 h-10 rounded-full" src="{{rookie.logo}}" alt="Player image">
-               <div class="ps-3 bg-white">
-                  <div class="text-sm font-semibold">
-                     {{ rookie.first_name }} {{ rookie.last_name }}
-                  </div>
+               <div class="ps-3 pe-3 bg-white">
+                  <div class="text-sm font-semibold">{{ rookie.first_name }} {{ rookie.last_name }}</div>
                   <div class="font-normal text-xs text-gray-500">
                      {{ rookie.position }} - {{ rookie.short_code }}
+                     
+                     <!-- Mobile Display -->
+                     <div class="inline-flex md:hidden font-normal text-gray-500 text-xs">
+                        <div *ngIf="rookie.contract_status === 'Active'" class="md:hidden inline-flex font-semibold">
+                           &nbsp;| {{ rookie.aav_current > 0 ? '$' +(rookie.aav_current | number:'1.0-0') : 'N/A' }} x {{ rookie.years_left_current }}
+                        </div>
+                     </div>
+
+                     <!-- Rookie Tag -->
                      <span class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Rookie</span>
                   </div>
+
                </div>
             </td>
 
             <!-- Action Column -->
-            <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 border-r-2">
+            <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 md:border-r-2">
                <select (change)="rosterMove(rookie, $event, callUpModal)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
                   <option value="">Action</option>
                   <option *ngIf="!rookie.onTradeBlock" value="trade-block">Add to Trade Block</option>
@@ -1211,11 +1231,7 @@
     
             <!-- Salary Columns -->
             <ng-container *ngIf="rookie.years_left_current">
-               <td *ngFor="let aav of generateRange(rookie.years_left_current); let i = index" class="px-6 py-2"
-                  [ngClass]="{
-                     'hidden': i !== 0,
-                     'md:table-cell': i !== 0
-                  }">
+               <td *ngFor="let aav of generateRange(rookie.years_left_current); let i = index" class="px-6 py-2 hidden md:table-cell">
                   {{ rookie.aav_current | number:'1.0-0' }}
                </td>
             </ng-container>
@@ -1226,8 +1242,8 @@
                </td>
             </ng-container>
 
-            <td class="px-6 py-2">
-               <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300 hidden md:table-cell"
+            <td class="px-6 py-2 hidden md:table-cell">
+               <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
                      [ngClass]="{
                      'bg-red-600': rookie.expiry_status === 'UFA',
                      'bg-blue-600': rookie.expiry_status === 'RFA'
