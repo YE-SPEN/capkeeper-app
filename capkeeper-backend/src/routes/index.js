@@ -19,6 +19,8 @@ import { leagueHomeRoute } from "./home.js";
 import { draftHistoryRoute } from "./draft-history.js";
 import { submitProtectionsRoute } from "./submit-protection-sheet.js";
 import { loadProtectionsRoute } from "./load-protection-sheet.js";
+import { commisssionerHubRoute } from "./commissioner-hub.js";
+import { editLeagueRoute } from "./edit-league.js";
 
 export default [
     leagueRoute,
@@ -41,5 +43,7 @@ export default [
     confirmTradeRoute,
     draftHistoryRoute,
     submitProtectionsRoute,
-    loadProtectionsRoute
+    loadProtectionsRoute,
+    commisssionerHubRoute,
+    editLeagueRoute
 ]
