@@ -73,29 +73,6 @@ export class LoginComponent implements OnInit {
       });
   }
 
-  private loadTeamsAndInitialize(leagueId: string) {
-    this.teamService.getTeamsByLeague(leagueId).subscribe((response) => {
-        this.globalService.teams = response.teams;
-        this.globalService.league = response.league;
-        this.globalService.nhl_teams = response.nhl_teams;
-
-        const loggedInUser = this.globalService.loggedInUser;
-
-        if (loggedInUser) {
-            const matchedTeam = this.globalService.teams.find(
-                (team) => team.team_id === loggedInUser.team_managed
-            );
-
-            if (matchedTeam) {
-                this.globalService.loggedInTeam = matchedTeam;
-                this.globalService.updateTeamCap(matchedTeam);
-            }
-        }
-
-        this.router.navigate(['/' + leagueId + '/home']);
-    });
-  }
-
   signOutClicked(): void {
     const auth = getAuth();
     signOut(auth)

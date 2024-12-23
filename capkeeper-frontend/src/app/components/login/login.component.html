@@ -252,7 +252,7 @@
                     <li>
                       <a [routerLink]="['/', globalService.league?.league_id, 'protection-sheet']"  class="flex items-center w-full text-sm text-gray-200 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 dark:text-white dark:hover:bg-gray-700">Protection Sheet Builder</a>
                     </li>
-                    <li>
+                    <li *ngIf="globalService.loggedInUser.isAdmin">
                       <a [routerLink]="['/', globalService.league?.league_id, 'commissioner-hub']"  class="flex items-center w-full text-sm text-gray-200 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 dark:text-white dark:hover:bg-gray-700">Commissioner Settings</a>
                     </li>
               </ul>

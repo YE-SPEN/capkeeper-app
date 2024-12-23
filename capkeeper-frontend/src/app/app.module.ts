@@ -24,6 +24,7 @@ import { TradeAssetPipe } from './pipes/trade-assets.pipe';
 import { DraftComponent } from './components/draft/draft.component';
 import { ProtectionSheetComponent } from './components/protection-sheet/protection-sheet.component';
 import { CommissionerHubComponent } from './components/commissioner-hub/commissioner-hub.component';
+import { DraftOrderPipe } from './pipes/draft-order-pipe';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { CommissionerHubComponent } from './components/commissioner-hub/commissi
     TradeProposalComponent,
     TradeReviewComponent,
     ToastComponent,
-    TradeAssetPipe, 
+    TradeAssetPipe,
+    DraftOrderPipe,
     DraftComponent,
     ProtectionSheetComponent,
     CommissionerHubComponent
