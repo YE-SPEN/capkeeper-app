@@ -21,6 +21,9 @@ import { submitProtectionsRoute } from "./submit-protection-sheet.js";
 import { loadProtectionsRoute } from "./load-protection-sheet.js";
 import { commisssionerHubRoute } from "./commissioner-hub.js";
 import { editLeagueRoute } from "./edit-league.js";
+import { adminRightsRoute } from "./admin-rights.js";
+import { editAssetRoute } from "./edit-asset.js";
+import { generateDraftPicksRoute } from "./generate-draft-picks.js";
 
 export default [
     leagueRoute,
@@ -45,5 +48,8 @@ export default [
     submitProtectionsRoute,
     loadProtectionsRoute,
     commisssionerHubRoute,
-    editLeagueRoute
+    editLeagueRoute,
+    adminRightsRoute,
+    editAssetRoute,
+    generateDraftPicksRoute
 ]
