@@ -4,8 +4,7 @@
 
 export const environment = {
     production: false,
-    //apiUrl: 'http://localhost:4200/api',
-    apiUrl: 'https://capkeeperleagues.com',
+    apiUrl: 'http://localhost:4200/api',
     firebase: {
       apiKey: "AIzaSyBwoVvCfhdsRnRyiPWrgrfqeAwTQcOJ5oI",
       authDomain: "capkeeper-8824f.firebaseapp.com",
