@@ -39,6 +39,7 @@ export const db = {
         try {
             const connection = await pool.getConnection();
             console.log('Connected to the database');
+            console.log(process.env.DB_HOST, process.env.DB_USER, process.env.DB_PORT)
             connection.release();
         } catch (err) {
             console.error('Error connecting to the database:', err);
