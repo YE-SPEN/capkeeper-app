@@ -23,6 +23,8 @@ const pool = mysql.createPool({
     }
 });
 
+console.log(process.env);
+
 /*
 // Database config (development)
 const pool = mysql.createPool({
