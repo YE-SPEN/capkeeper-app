@@ -16,7 +16,7 @@ export const recordSessionRoute = {
                     log_in_time = ?
                 WHERE user_name = ?
                 `;
-                result = await db.query(query, [date, time, user_id]);
+                result = await db.query(query, [ date, time, user_id]);
                 return h.response(result).code(201);       
             }
             
