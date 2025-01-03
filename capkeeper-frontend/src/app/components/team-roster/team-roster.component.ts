@@ -5,6 +5,7 @@ import { TeamService } from '../../services/team.service';
 import { PlayerService } from '../../services/player.service';
 import { ToastService } from '../../services/toast-service.service';
 import { SortingService } from '../../services/sorting.service';
+import { UploadService } from '../../services/upload.service';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Team, Player, FA_Pick, Draft_Pick } from '../../types';
@@ -46,6 +47,7 @@ export class TeamRosterComponent {
     public globalService: GlobalService,
     private modalService: BsModalService,
     public sortingService: SortingService,
+    public uploadService: UploadService,
     private toastService: ToastService,
     private route: ActivatedRoute,
     private http: HttpClient
@@ -229,6 +231,11 @@ export class TeamRosterComponent {
     });
   
     return picksInMonth;
+  }
+
+  async saveTeamPicture(event: Event): Promise<void> {
+    const url = await this.uploadService.uploadFile(event);
+    this.formData.picture = url;
   }
 
   editTeamFormSubmit(event: Event): void {
@@ -463,33 +470,6 @@ export class TeamRosterComponent {
       }
     });
   }
-
-  uploadFile(event: any): boolean {
-    const file: File = event.target.files[0];
-  
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-  
-      console.log('FormData contents:', formData.get('file')); 
-  
-      this.http.post('/api/upload', formData).subscribe({
-        next: (response: any) => {
-          console.log('File uploaded successfully:', response.fileUrl);
-          this.formData.picture = response.fileUrl;
-          return true;
-        },
-        error: (error) => {
-          console.error('File upload failed:', error);
-          return false;
-        },
-        complete: () => {
-          console.log('File upload process completed.');
-        }
-      });
-    }
-    return false;
-  } 
 
   openModal(template: TemplateRef<any>, player?: Player): void {
     if (player) {

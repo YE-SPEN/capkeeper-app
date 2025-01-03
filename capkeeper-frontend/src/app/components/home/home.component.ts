@@ -42,7 +42,7 @@ export class HomeComponent {
         .subscribe(response => {
           this.recent_activity = response.recentActivity;
           this.allFAs = response.faPicks;
-          this.allTeams = this.globalService.teams;
+          this.allTeams = response.teams;
           this.maxFAWeek = this.allFAs.length / this.allTeams.length;
           this.allTeamSeasons = response.teamPoints;
 

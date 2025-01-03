@@ -294,13 +294,13 @@
                               <button *ngIf="getPicksByRound(year, i + 1, 'general') > 1" type="button"
                                     class="rounded-full w-6 h-6 bg-green-400 text-white p-1.5 inline-flex items-center justify-center font-bold text-sm"
                                     data-popover-target="popover-general" data-popover-placement="left">
-                              {{ getPicksByRound(year, i + 1, 'general') }}
+                                 {{ getPicksByRound(year, i + 1, 'general') }}
                               </button>
                               
                               <button *ngIf="getPicksByRound(year, i + 1, 'general') <= 1" type="button"
                                     class="font-bold text-sm rounded-full w-6 h-6 border border-gray-800 p-1.5 inline-flex items-center justify-center"
                                     data-popover-target="popover-general" data-popover-placement="left">
-                              {{ getPicksByRound(year, i + 1, 'general') }}
+                                 {{ getPicksByRound(year, i + 1, 'general') }}
                               </button>
                               
                               <!-- Popover -->
@@ -1041,7 +1041,7 @@
                            </div>
    
                            <!-- Salary Retention Tag -->
-                           <span *ngIf="team.injured_reserve[i].retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ team.injured_reserve[i].retention_perc }}% RET</span>
+                           <span class="bg-red-100 text-red-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-red-700 dark:text-red-400 border border-red-400">IR</span>
                            <span *ngIf="team.injured_reserve[i].retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ team.injured_reserve[i].retention_perc }}% RET</span>
                         </div>
    
@@ -1282,7 +1282,7 @@
                   </div>
                   <div>
                      <label for="picture" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Picture</label>
-                     <input (change)="uploadFile($event)" name="picture" id="picture" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
+                     <input (change)="saveTeamPicture($event)" name="picture" id="picture" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
                      <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PNG, JPG (MAX. 1MB)</p>          
                  </div>
                </div>
