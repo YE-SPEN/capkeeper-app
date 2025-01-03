@@ -15,7 +15,6 @@ export const loginRoute = {
                     u.*, 
                     tmb.league_id, 
                     tmb.team_id AS team_managed,
-                    tmb.isAdmin,
                     (SELECT COUNT(*)
                     FROM recent_activity ra
                     WHERE TIMESTAMP(ra.DATE, ra.TIME) >= TIMESTAMP(u.log_out_date, u.log_out_time)) AS notification_count

@@ -17,13 +17,6 @@ export const leagueHomeRoute = {
                      [league_id]
                 );
 
-            const { results: teams } = await db.query( 
-                `SELECT *
-                FROM teams
-                WHERE league_id = ?`,
-                [league_id]
-            );
-            
             const { results: teamPoints } = await db.query( 
                 `SELECT *
                 FROM team_points
@@ -44,7 +37,7 @@ export const leagueHomeRoute = {
                 [league_id]
             )
 
-            return { recentActivity, teams, teamPoints, faPicks };
+            return { recentActivity, teamPoints, faPicks };
 
         } catch (err) {
             console.error(err);

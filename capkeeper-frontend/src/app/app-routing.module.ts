@@ -12,7 +12,6 @@ import { TradeProposalComponent } from './components/trade-proposal/trade-propos
 import { TradeReviewComponent } from './components/trade-review/trade-review.component';
 import { DraftComponent } from './components/draft/draft.component';
 import { ProtectionSheetComponent } from './components/protection-sheet/protection-sheet.component';
-import { CommissionerHubComponent } from './components/commissioner-hub/commissioner-hub.component';
 
 const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -26,7 +25,6 @@ const routes: Routes = [
     { path: ':league_id/draft', component: DraftComponent },
     { path: ':league_id/rules', component: RulesComponent },
     { path: ':league_id/protection-sheet', component: ProtectionSheetComponent },
-    { path: ':league_id/commissioner-hub', component: CommissionerHubComponent },
     { path: 'user/:user_name', component: UserProfileComponent },
 
     { path: '', redirectTo: 'login', pathMatch: 'full' },

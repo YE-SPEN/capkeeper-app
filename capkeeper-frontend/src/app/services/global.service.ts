@@ -154,16 +154,6 @@ export class GlobalService {
     return new Intl.DateTimeFormat('en-US', options).format(date);
   }
 
-  concatDateTime(activity_log: any[]): any[] {
-    return activity_log.map(activity => {
-      const datetime = new Date(activity.date + ' ' + activity.time);
-      return {
-        ...activity,
-        datetime
-      };
-    });
-  }
-
   getTeamName(team_id: string): string {
     for (let team of this.teams) {
       if (team.team_id === team_id) {
@@ -191,9 +181,9 @@ export class GlobalService {
     return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
-  getLeagueHomeData(league_id: string): Observable<{ recentActivity: Activity[], teams: Team[], teamPoints: Season[], faPicks: FA_Pick[] }> {
+  getLeagueHomeData(league_id: string): Observable<{ recentActivity: Activity[], teamPoints: Season[], faPicks: FA_Pick[] }> {
     const url = `api/${league_id}/home`;
-    return this.http.get<{ recentActivity: Activity[], teams: Team[], teamPoints: Season[], faPicks: FA_Pick[] }>(url);
+    return this.http.get<{ recentActivity: Activity[], teamPoints: Season[], faPicks: FA_Pick[] }>(url);
   }
 
   getActivitiesByLeague(league_id: string, start: string, end: string): Observable<{ action_log: Activity[], users: User[], tradeItems: Asset[] }> {

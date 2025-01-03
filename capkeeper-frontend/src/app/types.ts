@@ -2,7 +2,6 @@ export interface User {
     [key: string]: any;
     uid: string,
     user_name: string,
-    isAdmin: boolean,
     first_name: string,
     last_name: string,
     picture: string,
@@ -31,7 +30,6 @@ export interface League {
     min_goalies: number,
     ir_slots: number,
     retention_slots: number,
-    max_retention_perc: number,
     general_draft_length: number,
     rookie_draft_length: number,
 };
@@ -42,7 +40,6 @@ export interface Team {
     league_id: string,
     team_name: string,
     managed_by: string,
-    managers: User[],
     picture: string,
     seasons: Season[],
     total_points: number,
