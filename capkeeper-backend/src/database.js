@@ -10,7 +10,8 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Create a connection pool
+
+// Database config (production)
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -22,12 +23,22 @@ const pool = mysql.createPool({
     }
 });
 
+/*
+// Database config (development)
+const pool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: process.env.DB_LOCAL_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_LOCAL_PORT || 3306,
+});
+*/
+
 export const db = {
     connect: async () => {
         try {
             const connection = await pool.getConnection();
             console.log('Connected to the database');
-            console.log(process.env.DB_HOST, process.env.DB_USER, process.env.DB_PORT)
             connection.release();
         } catch (err) {
             console.error('Error connecting to the database:', err);
