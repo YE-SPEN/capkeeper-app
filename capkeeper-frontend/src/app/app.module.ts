@@ -23,6 +23,7 @@ import { ToastComponent } from './components/toast/toast.component';
 import { TradeAssetPipe } from './pipes/trade-assets.pipe';
 import { DraftComponent } from './components/draft/draft.component';
 import { ProtectionSheetComponent } from './components/protection-sheet/protection-sheet.component';
+import { CommissionerHubComponent } from './components/commissioner-hub/commissioner-hub.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ProtectionSheetComponent } from './components/protection-sheet/protecti
     ToastComponent,
     TradeAssetPipe, 
     DraftComponent,
-    ProtectionSheetComponent
+    ProtectionSheetComponent,
+    CommissionerHubComponent
   ],
   imports: [
     BrowserModule,
