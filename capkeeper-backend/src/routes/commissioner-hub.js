@@ -51,7 +51,17 @@ export const commisssionerHubRoute = {
                 [league_id]
             )
 
-            return { users, teams, league, draft_picks };
+            const { results: fa_picks } = await db.query(
+                `SELECT f.asset_id, f.year, f.week, f.expiry_date, f.assigned_to, f.owned_by, CONCAT(p.first_name, ' ', p.last_name) AS player_taken
+                FROM fa_picks f 
+                LEFT JOIN players p
+                    ON f.player_taken = p.player_id
+                WHERE league_id = ?
+                ORDER BY year, week, assigned_to`,
+                [league_id]
+            )
+
+            return { users, teams, league, draft_picks, fa_picks };
 
         } catch (err) {
             console.error(err);
