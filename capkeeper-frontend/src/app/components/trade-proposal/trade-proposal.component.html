@@ -984,7 +984,7 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
                             </svg>
                         </button>
-                        <input type="text" id="bedrooms-input" disabled data-input-counter data-input-counter-min="1" data-input-counter-max="5" class="bg-gray-50 border-x-0 border-gray-300 h-11 font-medium text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pb-6 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="0%" [value]="selected_player.retention_perc" required />
+                        <input type="text" id="bedrooms-input" disabled data-input-counter data-input-counter-min="1" data-input-counter-max="5" class="bg-gray-50 border-x-0 border-gray-300 h-11 font-medium text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pb-6 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="0%" [value]="showRetentionPerc(selected_player.retention_perc)" required />
                         <div class="absolute bottom-1 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 flex items-center text-sm text-gray-400 space-x-1 rtl:space-x-reverse">
                             <span>${{ selected_player.aav_current * (selected_player.retention_perc / 100) | number:'1.0-0' }}</span>
                         </div>

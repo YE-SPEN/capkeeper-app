@@ -20,6 +20,7 @@ export interface League {
     [key: string]: any;
     league_id: string,
     league_name: string,
+    current_season: number,
     picture: string,
     commissioner_id: string,
     commissioner: string,
@@ -34,6 +35,7 @@ export interface League {
     max_retention_perc: number,
     general_draft_length: number,
     rookie_draft_length: number,
+    drafts: Draft[];
 };
 
 export interface Team {
@@ -98,6 +100,15 @@ export interface Player {
     updated_by: string,
 };
 
+export interface Draft {
+    [key: string]: any;
+    draft_id: number,
+    year: number,
+    type: string,
+    status: string,
+    draft_order: Team[],
+}
+
 export interface Draft_Pick {
     [key: string]: any;
     asset_id: number,
@@ -113,7 +124,8 @@ export interface Draft_Pick {
     player_first_name: string, 
     player_last_name: string, 
     player_position: string,
-    player_short_code: string
+    player_short_code: string,
+    draft_id: number,
 }
 
 export interface FA_Pick {

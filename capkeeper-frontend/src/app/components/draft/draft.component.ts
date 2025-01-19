@@ -46,6 +46,10 @@ export class DraftComponent {
   
     this.teams = this.globalService.teams;
   
+    if (this.globalService.league) {
+      this.year = this.globalService.league.current_season;
+    }
+
     this.playerService.getDraftByYear(this.league_id, this.year).subscribe((response) => {
       this.rookie_picks = response.draft.filter((pick) => pick.type === 'rookie');
       this.general_picks = response.draft.filter((pick) => pick.type === 'general');
@@ -68,8 +72,6 @@ export class DraftComponent {
     });
 
   }
-  
-  
 
   matchTeamByID(team_id: string): Team | null {
     for (let team of this.teams) {

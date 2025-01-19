@@ -256,6 +256,13 @@ export class TradeProposalComponent {
     return roster;
   }
 
+  showRetentionPerc(retention_perc: number): string {
+    if (retention_perc === null) {
+      return '0%';
+    }
+    return retention_perc + '%';
+  }
+
   getAssetType(asset: Asset): string {
     if (asset) {
       if ('player_id' in asset) {

@@ -65,8 +65,10 @@ export class TeamRosterComponent {
         }
       }
   
-      this.editRights = this.team_id === this.globalService.loggedInTeam?.team_id;
-  
+      this.editRights = (this.team_id === this.globalService.loggedInTeam?.team_id);
+      if (this.globalService.league) {
+        this.currentSeason = this.formatSeasonYear(this.globalService.league.current_season);
+      }
       this.initializeTeam(this.league_id, this.team_id);
     });
   }
@@ -113,6 +115,10 @@ export class TeamRosterComponent {
 
   toggleInbox(): void {
     this.inboxIsOpen = ! this.inboxIsOpen;
+  }
+
+  formatSeasonYear(year: number): string {
+    return `${year}-${(year + 1).toString().slice(-2)}`;
   }
 
   getMaxContractLength(array: Player[]): number {
