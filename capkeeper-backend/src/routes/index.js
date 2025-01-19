@@ -23,7 +23,8 @@ import { commisssionerHubRoute } from "./commissioner-hub.js";
 import { editLeagueRoute } from "./edit-league.js";
 import { adminRightsRoute } from "./admin-rights.js";
 import { editAssetRoute } from "./edit-asset.js";
-import { generateDraftPicksRoute } from "./generate-draft-picks.js";
+import { createDraftRoute } from "./create-draft.js";
+import { setDraftOrderRoute } from "./set-draft-order.js";
 
 export default [
     leagueRoute,
@@ -51,5 +52,6 @@ export default [
     editLeagueRoute,
     adminRightsRoute,
     editAssetRoute,
-    generateDraftPicksRoute
+    setDraftOrderRoute,
+    createDraftRoute
 ]

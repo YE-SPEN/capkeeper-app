@@ -10,12 +10,13 @@ export const draftHistoryRoute = {
 
         try {
             const { results: draft } = await db.query( 
-                `SELECT d.*, p.first_name AS player_first_name, p.last_name AS player_last_name, p.short_code AS player_short_code, p.position AS player_position 
-                FROM draft_picks d LEFT JOIN players p
-                    ON d.player_taken = p.player_id
+                `SELECT d.*, dp.*, p.first_name AS player_first_name, p.last_name AS player_last_name, p.short_code AS player_short_code, p.position AS player_position 
+                FROM drafts d 
+                    JOIN draft_picks dp ON d.draft_id = dp.draft_id 
+                    LEFT JOIN players p ON dp.player_taken = p.player_id
                 WHERE d.league_id = ?
                 AND d.year = ?
-                ORDER BY d.type, d.pick_number`,
+                ORDER BY d.type, dp.pick_number`,
                 [league_id, year]
             );
 

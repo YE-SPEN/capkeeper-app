@@ -6,7 +6,7 @@ export const editContractRoute = {
     path: '/api/players/edit-contract',
     handler: async (req, h) => {
         try {
-            const { player_id, aav_current, years_left_current, aav_next, years_left_next, expiry_status, last_updated, updated_by, } = req.payload;
+            const { player_id, aav_current, years_left_current, aav_next, years_left_next, expiry_status, last_updated, updated_by } = req.payload;
             
             const query = `
             UPDATE players

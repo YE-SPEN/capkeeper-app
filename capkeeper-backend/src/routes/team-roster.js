@@ -41,10 +41,12 @@ export const teamRosterRoute = {
             const team = teamInfo[0];
 
             const { results: draft_picks } = await db.query(
-                `SELECT * FROM draft_picks
-                WHERE league_id = ?
-                    AND owned_by = ?
-                    AND player_taken IS NULL
+                `SELECT * 
+                FROM draft_picks dp JOIN drafts d
+                    ON d.draft_id = dp.draft_id 
+                WHERE d.league_id = ?
+                    AND dp.owned_by = ?
+                    AND dp.player_taken IS NULL
                 `,
                 [league_id, team_id]
             )

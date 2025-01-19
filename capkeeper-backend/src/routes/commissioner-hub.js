@@ -37,17 +37,27 @@ export const commisssionerHubRoute = {
                 [league_id]
             )
 
+            
+            const { results: drafts } = await db.query(
+                `SELECT * FROM drafts
+                WHERE league_id = ?
+                ORDER BY year, type`,
+                [league_id]
+            )
+
             const { results: draft_picks } = await db.query(
-                `SELECT d.asset_id, d.year, d.round, d.position, d.pick_number, d.type, d.assigned_to, d.owned_by, 
+                `SELECT dp.draft_id, dp.asset_id, d.year, dp.round, dp.position, dp.pick_number, d.type, dp.assigned_to, dp.owned_by, 
                     CASE 
-                        WHEN d.player_taken = 'none' THEN 'Burned'
+                        WHEN dp.player_taken = 'none' THEN 'Burned'
                         ELSE CONCAT(p.first_name, ' ', p.last_name) 
                     END AS player_taken
-                FROM draft_picks d 
+                FROM drafts d
+                JOIN draft_picks dp 
+					ON d.draft_id = dp.draft_id
                 LEFT JOIN players p
-                    ON d.player_taken = p.player_id
-                WHERE league_id = ?
-                ORDER BY d.type, d.year, d.round, d.position`,
+                    ON dp.player_taken = p.player_id
+                WHERE d.league_id = ?
+                ORDER BY d.type, d.year, dp.round, dp.position`,
                 [league_id]
             )
 
@@ -61,7 +71,7 @@ export const commisssionerHubRoute = {
                 [league_id]
             )
 
-            return { users, teams, league, draft_picks, fa_picks };
+            return { users, teams, league, drafts, draft_picks, fa_picks };
 
         } catch (err) {
             console.error(err);
