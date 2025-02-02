@@ -422,48 +422,50 @@
 
          <!-- FA Picks -->
          <div *ngIf="displaying === 'fa'" class="overflow-x-auto md:overflow-visible">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md md:border-2">
-               <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                  <tr class="border-b-2">
-                     <th *ngFor="let month of getFAMonths()" class="px-4 py-2 text-center border-r-2 font-bold text-sm">
-                        {{ month }}
-                     </th>                  
-               </thead>
-                  <tbody>
-                  <tr class="border-b-2">
-                     <td *ngFor="let month of getFAMonths()" class="py-1.5 text-center align-top border-r-2">
-                        <div *ngFor="let pick of getFAPicksByMonth(getMonthIndex(month))" class="mb-2 relative group">
-                           <button data-popover-target="popover-fa" data-popover-placement="left" type="button"
-                           class="text-center justify-center bg-gray-100 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 border"
-                           [ngClass]="{
-                              'text-gray-400 border-gray-300': pick.owned_by !== team.team_id, 
-                              'text-gray-800 border-gray-500 hover:bg-gray-200': pick.owned_by === team.team_id,
-                              'text-red-600 border-red-600 bg-red-200 hover:bg-red-100': (!pick.player_taken && globalService.faIsExpired(pick) && pick.owned_by === team.team_id) || pick.player_taken === 'Penalty',
-                              'text-green-600 border-green-400 bg-green-200 hover:bg-green-100': pick.player_taken && pick.owned_by === team.team_id,
-                              'text-yellow-600 border-yellow-600 bg-yellow-100 hover:bg-yellow-200': pick.assigned_to !== team.team_id && !globalService.faIsExpired(pick) && !pick.player_taken
-                           }">
-                           FA{{ pick.week }}<br>
-                           </button>
-                           
-                           <!-- Popover -->
-                           <div *ngIf="pick.owned_by === team.team_id" data-popover id="popover-fa" role="tooltip" class="absolute left-[-14.5rem] top-[-2rem] z-10 hidden md:group-hover:block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
-                           <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                              <h3 class="text-left font-bold text-gray-900 dark:text-white">FA Week {{ pick.week }} ({{ currentSeason }})</h3>
-                           </div>
-                           <div class="px-3 py-2 text-left">
-                              <p *ngIf="pick.assigned_to !== pick.owned_by">Acquired from: <span class="font-semibold">{{ globalService.getTeamName(pick.assigned_to) }}</span></p>
-                              <p *ngIf="!globalService.faIsExpired(pick)" class="text-green-400 font-semibold">Expiring {{ globalService.getDate(pick.expiry_date) | date:'MM-dd-yyyy' }}</p>
-                              <p *ngIf="globalService.faIsExpired(pick)" class="text-red-500 font-semibold">EXPIRED</p>
-                              <p *ngIf="globalService.faIsExpired(pick) && !pick.player_taken">Player Taken: <span class="font-semibold">NO SELECTION</span></p>
-                              <p *ngIf="pick.player_taken">Player Taken: <span class="font-semibold">{{ pick.player_taken }}</span></p>
-                           </div>
-                           <div data-popper-arrow></div>
-                           </div>
-                        </div>                                                                                               
-                     </td>                  
-                  </tr>
-               </tbody>
-            </table>  
+            <div class="max-h-64 overflow-y-auto">
+               <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md md:border-2">
+                  <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                     <tr class="border-b-2">
+                        <th *ngFor="let month of getFAMonths()" class="px-4 py-2 text-center border-r-2 font-bold text-sm">
+                           {{ month }}
+                        </th>                  
+                  </thead>
+                     <tbody>
+                     <tr class="border-b-2">
+                        <td *ngFor="let month of getFAMonths()" class="py-1.5 text-center align-top border-r-2">
+                           <div *ngFor="let pick of getFAPicksByMonth(getMonthIndex(month))" class="mb-2 relative group">
+                              <button data-popover-target="popover-fa" data-popover-placement="left" type="button"
+                              class="text-center justify-center bg-gray-100 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 border"
+                              [ngClass]="{
+                                 'text-gray-400 border-gray-300': pick.owned_by !== team.team_id, 
+                                 'text-gray-800 border-gray-500 hover:bg-gray-200': pick.owned_by === team.team_id,
+                                 'text-red-600 border-red-600 bg-red-200 hover:bg-red-100': (!pick.player_taken && globalService.faIsExpired(pick) && pick.owned_by === team.team_id) || pick.player_taken === 'Penalty',
+                                 'text-green-600 border-green-400 bg-green-200 hover:bg-green-100': pick.player_taken && pick.owned_by === team.team_id,
+                                 'text-yellow-600 border-yellow-600 bg-yellow-100 hover:bg-yellow-200': pick.assigned_to !== team.team_id && !globalService.faIsExpired(pick) && !pick.player_taken
+                              }">
+                              FA{{ pick.week }}<br>
+                              </button>
+                              
+                              <!-- Popover -->
+                              <div *ngIf="pick.owned_by === team.team_id" data-popover id="popover-fa" role="tooltip" class="absolute left-[-14.5rem] top-[-2rem] z-10 hidden md:group-hover:block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
+                              <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                 <h3 class="text-left font-bold text-gray-900 dark:text-white">FA Week {{ pick.week }} ({{ currentSeason }})</h3>
+                              </div>
+                              <div class="px-3 py-2 text-left">
+                                 <p *ngIf="pick.assigned_to !== pick.owned_by">Acquired from: <span class="font-semibold">{{ globalService.getTeamName(pick.assigned_to) }}</span></p>
+                                 <p *ngIf="!globalService.faIsExpired(pick)" class="text-green-400 font-semibold">Expiring {{ globalService.getDate(pick.expiry_date) | date:'MM-dd-yyyy' }}</p>
+                                 <p *ngIf="globalService.faIsExpired(pick)" class="text-red-500 font-semibold">EXPIRED</p>
+                                 <p *ngIf="globalService.faIsExpired(pick) && !pick.player_taken">Player Taken: <span class="font-semibold">NO SELECTION</span></p>
+                                 <p *ngIf="pick.player_taken">Player Taken: <span class="font-semibold">{{ pick.player_taken }}</span></p>
+                              </div>
+                              <div data-popper-arrow></div>
+                              </div>
+                           </div>                                                                                               
+                        </td>                  
+                     </tr>
+                  </tbody>
+               </table>
+            </div>  
          </div>
 
       </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Player, Team, League, NHL_Team, Draft_Pick, FA_Pick, Trade, Asset } from '../types';
+import { Player, Team, League, NHL_Team, Draft_Pick, FA_Pick, Trade, Asset, Pick_History } from '../types';
 
 
 @Injectable({
@@ -32,6 +32,11 @@ export class TeamService {
   getTradeByID(league_id: string, trade_id: string): Observable<{ trade: Trade, tradeItems: Asset[] }> {
     const url = `api/${league_id}/trade/${trade_id}`;
     return this.http.get<{ trade: Trade, tradeItems: Asset[] }>(url);
+  }
+
+  getPickHistory(asset_id: number): Observable<{ pickHistory: Pick_History[] }> {
+    const url = `api/pick-history/${asset_id}`;
+    return this.http.get<{ pickHistory: Pick_History[] }>(url);
   }
 
 }

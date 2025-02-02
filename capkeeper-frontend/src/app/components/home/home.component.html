@@ -251,15 +251,15 @@
                             <!-- Other Columns -->
                             <td *ngFor="let i of [].constructor(maxFAWeek); let week = index" 
                                 class="px-2 py-0.5 text-left border-r text-xs text-gray-900 min-w-[140px]"
-                                [ngClass]="{'bg-yellow-100' : pickTraded(team, week),
-                                            'bg-red-200 font-semibold text-red-600' : pickNotUsed(team, week)}">
+                                [ngClass]="{'bg-red-200 font-semibold text-red-600' : pickNotUsed(team, week),
+                                            'bg-yellow-100' : pickTraded(team, week) && !pickNotUsed(team, week)}">
                                 <div class="flex items-center justify-between">
                                     <span>
                                         {{ (pickNotUsed(team, week) && getPlayerTaken(team, week) === '-') ? 'Not Used' : getPlayerTaken(team, week) }}
                                     </span>                                    
                                     
                                     <div *ngIf="pickTraded(team, week)" class="ml-auto">
-                                        <img [src]="getTeamPicture(team, week)" class="w-[32px] h-[32px] rounded-full">
+                                        <img [src]="getTeamPicture(team, week)" class="w-[32px] h-[32px] rounded-full"> 
                                     </div>                                  
                                 </div>                                                                  
                             </td>                                           

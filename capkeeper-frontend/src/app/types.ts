@@ -122,10 +122,12 @@ export interface Draft_Pick {
     type: string,
     player_taken: string,
     player_first_name: string, 
-    player_last_name: string, 
+    player_last_name: string,
+    player_full_name: string, 
     player_position: string,
     player_short_code: string,
     draft_id: number,
+    pick_history: Pick_History[];
 }
 
 export interface FA_Pick {
@@ -138,6 +140,15 @@ export interface FA_Pick {
     week: number,
     expiry_date: Date,
     player_taken: string,
+    player_first_name: string,
+    player_last_name: string,
+    player_full_name: string,
+    pick_history: Pick_History[];
+}
+
+export interface Pick_History {
+    traded_to: string;
+    date: Date;
 }
 
 export type Asset = (Player | Draft_Pick | FA_Pick) & {

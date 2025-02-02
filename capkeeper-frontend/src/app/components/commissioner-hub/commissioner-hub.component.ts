@@ -9,7 +9,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Team, Player, FA_Pick, Season, User, League, Draft_Pick, Draft } from '../../types';
+import { Team, Player, FA_Pick, Season, User, League, Draft_Pick, Draft, Pick_History } from '../../types';
+import { TeamService } from '../../services/team.service';
 
 @Component({
   selector: 'app-commissioner-hub',
@@ -34,28 +35,30 @@ export class CommissionerHubComponent {
   filteredDraftPicks: Draft_Pick[] = [];
   filteredFAPicks: FA_Pick[] = [];
   selected!: Draft_Pick | FA_Pick;
+  assetToEdit!: Draft_Pick | FA_Pick;
   inEditMode: boolean = false;
   displaying: 'teams' | 'users' | 'draft' | 'fa' = 'teams';
   toastMessage: string = '';
   yearFilter: string = 'any';
   pickTypeFilter: 'any' | 'general' | 'rookie' = 'any';
+  teamFilter: string = 'any';
   leagueSettings!: League;
   draftToEdit: Draft | null = null;
   leagueDetails = {
     league_name: '',
     picture: '',
   };
-  assetToEdit = {
-    asset_id: 0,
-    player_taken: '',
-    owned_by: '',
-    player_name: '',
-  };
+  fasToGenerate: {
+    year: number;
+    weeks: number;
+    expiry_dates: (string | null)[];
+  } = { year: 0, weeks: 0, expiry_dates: [] };
 
   constructor(
     public globalService: GlobalService,
     private playerService: PlayerService,
     private commisisonerService: CommissionerService,
+    private teamService: TeamService,
     public sortingService: SortingService,
     private toastService: ToastService,
     public uploadService: UploadService,
@@ -87,7 +90,6 @@ export class CommissionerHubComponent {
           this.filteredDraftPicks = this.allDraftPicks;
           this.allFAs = response.fa_picks;
           this.filteredFAPicks = this.allFAs;
-          console.log('Drafts: ', this.allDrafts);
         });
       
       this.globalService.getLeagueHomeData(this.globalService.league?.league_id)
@@ -141,7 +143,6 @@ export class CommissionerHubComponent {
         managers.push(user);
       }
     }
-
     return managers;
   }
 
@@ -168,8 +169,32 @@ export class CommissionerHubComponent {
     }
   }
 
+  async fetchPickHistory(asset: Draft_Pick | FA_Pick): Promise<void> {
+    this.teamService.getPickHistory(asset.asset_id)
+    .subscribe(response => {
+      console.log('Response: ', response);
+        asset.pick_history = response.pickHistory;
+    });
+  }
+
   getScheduledDrafts(): Draft[] {
     return this.allDrafts.filter(draft => draft.status === 'scheduled');
+  }
+
+  getNextThreeYears(startYear: number): number[] {
+    return [startYear + 1, startYear + 2, startYear + 3];
+  }
+
+  getFAYears(): number[] {
+    const yearSet = new Set<number>();
+    
+    this.allFAs.forEach(fa => {
+        if (fa.year) {
+            yearSet.add(fa.year);
+        }
+    });
+
+    return Array.from(yearSet).sort((a, b) => a - b);
   }
 
   getDraftYears(): number[] {
@@ -218,11 +243,14 @@ export class CommissionerHubComponent {
    
   filterDraftPicks(): void {
     this.filteredDraftPicks = this.allDraftPicks
-      .filter(pick => 
-              this.inYearFilter(pick) 
-              && this.inPickTypeFilter(pick) 
-            );
+      .filter(pick => this.inYearFilter(pick) && this.inPickTypeFilter(pick) && this.inTeamFilter(pick));
     this.sortingService.sort(this.filteredDraftPicks, this.sortingService.sortColumn, this.sortingService.sortDirection);
+  }
+
+  filterFAs(): void {
+    this.filteredFAPicks = this.allFAs
+      .filter(fa => this.inYearFilter(fa) && this.inTeamFilter(fa));
+    this.sortingService.sort(this.filteredFAPicks, this.sortingService.sortColumn, this.sortingService.sortDirection);
   }
 
   inYearFilter(pick: Draft_Pick | FA_Pick): boolean {
@@ -233,10 +261,19 @@ export class CommissionerHubComponent {
     return pick.type === this.pickTypeFilter || this.pickTypeFilter === 'any';
   }
 
+  inTeamFilter(pick: Draft_Pick | FA_Pick): boolean {
+    if (this.teamFilter === 'any') {
+      return true;
+    }
+    return pick.owned_by === this.teamFilter;
+  }
+
   clearFilters(): void {
     this.yearFilter = 'any';
     this.pickTypeFilter = 'any';
+    this.teamFilter = 'any';
     this.filterDraftPicks();
+    this.filterFAs();
   }
 
   toggleAdminRights(user: User): void {
@@ -328,30 +365,94 @@ export class CommissionerHubComponent {
 
   setPlayerTaken(player: Player): void {
     this.assetToEdit.player_taken = player.player_id;
-    this.assetToEdit.player_name = player.first_name + ' ' + player.last_name;
+    this.assetToEdit.player_full_name = player.first_name + ' ' + player.last_name;
     this.searchKey = '';
   }
 
-  editAsset(type: string): void {
+  editAsset(asset: Draft_Pick | FA_Pick): void {
+
     const payload = {
-      type: type,
-      asset_id: this.selected.asset_id,
-      owned_by: this.assetToEdit.owned_by ? this.assetToEdit.owned_by : this.selected.owned_by,
-      player_taken: this.assetToEdit.player_taken ? this.assetToEdit.player_taken : this.selected.player_taken,
+      type: asset.type ? 'draft-pick' : 'fa',
+      action: 'edit',
+      asset_id: asset.asset_id,
+      owned_by: asset.owned_by ? asset.owned_by : this.selected.owned_by,
+      player_taken: asset.player_taken ? asset.player_taken : this.selected.player_taken,
     };
+
+    console.log('Payload: ', payload);
     
     this.http.post(`/api/edit-asset`, payload)
     .subscribe({
       next: (response) => {
+        
+        if (this.selected) {
+          this.selected.owned_by = asset.owned_by;
+          this.selected.player_taken = asset.player_taken;
+          this.selected.player_full_name = asset.player_full_name;
+        }
+
+        this.closeModal();
+        
         let message = 'Saved Changes to Asset #' + payload.asset_id;
         this.toastService.showToast(message, true);
+
       },
       error: (error) => {
         console.error('Error submitting form', error, payload);
       }
     });
-    this.closeModal();
-    this.ngOnInit();
+  }
+
+  revokeAsset(asset: Draft_Pick | FA_Pick): void {
+    const payload = {
+      type: asset.type ? 'draft-pick' : 'fa',
+      action: 'revoke',
+      asset_id: asset.asset_id,
+    };
+    
+    this.http.post(`/api/edit-asset`, payload)
+    .subscribe({
+      next: (response) => {
+        let message = 'Asset #' + payload.asset_id + ' revoked from ' + this.globalService.getTeamName(asset.owned_by);
+        this.toastService.showToast(message, true);
+
+        if (this.selected) {
+          this.selected.player_taken = 'penalty';
+        }
+
+        this.closeModal();
+      },
+      error: (error) => {
+        console.error('Error submitting form', error, payload);
+      }
+    });
+
+  }
+
+  restoreAsset(asset: Draft_Pick | FA_Pick): void {
+    const payload = {
+      type: asset.type ? 'draft-pick' : 'fa',
+      action: 'restore',
+      asset_id: asset.asset_id,
+    };
+    
+    this.http.post(`/api/edit-asset`, payload)
+    .subscribe({
+      next: (response) => {
+        let message = 'Asset #' + payload.asset_id + ' restored to ' + this.globalService.getTeamName(asset.owned_by);
+        this.toastService.showToast(message, true);
+
+        if (this.selected) {
+          this.selected.player_taken = "";
+        }
+
+        this.closeModal();
+      },
+      error: (error) => {
+        console.error('Error submitting form', error, payload);
+      }
+    });
+
   }
 
   async generateDraftPicks(): Promise<void> {
@@ -376,8 +477,6 @@ export class CommissionerHubComponent {
           });
         });
       }
-
-      console.log('Payload', payload);
       
       this.http.post('/api/create-draft', payload)
         .subscribe({
@@ -391,6 +490,54 @@ export class CommissionerHubComponent {
             this.toastService.showToast('Error generating draft picks', false);
           }
         }); 
+    }
+  }
+
+  initializeExpiryDateArray(): void {
+    if (this.fasToGenerate.weeks) {
+        this.fasToGenerate.expiry_dates = new Array(this.fasToGenerate.weeks).fill(null);
+    } else {
+        this.fasToGenerate.expiry_dates = [];
+    }
+  }
+
+  async generateFAs(): Promise<void> {
+    if (this.fasToGenerate.year && this.fasToGenerate.weeks && this.fasToGenerate.expiry_dates.length === this.fasToGenerate.weeks) {
+      
+      const payload = {
+        year: this.fasToGenerate.year,
+        league_id: this.league_id,
+        fa_picks: [] as Array<{
+          week: number;
+          assigned_to: string;
+          expiry_date: string | null;
+        }>
+      };
+
+      for (let i = 0; i < this.fasToGenerate.weeks; i++) {
+        this.allTeams.forEach(team => {
+          payload.fa_picks.push({
+            week: i,
+            assigned_to: team.team_id,
+            expiry_date: this.fasToGenerate.expiry_dates[i]
+          });
+        });
+      }
+
+      console.log('Payload: ', payload);
+
+      this.http.post('/api/generate-fas', payload)
+      .subscribe({
+        next: (response) => {
+          console.log('FAs generated successfully:', response);
+          this.toastService.showToast('FAs generated successfully!', true);
+          this.ngOnInit();
+        },
+        error: (error) => {
+          console.error('Error generating FAs:', error);
+          this.toastService.showToast('Error generating FAs', false);
+        }
+      }); 
     }
   }
 
@@ -534,16 +681,24 @@ export class CommissionerHubComponent {
       });
   }
 
+  deepCopyPick(pick: Draft_Pick | FA_Pick): Draft_Pick | FA_Pick {
+    return {
+      ...pick,
+      asset_id: pick.asset_id,
+      assigned_to: pick.assigned_to,
+      owned_by: pick.owned_by,
+      player_taken: pick.player_taken,
+      type: pick.type
+    };
+  }
+
   openModal(template: TemplateRef<any>, pick?: Draft_Pick | FA_Pick): void {
       if (pick) {
           this.selected = pick;
-          this.assetToEdit.asset_id = this.selected.asset_id;
-          this.assetToEdit.owned_by = this.selected.owned_by;
-          if (this.selected.player_taken) {
-          this.assetToEdit.player_name = this.selected.player_taken;
-          }
+          this.assetToEdit = this.deepCopyPick(pick);
+          this.fetchPickHistory(this.selected);
           if (this.allPlayers.length === 0) {
-          this.fetchPlayers();
+            this.fetchPlayers();
           }
       }
       this.modalRef = this.modalService.show(template);
@@ -559,19 +714,18 @@ export class CommissionerHubComponent {
     
     this.draftOrder = [];
     this.draftToEdit = null;
-    
-    this.assetToEdit = {
-      asset_id: 0,
-      player_taken: '',
-      owned_by: '',
-      player_name: '',
+
+    this.fasToGenerate = {
+      year: 0,
+      weeks: 0,
+      expiry_dates: [],
     };
+
   }
 
   closeModal() {
     this.modalRef.hide();
     this.clearForms();
-    this.ngOnInit;
   }
 
 }

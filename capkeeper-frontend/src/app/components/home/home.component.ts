@@ -77,7 +77,12 @@ export class HomeComponent {
     const matchedTeam = this.allTeams.find(match => team.team_id === match.team_id);
     const matchedFA = matchedTeam?.fa_picks.find(pick => pick.week === week);
     if (matchedFA && matchedFA.player_taken) {
-      return matchedFA.player_taken;
+      if (matchedFA.player_taken === 'penalty') {
+        return 'Penalty';
+      }
+      else {
+        return matchedFA.player_taken;
+      } 
     }
     return '-';
   }
@@ -127,7 +132,7 @@ export class HomeComponent {
     const matchedTeam = this.allTeams.find(match => team.team_id === match.team_id);
     const matchedFA = matchedTeam?.fa_picks.find(pick => pick.week === week);
     if (matchedFA) {
-      return this.globalService.faIsExpired(matchedFA) && !matchedFA.player_taken || matchedFA.player_taken === 'Penalty'; 
+      return this.globalService.faIsExpired(matchedFA) && !matchedFA.player_taken || matchedFA.player_taken === 'penalty'; 
     }
     return false;
   }

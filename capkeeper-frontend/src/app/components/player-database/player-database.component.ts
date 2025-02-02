@@ -75,17 +75,10 @@ export class PlayerDatabaseComponent {
         .subscribe(response => {
           this.allPlayers = response.players;
           this.filterPlayers();
-
       });
 
       if (this.globalService.loggedInTeam) {
-        this.teamService.getFAsByTeam(this.league_id, this.globalService.loggedInTeam.team_id)
-          .subscribe(response => {
-            this.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.globalService.loggedInTeam?.team_id && !pick.player_taken && this.faInRange(pick));
-            if (this.fa_picks.length > 0) {
-              this.fa_to_use = this.fa_picks[0].asset_id.toString();
-            }
-          })
+        this.fetchFAs(this.globalService.loggedInTeam);
       }
 
     });
@@ -94,6 +87,16 @@ export class PlayerDatabaseComponent {
   searchPlayers(): void {
     if (this.searchKey === '') { this.resetSearch(); return; }
     this.filterPlayers();
+  }
+
+  async fetchFAs(team: Team): Promise<void> {
+    this.teamService.getFAsByTeam(this.league_id, team.team_id)
+      .subscribe(response => {
+        this.fa_picks = response.fa_picks.filter(pick => pick.owned_by === this.globalService.loggedInTeam?.team_id && !pick.player_taken && this.faInRange(pick));
+        if (this.fa_picks.length > 0) {
+          this.fa_to_use = this.fa_picks[0].asset_id.toString();
+        }
+      });
   }
 
   faInRange(fa: FA_Pick): boolean {
@@ -110,7 +113,6 @@ export class PlayerDatabaseComponent {
   
     return expiryDate >= twoDaysBefore && expiryDate <= eightDaysAfter;
   }
-  
 
   filterPlayers(): void {
     this.filteredPlayers = this.allPlayers
@@ -283,7 +285,8 @@ export class PlayerDatabaseComponent {
           let action = 'add-player';
           this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
 
-          this.ngOnInit; 
+          //this.fetchFAs(this.globalService.loggedInTeam);
+          this.ngOnInit;
           this.toastService.showToast(message, true);
         }
       },
