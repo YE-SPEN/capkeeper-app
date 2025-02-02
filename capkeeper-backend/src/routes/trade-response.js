@@ -39,6 +39,8 @@ export const confirmTradeRoute = {
                         const updatePlayerQuery = `
                         UPDATE player_owned_by
                         SET team_id = ?,
+                            onIR = 0,
+                            onTradeBlock = 0,
                             retention_perc = ?
                         WHERE player_id = ?
                         AND league_id = ?

@@ -46,11 +46,7 @@ export const commisssionerHubRoute = {
             )
 
             const { results: draft_picks } = await db.query(
-                `SELECT dp.draft_id, dp.asset_id, d.year, dp.round, dp.position, dp.pick_number, d.type, dp.assigned_to, dp.owned_by, 
-                    CASE 
-                        WHEN dp.player_taken = 'none' THEN 'Burned'
-                        ELSE CONCAT(p.first_name, ' ', p.last_name) 
-                    END AS player_taken
+                `SELECT dp.draft_id, dp.asset_id, d.year, dp.round, dp.position, dp.pick_number, d.type, dp.assigned_to, dp.owned_by, dp.player_taken, CONCAT(p.first_name, ' ', p.last_name) AS player_full_name
                 FROM drafts d
                 JOIN draft_picks dp 
 					ON d.draft_id = dp.draft_id
@@ -62,7 +58,7 @@ export const commisssionerHubRoute = {
             )
 
             const { results: fa_picks } = await db.query(
-                `SELECT f.asset_id, f.year, f.week, f.expiry_date, f.assigned_to, f.owned_by, CONCAT(p.first_name, ' ', p.last_name) AS player_taken
+                `SELECT f.asset_id, f.year, f.week, f.expiry_date, f.assigned_to, f.owned_by, f.player_taken, CONCAT(p.first_name, ' ', p.last_name) AS player_full_name
                 FROM fa_picks f 
                 LEFT JOIN players p
                     ON f.player_taken = p.player_id
