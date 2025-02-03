@@ -129,6 +129,271 @@
         </div>
 
     </div>
-</div>    
+</div> 
+
+<div id="default-styled-tab-content">
+    
+    <!-- Teams Tab -->
+    <div *ngIf="displaying === 'teams'" class="dark:bg-gray-800" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab">
+        <!-- Main Teams Table -->
+        <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[800px]">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr class="border-b-2 sticky top-0 z-10">
+                        <th scope="col"
+                            class="p-1 md:p-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                            [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'team_name'}"
+                            (click)="sortingService.toggleSort(allTeams, 'team_name')"
+                        >
+                        <span class="flex items-center">
+                            Team
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path *ngIf="sortingService.sortColumn !== 'team_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                <path *ngIf="sortingService.sortColumn === 'team_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                <path *ngIf="sortingService.sortColumn === 'team_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                            </svg>
+                        </span>
+                        </th>
+                        <th scope="col">
+                        <span class="flex items-center">
+                            Managed By                   
+                        </span>
+                        </th>
+                        <th scope="col" 
+                            class="hidden md:table-cell p-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                            [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'total_points'}"
+                            (click)="sortingService.toggleSort(allTeams, 'total_points')"
+                        >
+                            <span class="flex items-center">
+                                Cum. Points
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path *ngIf="sortingService.sortColumn !== 'total_points'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    <path *ngIf="sortingService.sortColumn === 'total_points' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                    <path *ngIf="sortingService.sortColumn === 'total_points' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                </svg>
+                            </span>
+                        </th>
+                        <th scope="col" 
+                            class="hidden md:table-cell p-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                            [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'roster_size'}"
+                            (click)="sortingService.toggleSort(allTeams, 'roster_size')"
+                        >
+                            <span class="flex items-center">
+                                Contracts
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path *ngIf="sortingService.sortColumn !== 'roster_size'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    <path *ngIf="sortingService.sortColumn === 'roster_size' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                    <path *ngIf="sortingService.sortColumn === 'roster_size' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                </svg>
+                            </span>
+                        </th>
+                        <th scope="col" 
+                            class="hidden md:table-cell p-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                            [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'rookie_count'}"
+                            (click)="sortingService.toggleSort(allTeams, 'rookie_count')"
+                        >
+                            <span class="flex items-center">
+                                Rookies
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path *ngIf="sortingService.sortColumn !== 'rookie_count'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    <path *ngIf="sortingService.sortColumn === 'rookie_count' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                    <path *ngIf="sortingService.sortColumn === 'rookie_count' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                </svg>
+                            </span>
+                        </th>
+                        <th scope="col" 
+                            class="hidden md:table-cell p-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                            [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'cap_space'}"
+                            (click)="sortingService.toggleSort(allTeams, 'cap_space')"
+                        >
+                            <span class="flex items-center">
+                                Cap Space
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path *ngIf="sortingService.sortColumn !== 'cap_space'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    <path *ngIf="sortingService.sortColumn === 'cap_space' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                    <path *ngIf="sortingService.sortColumn === 'cap_space' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                </svg>
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let team of allTeams" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+                        <td class="px-4 py-2">
+                            <a [routerLink]="['/', globalService.league?.league_id, 'teams', team.team_id]" class="hover:underline font-semibold">
+                                <div class="flex items-center">
+                                    <img [src]="team.picture" class="w-6 h-6 rounded-full mr-2">
+                                    <span class="text-xs md:text-sm font-semibold text-gray-900">{{ team.team_name }}</span>
+                                </div>
+                            </a>
+                        </td>            
+                                    
+                        <td class="hidden md:table-cell text-sm">
+                            <div *ngFor="let manager of team.managers" class="text-[10px] font-semibold inline-flex">
+                                <span id="badge-dismiss-dark" class="inline-flex items-center px-1.5 py-0.5 me-1 text-gray-800 bg-gray-100 rounded dark:bg-gray-700 dark:text-gray-300">
+                                    {{ manager.first_name }} {{ manager.last_name }}
+                                    <button type="button" class="inline-flex items-center p-1 ms-2 text-sm text-gray-400 bg-transparent rounded-sm hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-gray-300" data-dismiss-target="#badge-dismiss-dark" aria-label="Remove">
+                                        <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                        <span class="sr-only">Remove badge</span>
+                                    </button>
+                                </span>
+                            </div>
+                            {{ team.managed_by }}
+                        </td>
+                        <td class="px-4 py-2 hidden md:table-cell text-sm font-bold text-gray-900">
+                            {{ team.total_points }}
+                        </td>
+                        <td class="px-4 py-2 hidden md:table-cell text-sm">
+                            {{ team.roster_size }}/{{ globalService.league?.max_roster_size }}
+                        </td>
+                        <td class="px-4 py-2 hidden md:table-cell text-sm">
+                            {{ team.rookie_count }}/{{ globalService.league?.rookie_bank_size }}
+                        </td>
+                        <td class="px-4 py-2 hidden md:table-cell text-sm">
+                            <span 
+                                [ngClass]="{
+                                'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': team.cap_space < 0,
+                                'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': team.cap_space > 0 && team.cap_space < 2000000,
+                                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': team.cap_space >= 2000000
+                                }"
+                                class="text-sm font-medium me-2 px-2.5 py-0.5 rounded">
+                                ${{ team.cap_space | number:'1.0-0' }}
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Users Tab -->
+    <div *ngIf="displaying === 'users'" id="styled-dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+        
+        <!-- Main User Table -->
+            <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[800px]">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr class="border-b-2 sticky top-0 z-10">
+                            <th scope="col"
+                                class="p-1 md:p-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'last_name'}"
+                                (click)="sortingService.toggleSort(allUsers, 'last_name')"
+                            >
+                            <span class="flex items-center">
+                                User
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path *ngIf="sortingService.sortColumn !== 'last_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    <path *ngIf="sortingService.sortColumn === 'last_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                    <path *ngIf="sortingService.sortColumn === 'last_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                </svg>
+                            </span>
+                            </th>
+                            <th scope="col" 
+                                class="p-1 md:p-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'email'}"
+                                (click)="sortingService.toggleSort(allUsers, 'email')"
+                            >
+                            <span class="flex items-center">
+                                Email
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path *ngIf="sortingService.sortColumn !== 'email'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    <path *ngIf="sortingService.sortColumn === 'email' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                    <path *ngIf="sortingService.sortColumn === 'email' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                </svg>                    
+                            </span>
+                            </th>
+                            <th scope="col" 
+                                class="hidden md:table-cell p-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'team_managed'}"
+                                (click)="sortingService.toggleSort(allUsers, 'team_managed')"
+                            >
+                            <span class="flex items-center">
+                                Team
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path *ngIf="sortingService.sortColumn !== 'team_managed'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    <path *ngIf="sortingService.sortColumn === 'team_managed' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                    <path *ngIf="sortingService.sortColumn === 'team_managed' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                </svg>
+                            </span>
+                            </th>
+                            <th scope="col" 
+                                class="hidden md:table-cell p-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'isAdmin'}"
+                                (click)="sortingService.toggleSort(allUsers, 'isAdmin')"
+                            >
+                                <span class="flex items-center">
+                                    Admin
+                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path *ngIf="sortingService.sortColumn !== 'isAdmin'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                        <path *ngIf="sortingService.sortColumn === 'isAdmin' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                        <path *ngIf="sortingService.sortColumn === 'isAdmin' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                    </svg>
+                                </span>    
+                            </th>
+                            <th scope="col" 
+                                class="hidden md:table-cell p-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'log_in_date'}"
+                                (click)="sortingService.toggleSort(allUsers, 'log_in_date')"
+                            >
+                                <span class="flex items-center">
+                                    Last Logged In
+                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path *ngIf="sortingService.sortColumn !== 'log_in_date'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                        <path *ngIf="sortingService.sortColumn === 'log_in_date' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                        <path *ngIf="sortingService.sortColumn === 'log_in_date' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                    </svg>
+                                </span>    
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of allUsers" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+                            <td class="px-4 py-2 dark:bg-gray-800">
+                                <div class="flex items-center">
+                                    <div *ngIf="user.picture">
+                                        <img class="w-6 h-6 rounded-full" src="{{ user.picture }}" alt="user photo">
+                                    </div>
+                                    <div *ngIf="!user.picture" class="relative inline-flex items-center justify-center w-6 h-6 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                        <span class="font-semibold text-xs text-gray-600 dark:text-gray-300">{{ globalService.getUserInitials(user) }}</span>
+                                    </div> 
+                                    <span class="text-xs md:text-sm font-semibold text-gray-900 ms-3">{{ user.first_name }} {{ user.last_name }}</span>
+                                </div>      
+                            </td>            
+                                        
+                            <td class="px-4 py-2 hidden md:table-cell text-sm">
+                                {{ user.email }}
+                            </td>
+                            <td class="px-4 py-2 hidden md:table-cell text-sm">
+                                <a [routerLink]="['/', league_id, 'teams', globalService.getTeamID(user.team_managed)]" class="cursor-pointer font-medium text-green-500 dark:text-green-500 hover:underline">
+                                    {{ user.team_managed }}
+                                </a>
+                            </td>
+                            <td class="px-4 py-2 hidden md:table-cell text-sm">
+                                <div class="flex items-center">
+                                    <input            
+                                        (click)="toggleAdminRights(user)"
+                                        id="default-checkbox"
+                                        type="checkbox" 
+                                        value=""
+                                        [checked]="user.isAdmin"
+                                        [disabled]="user.user_name === globalService.loggedInUser?.user_name"  
+                                        class="w-4 h-4 text-green-400 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-500 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                </div> 
+                            </td>
+                            <td class="px-6 py-2 hidden md:table-cell text-sm">
+                                {{ globalService.formatDateTime(user.log_in_date, user.log_in_time) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+
+
+</div>
 
 
