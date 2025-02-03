@@ -292,7 +292,136 @@
     </div> 
  </div>
 
-      
+ <div class="mb-4 border-gray-200 dark:border-gray-700">
+    <div class="mb-4 border-gray-200 dark:border-gray-700 flex justify-between items-center">
+        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
+            <li class="me-2">
+                <button 
+                    (click)="setDisplay('teams')" 
+                    class="inline-block p-4 border-b-2 rounded-t-lg"
+                    [ngClass]="{
+                        'text-green-400 border-green-400': displaying === 'teams',
+                        'text-gray-500 border-gray-100 dark:text-gray-400 dark:border-gray-700': displaying !== 'teams'
+                    }"
+                    type="button" aria-controls="dashboard" aria-selected="false"
+                >
+                    Teams
+                </button>
+            </li>
+            <li class="me-2">
+                <button 
+                    (click)="setDisplay('users')" 
+                    class="inline-block p-4 border-b-2 rounded-t-lg"
+                    [ngClass]="{
+                        'text-green-400 border-green-400': displaying === 'users',
+                        'text-gray-500 border-gray-100 dark:text-gray-400 dark:border-gray-700': displaying !== 'users'
+                    }"
+                    type="button" aria-controls="dashboard" aria-selected="false"
+                >
+                    Users
+                </button>
+            </li>
+            <li class="me-2">
+                <button 
+                    (click)="setDisplay('draft')" 
+                    class="inline-block p-4 border-b-2 rounded-t-lg"
+                    [ngClass]="{
+                        'text-green-400 border-green-400': displaying === 'draft',
+                        'text-gray-500 border-gray-100 dark:text-gray-400 dark:border-gray-700': displaying !== 'draft'
+                    }"
+                    type="button" aria-controls="dashboard" aria-selected="false"
+                >
+                    Draft Picks
+                </button>
+            </li>
+            <li class="me-2">
+                <button 
+                    (click)="setDisplay('fa')" 
+                    class="inline-block p-4 border-b-2 rounded-t-lg"
+                    [ngClass]="{
+                        'text-green-400 border-green-400': displaying === 'fa',
+                        'text-gray-500 border-gray-100 dark:text-gray-400 dark:border-gray-700': displaying !== 'fa'
+                    }"
+                    type="button" aria-controls="dashboard" aria-selected="false"
+                >
+                    FA Picks
+                </button>
+            </li>
+        </ul>
+    
+        <!-- Draft Pick Filters -->
+        <div 
+            class="hidden"
+            [ngClass]="{ 'flex justify-end gap-2': displaying === 'draft', 'hidden': displaying !== 'draft' }"
+        >
+            <div class="flex flex-col">
+                <label for="year-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Filter by Year</label>
+                <select id="year-filter" [(ngModel)]="yearFilter" (ngModelChange)="filterDraftPicks()" 
+                    class="cursor-pointer bg-gray-50 border border-green-400 text-gray-900 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 block p-1.5 min-w-[110px]">
+                    <option value="any" selected>All Years</option>
+                    <option *ngFor="let year of getDraftYears()" [ngValue]="year">{{ year }}</option>
+                </select>
+            </div>
+            <div class="flex flex-col">
+                <label for="position-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Filter by Draft</label>
+                <select id="position-filter" [(ngModel)]="pickTypeFilter" (ngModelChange)="filterDraftPicks()" 
+                    class="cursor-pointer bg-gray-50 border border-green-400 text-gray-900 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 block p-1.5 min-w-[110px]">
+                    <option value="any" selected>All</option>
+                    <option value="general">General</option>
+                    <option value="rookie">Rookie</option>
+                </select>
+            </div>
+            <div class="flex flex-col">
+                <label for="position-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Filter by Team</label>
+                <select id="position-filter" [(ngModel)]="teamFilter" (ngModelChange)="filterDraftPicks()" 
+                    class="cursor-pointer bg-gray-50 border border-green-400 text-gray-900 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 block p-1.5 min-w-[140px]">
+                    <option value="any" selected>All Teams</option>
+                    <option *ngFor="let team of allTeams" [ngValue]="team.team_id">
+                        {{ team.team_name }}
+                    </option>
+                </select>
+            </div>
+            <!-- Clear Filter Button -->
+            <div class="flex-grow flex justify-end w-full md:w-auto px-3">
+                <div class="mt-6">
+                <a (click)="clearFilters()" class="cursor-pointer font-semibold text-sm text-green-500 dark:text-green-500 hover:underline">Clear Filters</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- FA Pick Filters -->
+        <div 
+            class="hidden"
+            [ngClass]="{ 'flex justify-end gap-2': displaying === 'fa', 'hidden': displaying !== 'fa' }"
+        >
+            <div class="flex flex-col">
+                <label for="year-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Filter by Year</label>
+                <select id="year-filter" [(ngModel)]="yearFilter" (ngModelChange)="filterFAs()" 
+                    class="cursor-pointer bg-gray-50 border border-green-400 text-gray-900 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 block p-1.5 min-w-[110px]">
+                    <option value="any" selected>All Years</option>
+                    <option *ngFor="let year of getFAYears()" [ngValue]="year">{{ year }}</option>
+                </select>
+            </div>
+            <div class="flex flex-col">
+                <label for="position-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Filter by Team</label>
+                <select id="position-filter" [(ngModel)]="teamFilter" (ngModelChange)="filterFAs()" 
+                    class="cursor-pointer bg-gray-50 border border-green-400 text-gray-900 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 block p-1.5 min-w-[140px]">
+                    <option value="any" selected>All Teams</option>
+                    <option *ngFor="let team of allTeams" [ngValue]="team.team_id">
+                        {{ team.team_name }}
+                    </option>
+                </select>
+            </div>
+            <!-- Clear Filter Button -->
+            <div class="flex-grow flex justify-end w-full md:w-auto px-3">
+                <div class="mt-6">
+                <a (click)="clearFilters()" class="cursor-pointer font-semibold text-sm text-green-500 dark:text-green-500 hover:underline">Clear Filters</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>    
 
 
  <!-- Edit League Detail Modal -->
