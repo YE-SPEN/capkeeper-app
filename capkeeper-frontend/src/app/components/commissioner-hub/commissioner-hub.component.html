@@ -16,7 +16,7 @@
                    <h4 class="pb-4">League Name: {{ globalService.league?.league_name }} (ID #{{ globalService.league?.league_id }})</h4>
                     
                    <!-- Edit League Info Button -->
-                    <button type="button" 
+                    <button type="button" (click)="openModal(leagueDetailsModal)"
                     class="w-auto px-4 py-2 text-xs font-medium hover:text-white text-center border border-green-400 inline-flex items-center text-green-400 bg-white rounded-lg hover:bg-green-500 dark:bg-green-400 dark:hover:bg-green-500">
                         <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd"/>
@@ -263,22 +263,22 @@
                             <div class="flex flex-col gap-2">
                         
                                 <!-- Set Draft Order Button -->
-                                <button  type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-2.5 py-1.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+                                <button (click)="openModal(draftOrderModal)" type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-2.5 py-1.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
                                     Set Draft Order
                                 </button>
 
                                 <!-- Generate Picks Button -->
-                                <button  type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-2.5 py-1.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+                                <button (click)="openModal(generateDraftPicksModal)" type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-2.5 py-1.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
                                     Generate Draft Picks
                                 </button>
 
                                 <!-- Generate FAs Button -->
-                                <button  type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-2.5 py-1.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+                                <button (click)="openModal(generateFAModal)" type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-2.5 py-1.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
                                     Generate FAs
                                 </button>
 
                                 <!-- Advance Season Button -->
-                                <button  type="submit" class="text-red-500 bg-white border border-red-500 hover:text-white hover:bg-red-600 focus:outline-none font-medium rounded-lg text-xs px-2.5 py-1.5 text-center">
+                                <button (click)="openModal(advanceSeasonModal)" type="submit" class="text-red-500 bg-white border border-red-500 hover:text-white hover:bg-red-600 focus:outline-none font-medium rounded-lg text-xs px-2.5 py-1.5 text-center">
                                     Advance Season
                                 </button>
                         
@@ -687,221 +687,157 @@
             </div>
     </div>
 
-    <!-- Draft Pick Tab -->
-    <div *ngIf="displaying === 'draft'" id="styled-dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
-        
-        <!-- Main User Table -->
-            <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[800px]">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr class="border-b-2 sticky top-0 z-10">
-                            <th scope="col" class="px-2 py-4 bg-gray-50 dark:bg-gray-700">
-                                Edit
-                            </th>
-                            <th scope="col" class="px-2 py-4 bg-gray-50 dark:bg-gray-700">
-                                <span class="flex items-center">
-                                    Asset ID
-                                </span>    
-                            </th>
-                            <th scope="col"
-                                class="px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'type'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'type')"
-                            >
-                            <span class="flex items-center">
-                                Type
-                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path *ngIf="sortingService.sortColumn !== 'type'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                    <path *ngIf="sortingService.sortColumn === 'type' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                    <path *ngIf="sortingService.sortColumn === 'type' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
-                                </svg>
-                            </span>
-                            </th>
-                            <th scope="col" 
-                                class="px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'year'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'year')"
-                            >
-                            <span class="flex items-center">
-                                Year
-                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path *ngIf="sortingService.sortColumn !== 'year'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                    <path *ngIf="sortingService.sortColumn === 'year' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                    <path *ngIf="sortingService.sortColumn === 'year' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
-                                </svg>                    
-                            </span>
-                            </th>
-                            <th scope="col" 
-                                class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'team_managed'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'team_managed')"
-                            >
-                            <span class="flex items-center">
-                                Position
-                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path *ngIf="sortingService.sortColumn !== 'team_managed'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                    <path *ngIf="sortingService.sortColumn === 'team_managed' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                    <path *ngIf="sortingService.sortColumn === 'team_managed' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
-                                </svg>
-                            </span>
-                            </th>
-                            <th scope="col" 
-                                class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'assigned_to'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'assigned_to')"
-                            >
-                                <span class="flex items-center">
-                                    Assigned To
-                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path *ngIf="sortingService.sortColumn !== 'assigned_to'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                        <path *ngIf="sortingService.sortColumn === 'assigned_to' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                        <path *ngIf="sortingService.sortColumn === 'assigned_to' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
-                                    </svg>
-                                </span>    
-                            </th>
-                            <th scope="col" 
-                                class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'owned_by'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'owned_by')"
-                            >
-                                <span class="flex items-center">
-                                    Owned By
-                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path *ngIf="sortingService.sortColumn !== 'owned_by'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                        <path *ngIf="sortingService.sortColumn === 'owned_by' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                        <path *ngIf="sortingService.sortColumn === 'owned_by' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
-                                    </svg>
-                                </span>    
-                            </th>
-                            <th scope="col" colspan="2"
-                                class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'player_taken'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'player_taken')"
-                            >
-                                <span class="flex items-center">
-                                    Player Taken
-                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path *ngIf="sortingService.sortColumn !== 'player_taken'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                        <path *ngIf="sortingService.sortColumn === 'player_taken' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                        <path *ngIf="sortingService.sortColumn === 'player_taken' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
-                                    </svg>
-                                </span>    
-                            </th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let pick of filteredDraftPicks" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-
-                            <td class="px-2 py-2 hidden md:table-cell text-sm">
-                                <a (click)="openModal(editAssetModal, pick)">
-                                    <svg class="hidden w-6 h-6 align-text-top text-gray-500 dark:text-white hover:text-gray-700 md:inline-flex ms-1 hover:cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                                    </svg> 
-                                </a>                              
-                            </td>
-                            
-                            <td class="px-2 py-2 hidden md:table-cell text-sm">
-                                {{ pick.asset_id }}
-                            </td>
-
-                            <td class="px-2 py-2 hidden md:table-cell text-sm">
-                                <div *ngIf="pick.type === 'general'">
-                                    <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
-                                        {{ globalService.capitalizeFirstLetter(pick.type) }}
-                                    </span>
-                                </div>
-                                <div *ngIf="pick.type === 'rookie'">
-                                    <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
-                                        {{ globalService.capitalizeFirstLetter(pick.type) }}
-                                    </span>
-                                </div>
-                            </td>
-
-                            <td class="px-2py-2 hidden md:table-cell text-sm">
-                                <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
-                                    {{ pick.year }}
-                                 </span>
-                            </td>
-
-                            <td class="px-2 py-2 hidden md:table-cell text-sm">
-                                <div *ngIf="pick.position">
-                                    {{ pick.round }}.{{ pick.position }} <span *ngIf="pick.pick_number">&nbsp;(#{{ pick.pick_number }})</span>
-                                </div>
-                                <div *ngIf="!pick.position">
-                                    Round {{ pick.round }}
-                                </div>
-                            </td>
-
-                            <td class="px-2 py-2 dark:bg-gray-800">
-                                <div class="flex items-center">
-                                    <img class="w-6 h-6 rounded-full" src="{{ getTeamPicture(pick.assigned_to) }}" alt="team photo">
-                                    <span class="text-xs md:text-sm font-semibold text-gray-900 ms-3">{{ globalService.getTeamName(pick.assigned_to) }}</span>
-                                </div>      
-                            </td>
-                            
-                            <td class="px-2 py-2 dark:bg-gray-800">
-                                <div *ngIf="pick.assigned_to !== pick.owned_by" class="flex items-center">
-                                    <img class="w-6 h-6 rounded-full" src="{{ getTeamPicture(pick.owned_by) }}" alt="team photo">
-                                    <span class="text-xs md:text-sm font-semibold text-gray-900 ms-3">{{ globalService.getTeamName(pick.owned_by) }}</span>
-                                </div>
-                                <div *ngIf="pick.assigned_to === pick.owned_by">
-                                    --
-                                </div>      
-                            </td>
-                                        
-                            <td class="px-2 py-2 hidden md:table-cell text-sm" [ngClass]="{'text-red-600': pick.player_taken === 'none' || pick.player_taken === 'penalty'}">
-                                <div *ngIf="pick.player_taken && pick.player_taken !== 'none' && pick.player_taken !== 'penalty'">
-                                    {{ pick.player_full_name }}
-                                </div>    
-                                <div *ngIf="!pick.player_taken">
-                                    --
-                                </div>
-                                <div *ngIf="pick.player_taken === 'none'">
-                                    Burned
-                                </div> 
-                                <div *ngIf="pick.player_taken === 'penalty'">
-                                    Penalty
-                                </div> 
-                            </td>
-                            <td class="px-2 py-2 hidden md:table-cell text-sm">
-                                <div *ngIf="pick.assigned_to !== pick.owned_by">
-                                    <a (click)="openModal(pickHistoryModal, pick)" class="cursor-pointer font-medium text-green-500 dark:text-green-500 hover:underline flex items-center">
-                                        <svg class="w-4 h-4 text-green-500 dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                        </svg>
-                                        Pick History
-                                    </a> 
-                                </div>                          
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-    </div>
-
 </div>
 
+<!-- Edit League Detail Modal -->
+<ng-template #leagueDetailsModal id="leagueDetailsModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full">
+          <form (ngSubmit)="saveLeagueDetails($event); closeModal()" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+ 
+             <div class="flex items-start justify-between p-4 rounded-t md:w-[400px]">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                   Edit League Details
+                </h3>
+                <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+             </button>
+             </div>
+ 
+             <div class="p-6 space-y-6">
+                <div class="col-span-6 sm:col-span-3">
+                      <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">League Name</label>
+                      <input type="text" [(ngModel)]="leagueDetails.league_name" name="team-name" id="team-name" class="shadow-sm bg-gray-50  text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" [placeholder]="leagueSettings.league_name" required="">
+                </div>
+                <div>
+                   <label for="picture" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Picture</label>
+                   <input (change)="saveLeaguePicture($event)" name="picture" id="picture" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
+                   <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PNG, JPG (MAX. 1MB)</p>          
+               </div>
+             </div>
+ 
+             <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse rounded-b">
+                <button type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Save Changes</button>
+                <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+             </div>
+       </form>
+    </div>
+</ng-template>
 
 <!-- Edit Asset Modal -->
 <ng-template #editAssetModal id="editAssetModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div class="relative w-full max-w-2xl max-h-full">
-        <form (ngSubmit)="editAsset(assetToEdit)" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <div class="flex items-start justify-between p-4 rounded-t">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Editing Asset <span class="bg-gray-100 text-gray-600 font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">#{{ selected.asset_id }}</span>
-                </h3>
-                <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                    </svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
+<div class="relative w-full max-w-2xl max-h-full">
+    <form (ngSubmit)="editAsset(assetToEdit)" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="flex items-start justify-between p-4 rounded-t">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                Editing Asset <span class="bg-gray-100 text-gray-600 font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">#{{ selected.asset_id }}</span>
+            </h3>
+            <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+        </div>
+
+        <div class="px-6 pb-6">
+            <h3 class="pb-4 text-sm font-normal text-gray-900 dark:text-white">
+                <div class="flex items-center mb-1.5">
+                    <div *ngIf="selected.type">
+                        <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                            Draft Pick
+                        </span>
+                        Round {{ selected.round }} ({{ globalService.capitalizeFirstLetter(selected.type) }}, {{ selected.year }})
+                    </div>
+                    <div *ngIf="!selected.type">
+                        <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
+                            FA Pick
+                        </span>
+                        Week {{ selected.week }} ({{ selected.year }})
+                    </div>
+                    
+                </div>
+                
+                <div class="flex items-center">
+                    Originally assigned to: 
+                    <img class="ml-3 w-6 h-6 rounded-full" src="{{ getTeamPicture(selected.assigned_to) }}" alt="team photo">
+                    <span class="text-xs md:text-sm font-semibold text-gray-900 ms-1.5">{{ globalService.getTeamName(selected.assigned_to) }}</span>
+                </div> 
+            </h3>
+            <div class="grid grid-cols-6 gap-6">
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="owned_by" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Owned By</label>
+                    <select name="owned_by" [(ngModel)]="assetToEdit.owned_by" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
+                        <option *ngFor="let team of allTeams" [value]="team.team_id">{{ team.team_name }}</option>
+                    </select>
+                    <div *ngIf="!assetToEdit.player_taken">
+                        <a (click)="revokeAsset(assetToEdit)" class="mt-3 cursor-pointer text-sm font-normal text-red-500 dark:text-red-500 hover:underline flex items-center">
+                            <svg class="w-4 h-4 text-red-500 dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                            </svg>
+                            Revoke Pick
+                        </a> 
+                    </div>
+                    <div *ngIf="assetToEdit.player_taken === 'penalty'">
+                        <a (click)="restoreAsset(assetToEdit)" class="mt-3 cursor-pointer text-sm font-normal text-green-500 dark:text-green-500 hover:underline flex items-center">
+                            <svg class="w-4 h-4 text-green-500 dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+                            </svg>
+                            Restore Pick
+                        </a> 
+                    </div> 
+                </div>
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="player_taken" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Player Taken</label>
+                    <div class="form-group">
+                        <div class="relative flex flex-col">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                </svg>
+                            </div>
+                            <input type="text" id="default-search" name="searchKey" [(ngModel)]="searchKey" (input)="searchPlayers()" autocomplete="off" id="table-search-users" 
+                                class="block p-2.5 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-400 focus:border-green-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400" 
+                                [placeholder]="assetToEdit.player_full_name || 'Search players...'">
+                        </div>
+                    </div>
+                    <div *ngIf="searchKey.length >= 3" class="relative">
+                        <!-- Dropdown -->
+                        <ul 
+                            class="absolute top-0 z-50 w-full max-h-[250px] overflow-y-auto text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <li *ngFor="let player of searchResults" 
+                                class="flex items-center justify-between p-1.5 border-b border-gray-200 dark:border-gray-600">
+                                <span>{{ player.first_name }} {{ player.last_name }}</span>
+                                <button (click)="setPlayerTaken(player)"
+                                    class="btn focus:outline-none text-white bg-green-400 hover:bg-green-500 font-medium rounded-md text-xs p-1.5">
+                                    Select
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>                
             </div>
-    
-            <div class="px-6 pb-6">
-                <h3 class="pb-4 text-sm font-normal text-gray-900 dark:text-white">
-                    <div class="flex items-center mb-1.5">
+        </div>
+
+        <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse rounded-b">
+            <button type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Save Changes</button>
+            <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+        </div>
+    </form>
+</div>
+</ng-template>
+
+<!-- Pick History Modal -->
+<ng-template #pickHistoryModal id="pickHistoryModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Viewing History for Asset <span class="bg-gray-100 text-gray-600 font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">#{{ selected.asset_id }}</span>
+                    <div class="flex items-center mb-1.5 font-normal text-sm mt-1.5">
                         <div *ngIf="selected.type">
                             <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
                                 Draft Pick
@@ -914,139 +850,314 @@
                             </span>
                             Week {{ selected.week }} ({{ selected.year }})
                         </div>
-                        
                     </div>
-                    
-                    <div class="flex items-center">
-                        Originally assigned to: 
-                        <img class="ml-3 w-6 h-6 rounded-full" src="{{ getTeamPicture(selected.assigned_to) }}" alt="team photo">
-                        <span class="text-xs md:text-sm font-semibold text-gray-900 ms-1.5">{{ globalService.getTeamName(selected.assigned_to) }}</span>
-                    </div> 
                 </h3>
-                <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-6 sm:col-span-3">
-                        <label for="owned_by" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Owned By</label>
-                        <select name="owned_by" [(ngModel)]="assetToEdit.owned_by" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
-                            <option *ngFor="let team of allTeams" [value]="team.team_id">{{ team.team_name }}</option>
-                        </select>
-                        <div *ngIf="!assetToEdit.player_taken">
-                            <a (click)="revokeAsset(assetToEdit)" class="mt-3 cursor-pointer text-sm font-normal text-red-500 dark:text-red-500 hover:underline flex items-center">
-                                <svg class="w-4 h-4 text-red-500 dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                </svg>
-                                Revoke Pick
-                            </a> 
-                        </div>
-                        <div *ngIf="assetToEdit.player_taken === 'penalty'">
-                            <a (click)="restoreAsset(assetToEdit)" class="mt-3 cursor-pointer text-sm font-normal text-green-500 dark:text-green-500 hover:underline flex items-center">
-                                <svg class="w-4 h-4 text-green-500 dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
-                                </svg>
-                                Restore Pick
-                            </a> 
-                        </div> 
-                    </div>
-                    <div class="col-span-6 sm:col-span-3">
-                        <label for="player_taken" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Player Taken</label>
-                        <div class="form-group">
-                            <div class="relative flex flex-col">
-                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                    </svg>
-                                </div>
-                                <input type="text" id="default-search" name="searchKey" [(ngModel)]="searchKey" (input)="searchPlayers()" autocomplete="off" id="table-search-users" 
-                                    class="block p-2.5 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-400 focus:border-green-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-400 dark:focus:border-green-400" 
-                                    [placeholder]="assetToEdit.player_full_name || 'Search players...'">
-                            </div>
-                        </div>
-                        <div *ngIf="searchKey.length >= 3" class="relative">
-                            <!-- Dropdown -->
-                            <ul 
-                                class="absolute top-0 z-50 w-full max-h-[250px] overflow-y-auto text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                <li *ngFor="let player of searchResults" 
-                                    class="flex items-center justify-between p-1.5 border-b border-gray-200 dark:border-gray-600">
-                                    <span>{{ player.first_name }} {{ player.last_name }}</span>
-                                    <button (click)="setPlayerTaken(player)"
-                                        class="btn focus:outline-none text-white bg-green-400 hover:bg-green-500 font-medium rounded-md text-xs p-1.5">
-                                        Select
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>                
-                </div>
+                <button (click)="closeModal()" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="timeline-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
             </div>
-    
-            <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse rounded-b">
-                <button type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Save Changes</button>
-                <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
-            </div>
-        </form>
-    </div>
-    </ng-template>
-    
-    <!-- Pick History Modal -->
-    <ng-template #pickHistoryModal id="pickHistoryModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-md max-h-full">
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                        Viewing History for Asset <span class="bg-gray-100 text-gray-600 font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">#{{ selected.asset_id }}</span>
-                        <div class="flex items-center mb-1.5 font-normal text-sm mt-1.5">
-                            <div *ngIf="selected.type">
-                                <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
-                                    Draft Pick
-                                </span>
-                                Round {{ selected.round }} ({{ globalService.capitalizeFirstLetter(selected.type) }}, {{ selected.year }})
-                            </div>
-                            <div *ngIf="!selected.type">
-                                <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">
-                                    FA Pick
-                                </span>
-                                Week {{ selected.week }} ({{ selected.year }})
-                            </div>
-                        </div>
-                    </h3>
-                    <button (click)="closeModal()" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="timeline-modal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </div>
-                
-                <!-- Modal body -->
-                <div class="p-4 md:p-5">
-                    <ol class="relative border-s border-gray-200 dark:border-gray-600 ms-3.5 mb-4 md:mb-5">                  
-                        <li class="mb-10 ms-8">            
-                            <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-3.5 ring-8 ring-white dark:ring-gray-700 dark:bg-gray-600">
-                                <svg class="w-6 h-6 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"/>
-                                </svg>
-                            </span>
-                            <h3 class="flex items-start mb-1 text-base font-semibold text-gray-900 dark:text-white">Assigned to {{ globalService.getTeamName(selected.assigned_to) }}</h3>
-                        </li>
-                        <li *ngFor="let trade of selected.pick_history; let i = index" class="mb-10 ms-8">
-                            <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-3.5 ring-8 ring-white dark:ring-gray-700 dark:bg-gray-600">
-                                <svg class="w-6 h-6 text-blue-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/>
-                                </svg>
-                            </span>
-                            <h3 class="mb-1 text-base font-semibold text-gray-900 dark:text-white">
-                                Traded to {{ globalService.getTeamName(trade.traded_to) }}
-                                <span *ngIf="i === selected.pick_history.length - 1" class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 ms-3">Latest</span>
-                            </h3>
-                            <time class="block mb-3 text-sm font-normal leading-none text-gray-500 dark:text-gray-400">{{ globalService.getDate(trade.date) }}</time>
-                        </li>
-                    </ol>
-                    <button (click)="closeModal()" class="text-green-400 hover:text-white inline-flex w-full justify-center bg-white hover:bg-green-500 border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                        Close History
-                    </button>
-                </div>
+            
+            <!-- Modal body -->
+            <div class="p-4 md:p-5">
+                <ol class="relative border-s border-gray-200 dark:border-gray-600 ms-3.5 mb-4 md:mb-5">                  
+                    <li class="mb-10 ms-8">            
+                        <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-3.5 ring-8 ring-white dark:ring-gray-700 dark:bg-gray-600">
+                            <svg class="w-6 h-6 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"/>
+                            </svg>
+                        </span>
+                        <h3 class="flex items-start mb-1 text-base font-semibold text-gray-900 dark:text-white">Assigned to {{ globalService.getTeamName(selected.assigned_to) }}</h3>
+                    </li>
+                    <li *ngFor="let trade of selected.pick_history; let i = index" class="mb-10 ms-8">
+                        <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-3.5 ring-8 ring-white dark:ring-gray-700 dark:bg-gray-600">
+                            <svg class="w-6 h-6 text-blue-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/>
+                            </svg>
+                        </span>
+                        <h3 class="mb-1 text-base font-semibold text-gray-900 dark:text-white">
+                            Traded to {{ globalService.getTeamName(trade.traded_to) }}
+                            <span *ngIf="i === selected.pick_history.length - 1" class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 ms-3">Latest</span>
+                        </h3>
+                        <time class="block mb-3 text-sm font-normal leading-none text-gray-500 dark:text-gray-400">{{ globalService.getDate(trade.date) }}</time>
+                    </li>
+                </ol>
+                <button (click)="closeModal()" class="text-green-400 hover:text-white inline-flex w-full justify-center bg-white hover:bg-green-500 border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                    Close History
+                </button>
             </div>
         </div>
-    </ng-template>
+    </div>
+</ng-template>
+
+
+<!-- Set Draft Order Modal -->
+<ng-template #draftOrderModal id="draftOrderModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full">
+          <form (ngSubmit)="setDraftOrder(); closeModal()" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+ 
+             <div class="flex items-start justify-between p-4 rounded-t md:w-[400px]">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                   Set Draft Order
+                </h3>
+                <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+             </button>
+             </div>
+             
+             <div class="px-6 pb-6">
+                <!-- Draft Selection Fields -->
+                <div class="grid grid-cols-6 gap-6">
+                    <div class="col-span-6 sm:col-span-6">
+                        <label for="draft" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Draft</label>
+                        <select name="draft" [(ngModel)]="draftToEdit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5">
+                            <option *ngFor="let draft of getScheduledDrafts()" [ngValue]="draft">{{ globalService.capitalizeFirstLetter(draft.type) }} Draft ({{ draft.year }})</option>
+                        </select>
+                    </div>
+                </div>
+            
+                <!-- Divider -->
+                <hr class="my-4 border-gray-300 dark:border-gray-600">
+            
+                <!-- Subheading -->
+                <h2 class="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Draft Order</h2>
+            
+                <!-- Draft Order -->
+                <div class="grid grid-cols-6 gap-2">
+                    <div *ngFor="let draft_pos of allTeams; let i = index" class="col-span-6 sm:col-span-3 flex items-center">
+                        <label for="team-{{ i }}" class="mr-1 text-sm font-medium text-gray-900 dark:text-white">{{ i + 1 }}</label>
+                        <select 
+                            id="team-{{ i }}"
+                            name="team-{{ i }}"
+                            (change)="addToDraftOrder(i, $event)"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 block w-full p-1.5"
+                        >
+                            <option [ngValue]="null">Select a team...</option>
+                            <option *ngFor="let team of allTeams | draftOrderPipe: draftOrder" [ngValue]="team.team_id">
+                                {{ team.team_name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>            
+ 
+             <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse rounded-b">
+                <button type="submit" [disabled]="!draftToEdit || !orderIsSet()" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800"
+                    [ngClass]="{
+                        'bg-green-400 hover:bg-green-500 focus:ring-green-300': draftToEdit && orderIsSet(),
+                        'bg-green-300 cursor-not-allowed': !draftToEdit || !orderIsSet()
+                    }"
+                >
+                    Set Draft Order
+                </button>
+                <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+             </div>
+       </form>
+    </div>
+</ng-template>
+
+
+<!-- Generate Draft Picks Modal -->
+<ng-template #generateDraftPicksModal id="generateDraftPicksModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full">
+          <form (ngSubmit)="generateDraftPicks(); closeModal()" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+ 
+             <div class="flex items-start justify-between p-4 rounded-t md:w-[400px]">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                   Generate Draft Picks
+                </h3>
+                <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+             </div>
+             
+             <div class="px-6 pb-6">
+                <!-- Draft Selection Fields -->
+                <div class="grid grid-cols-6 gap-6">
+                    <div class="col-span-6 sm:col-span-6">
+                        <label for="draft" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Draft</label>
+                        <select 
+                            name="draft" 
+                            [(ngModel)]="draftToEdit"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
+                        >
+                            <option [ngValue]="null">Select a draft...</option>
+                            <option *ngFor="let draft of getNextThreeDrafts()" [ngValue]="draft">
+                                {{ globalService.capitalizeFirstLetter(draft.type) }} Draft ({{ draft.year }})
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            
+                <div *ngIf="draftToEdit" 
+                    class="flex items-start p-3 max-w-[350px] mt-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800" 
+                    role="alert"
+                >
+                    <svg class="flex-shrink-0 inline w-4 h-4 me-3 mt-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <div>
+                        <b>Info:</b> This will generate
+                        <b>
+                            <span *ngIf="draftToEdit.type === 'general'">{{ leagueSettings.general_draft_length }}</span>
+                            <span *ngIf="draftToEdit.type === 'rookie'">{{ leagueSettings.rookie_draft_length }}</span>
+                        </b>
+                        draft picks per team for the <b>{{ draftToEdit.year }} {{ globalService.capitalizeFirstLetter(draftToEdit.type)}} Draft</b>.
+                    </div>
+                </div>
+            </div>           
+ 
+             <div class="flex items-center px-6 pb-6 space-x-3 rtl:space-x-reverse rounded-b">
+                <button [disabled]="!draftToEdit" type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800"
+                    [ngClass]="{
+                        'bg-green-400 hover:bg-green-500 focus:ring-green-300': draftToEdit,
+                        'bg-green-300 cursor-not-allowed': !draftToEdit
+                    }"
+                >
+                    Generate Picks
+                </button>
+                <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+             </div>
+       </form>
+    </div>
+</ng-template>
+
+
+<!-- Generate FA Modal -->
+<ng-template #generateFAModal id="generateFAModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full">
+          <form (ngSubmit)="generateFAs(); closeModal()" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+ 
+             <div class="flex items-start justify-between p-4 rounded-t md:w-[400px]">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                   Generate FA Picks
+                </h3>
+                <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+             </div>
+             
+             <div class="px-6 pb-6">
+                <div class="grid grid-cols-6 gap-6">
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="year" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Year</label>
+                        <select 
+                            name="year" 
+                            [(ngModel)]="fasToGenerate.year"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
+                        >
+                            <option *ngFor="let year of getNextThreeYears(leagueSettings.current_season)" [ngValue]="year">
+                                {{ year }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="weeks" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Weeks</label>
+                        <input 
+                            type="number" 
+                            id="weeks"
+                            name="weeks"
+                            [(ngModel)]="fasToGenerate.weeks"
+                            min="1"
+                            max="30"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
+                        >
+                     </div>
+                </div>
+                
+                <div *ngIf="fasToGenerate.year && fasToGenerate.weeks >= 1">
+                    <!-- Divider -->
+                    <hr class="my-4 border-gray-300 dark:border-gray-600">
+                            
+                    <!-- Subheading -->
+                    <h2 class="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Expiry Dates</h2>
+                 
+                    <!-- Expiry Date Selectors -->
+                    <div class="max-h-64 overflow-y-auto pr-2">
+                        <div class="space-y-3">
+                            <div *ngFor="let week of [].constructor(fasToGenerate.weeks); let i = index" 
+                                class="flex items-center"
+                            >
+                                <label for="week-{{ i }}" class="mr-3 text-sm font-normal text-gray-900 dark:text-white">Week {{ i }}</label>     
+                                <div class="relative max-w-sm">
+                                    <input 
+                                        id="week-{{ i }}"
+                                        [name]="'week-' + i"
+                                        type="date"
+                                        [(ngModel)]="fasToGenerate.expiry_dates[i]"f
+                                        [min]="i === 0 ? globalService.getToday() : fasToGenerate.expiry_dates[i-1]"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>           
+ 
+             <div class="flex items-center px-6 pb-6 space-x-3 rtl:space-x-reverse rounded-b">
+                <button [disabled]="!fasToGenerate.year || !fasToGenerate.weeks" type="submit" 
+                    class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800"
+                    [ngClass]="{
+                        'bg-green-400 hover:bg-green-500 focus:ring-green-300': fasToGenerate.year && fasToGenerate.weeks,
+                        'bg-green-300 cursor-not-allowed': !fasToGenerate.year || !fasToGenerate.weeks
+                    }"
+                >
+                    Generate FAs
+                </button>
+                <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+             </div>
+       </form>
+    </div>
+</ng-template>
+
+<!-- Advance Season Modal -->
+<ng-template #advanceSeasonModal id="advanceSeasonModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] max-h-full">
+    <div id="popup-modal" tabindex="-1" class="relative p-4 w-full max-w-md max-h-full">
+       <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <button (click)="closeModal()" type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+             </svg>
+             <span class="sr-only">Close modal</span>
+          </button>
+          <div class="p-4 md:p-5 text-left">
+             <svg class="mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+             </svg>
+             <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to advance the season?</h3>
+             <div class="flex items-start p-4 mt-4 mb-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800" role="alert">
+                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                </svg>
+                <div class="text-left">
+                    <b>This action cannot be undone!</b>
+                    You are about to advance the contracts for all players in the database and set the current season of League #{{ league_id }} to {{ leagueSettings.current_season + 1 }}. Advancing the season will also reset any salaries retained to zero.
+                </div>
+            </div>
+             <div class="flex justify-start space-x-4">
+                <button type="submit" (click)="advanceSeason(); closeModal()" class="bg-red-500 border border-red-500 hover:bg-red-600 text-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-500 dark:hover:bg-red-600">
+                   Advance Season
+                </button>
+                <button type="submit" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+                   Cancel
+                </button>
+             </div>
+          </div>
+       </div>
+    </div>
+</ng-template>
 
 
