@@ -25,6 +25,7 @@ import { DraftComponent } from './components/draft/draft.component';
 import { ProtectionSheetComponent } from './components/protection-sheet/protection-sheet.component';
 import { CommissionerHubComponent } from './components/commissioner-hub/commissioner-hub.component';
 import { DraftOrderPipe } from './pipes/draft-order-pipe';
+import { CommissionerHubTabsComponent } from './components/commissioner-hub-tabs/commissioner-hub-tabs.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { DraftOrderPipe } from './pipes/draft-order-pipe';
     DraftOrderPipe, 
     DraftComponent,
     ProtectionSheetComponent,
-    CommissionerHubComponent
+    CommissionerHubComponent,
+    CommissionerHubTabsComponent
   ],
   imports: [
     BrowserModule,

@@ -156,23 +156,9 @@ export class CommissionerHubComponent {
     return sum;
   }
 
-  getTeamPicture(team_id: string): string | null {
-    if (!this.allTeams || this.allTeams.length === 0) {
-      return null;
-    }
-  
-    const team = this.allTeams.find(team => team.team_id === team_id);
-    if (team) {
-      return team.picture || null; 
-    } else {
-      return null; 
-    }
-  }
-
   async fetchPickHistory(asset: Draft_Pick | FA_Pick): Promise<void> {
     this.teamService.getPickHistory(asset.asset_id)
     .subscribe(response => {
-      console.log('Response: ', response);
         asset.pick_history = response.pickHistory;
     });
   }
@@ -183,30 +169,6 @@ export class CommissionerHubComponent {
 
   getNextThreeYears(startYear: number): number[] {
     return [startYear + 1, startYear + 2, startYear + 3];
-  }
-
-  getFAYears(): number[] {
-    const yearSet = new Set<number>();
-    
-    this.allFAs.forEach(fa => {
-        if (fa.year) {
-            yearSet.add(fa.year);
-        }
-    });
-
-    return Array.from(yearSet).sort((a, b) => a - b);
-  }
-
-  getDraftYears(): number[] {
-    const yearSet = new Set<number>();
-    
-    this.allDraftPicks.forEach(pick => {
-        if (pick.year) {
-            yearSet.add(pick.year);
-        }
-    });
-
-    return Array.from(yearSet).sort((a, b) => a - b);
   }
 
   getNextThreeDrafts(): Draft[] {
@@ -356,10 +318,10 @@ export class CommissionerHubComponent {
     this.leagueDetails.picture = url;
   }
 
-  searchPlayers(): void {
-    console.log('Search key: ', this.searchKey)
+  searchPlayers(searchKey: string): void {
+    this.searchKey = searchKey;
     this.searchResults = this.allPlayers.filter(player =>
-      player.first_name.toLowerCase().includes(this.searchKey.toLowerCase()) || player.last_name.toLowerCase().includes(this.searchKey.toLowerCase())
+      player.first_name.toLowerCase().includes(searchKey.toLowerCase()) || player.last_name.toLowerCase().includes(searchKey.toLowerCase())
     );
   }
 
