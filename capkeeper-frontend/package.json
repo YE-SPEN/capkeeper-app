@@ -8,7 +8,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "tailwind": "npx tailwindcss -i src/styles.css -o src/assets/tailwind.css --watch"
+    "tailwind": "npx tailwindcss -i src/styles.css -o src/assets/tailwind.css --watch",
+    "analyze": "ng build --stats-json && webpack-bundle-analyzer dist/capkeeper-app/stats.json"
   },
   "private": true,
   "dependencies": {
@@ -41,6 +42,7 @@
     "@types/node": "^18.18.0",
     "autoprefixer": "^10.4.20",
     "tailwindcss": "^3.4.10",
-    "typescript": "~5.4.2"
+    "typescript": "~5.4.2",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }

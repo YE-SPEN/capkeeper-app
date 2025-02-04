@@ -16,6 +16,8 @@
             "outputPath": "dist/capkeeper-app",
             "index": "src/index.html",
             "main": "src/main.ts",
+            "optimization": false, 
+            "buildOptimizer": false,
             "polyfills": [
               "zone.js"
             ],
