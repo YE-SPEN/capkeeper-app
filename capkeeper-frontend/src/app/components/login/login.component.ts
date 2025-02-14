@@ -13,6 +13,7 @@ import { DEFAULT_INTERRUPTSOURCES } from '@ng-idle/core';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
+  standalone: false
 })
 export class LoginComponent implements OnInit {
   modalRef!: BsModalRef;

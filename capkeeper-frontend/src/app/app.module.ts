@@ -11,41 +11,20 @@ import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
-import { TeamRosterComponent } from './components/team-roster/team-roster.component';
-import { PlayerDatabaseComponent } from './components/player-database/player-database.component';
-import { LeagueActivityComponent } from './components/league-activity/league-activity.component';
-import { RulesComponent } from './components/rules/rules.component';
 import { HomeComponent } from './components/home/home.component';
-import { UserProfileComponent } from './components/user-profile/user-profile.component';
-import { TradeProposalComponent } from './components/trade-proposal/trade-proposal.component';
-import { TradeReviewComponent } from './components/trade-review/trade-review.component';
 import { ToastComponent } from './components/toast/toast.component';
-import { TradeAssetPipe } from './pipes/trade-assets.pipe';
-import { DraftComponent } from './components/draft/draft.component';
-import { ProtectionSheetComponent } from './components/protection-sheet/protection-sheet.component';
-import { CommissionerHubComponent } from './components/commissioner-hub/commissioner-hub.component';
-import { DraftOrderPipe } from './pipes/draft-order-pipe';
-import { CommissionerHubTabsComponent } from './components/commissioner-hub-tabs/commissioner-hub-tabs.component';
+
+// Import the feature modules
+import { TeamModule } from './modules/team/team.module';
+import { LeagueModule } from './modules/league/league.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    TeamRosterComponent,
-    PlayerDatabaseComponent,
-    LeagueActivityComponent,
-    RulesComponent,
-    UserProfileComponent,
-    TradeProposalComponent,
-    TradeReviewComponent,
-    ToastComponent,
-    TradeAssetPipe,
-    DraftOrderPipe, 
-    DraftComponent,
-    ProtectionSheetComponent,
-    CommissionerHubComponent,
-    CommissionerHubTabsComponent
+    ToastComponent
   ],
   imports: [
     BrowserModule,
@@ -54,6 +33,9 @@ import { CommissionerHubTabsComponent } from './components/commissioner-hub-tabs
     ModalModule,
     NgIdleKeepaliveModule.forRoot(),
     HttpClientModule,
+    TeamModule,
+    LeagueModule,
+    AdminModule
   ],
   exports: [
     ToastComponent
@@ -62,7 +44,7 @@ import { CommissionerHubTabsComponent } from './components/commissioner-hub-tabs
     BsModalService,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-   ],
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

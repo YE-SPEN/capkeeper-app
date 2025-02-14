@@ -1,0 +1,1493 @@
+<!-- 3 column layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 mt-4 md:mt-0 pt-4 md:pt-0">
+    
+   <!-- Team info card-->
+   <div class="flex h-auto bg-white dark:bg-gray-800">
+      <table>
+         <tr>
+             <td class="items-left p-4">
+                 <img [src]="team.picture" class="max-w-[150px] rounded-full">
+             </td>
+             <td>
+                 <h1 class="mb-4 font-bold text-3xl leading-none tracking-tight text-gray-900 md:text-3xl lg:text-3xl dark:text-white">{{ team.team_name }}</h1>
+                 <h3 class="pb-4"><b>Managed by:</b><br> {{ team.managed_by }}</h3>
+                 <div *ngIf="editRights">
+                     <div class="relative inline-block">
+                        <!-- Inbox Button -->
+                        <button (mouseenter)="toggleInbox()" id="dropdownBgHoverButton" data-dropdown-toggle="dropdownBgHover" type="button"
+                          class="w-auto px-4 py-2 mr-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800 mb-3">
+                          <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M5.024 3.783A1 1 0 0 1 6 3h12a1 1 0 0 1 .976.783L20.802 12h-4.244a1.99 1.99 0 0 0-1.824 1.205 2.978 2.978 0 0 1-5.468 0A1.991 1.991 0 0 0 7.442 12H3.198l1.826-8.217ZM3 14v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5h-4.43a4.978 4.978 0 0 1-9.14 0H3Z" clip-rule="evenodd"/>
+                          </svg>
+                          Inbox
+                          <span class="inline-flex items-center justify-center w-4 h-4 ms-2 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                            {{ team.inbox.length }}
+                          </span>
+                          <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                          </svg>
+                        </button>
+                      
+                        <!-- Dropdown menu -->
+                        <div *ngIf="inboxIsOpen" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-auto dark:bg-gray-700 left-0 top-full">
+                           <ul class="text-xs font-semibold overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
+                             <li *ngFor="let trade of team.inbox" class="border-gray-200 border-b rounded-lg">
+                               <a [routerLink]="['/', league_id, 'team', 'trade', trade.trade_id]" class="flex items-center justify-between text-gray-900 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white whitespace-nowrap">
+                                 <span>Trade Request received from {{ globalService.getTeamName(trade.requested_by) }}</span>
+                                 <svg class="w-6 h-6 text-green-400 dark:text-white ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/>
+                                 </svg> 
+                               </a>
+                             </li>                                            
+                           </ul>
+                        </div>
+                     </div>
+                         
+                     <!-- Edit Team Info Button -->
+                     <button type="button" (click)="openModal(editTeamModal)" 
+                     class="w-auto px-4 py-2 text-xs font-medium hover:text-white text-center border border-green-400 inline-flex items-center text-green-400 bg-white rounded-lg hover:bg-green-500 dark:bg-green-400 dark:hover:bg-green-500">
+                        <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                           <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd"/>
+                        </svg>
+                         Edit Team Info
+                     </button>
+                </div>
+                
+                 <div *ngIf="!editRights">
+                     <a type="button" [routerLink]="['/', globalService.league?.league_id, 'team', 'trade']" [queryParams]="{ team: team_id }" class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+                        <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/>
+                        </svg>
+                        Propose Trade
+                     </a>
+                 </div>
+             </td>
+         </tr>
+     </table>
+   </div>
+
+    <!-- Cap summary tab -->
+    <div class="flex flex-col h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
+      <!-- Header Row with Dark Background -->
+      <div class="bg-green-400 text-white p-2 rounded-t-md">
+         <h3 class="font-semibold text-lg">Cap Summary</h3>
+      </div>
+      
+      <!-- Table Area -->
+      <div class="p-4">
+         <table class="w-full">
+            <tr>
+               <td class="items-left align-top">
+                  <span class="text-lg font-normal text-gray-500 lg:text-sm dark:text-gray-400">
+                     Forwards: &nbsp;&nbsp;&nbsp; 
+                     <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                        ${{ team.forward_salary | number:'1.0-0' }}
+                     </span>
+                     <br>Defense: &nbsp;&nbsp;&nbsp; 
+                     <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                        ${{ team.defense_salary | number:'1.0-0' }}
+                     </span>
+                     <br>Goalies: &nbsp;&nbsp;&nbsp; 
+                     <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                        ${{ team.goalie_salary | number:'1.0-0' }}
+                     </span>
+                     <br>Retained Salary:  &nbsp;&nbsp;&nbsp; 
+                     <div class="inline bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                        <ng-container *ngIf="team.player_retained; else noRetention">
+                          ${{ team.salary_retained | number:'1.0-0' }} 
+                          <span class="text-xs text-gray-500">
+                            ({{ team.player_retained }})
+                          </span>
+                        </ng-container>
+                        <ng-template #noRetention>N/A</ng-template>
+                     </div>                
+   
+                     <div class="py-2">
+                        <hr class="border-0 border-t-2 border-gray-300">
+                     </div>         
+                     
+                     <b>Total Spend: &nbsp;&nbsp;&nbsp; </b> 
+                     <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                        ${{ team.total_cap | number:'1.0-0' }}
+                     </span>
+
+                     <br>Injured Reserve:  &nbsp;&nbsp;&nbsp; 
+                     <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                        ${{ team.ir_salary | number:'1.0-0' }}
+                     </span>
+
+                     <br>League Salary Cap: &nbsp;&nbsp;&nbsp; 
+                     <span class="bg-gray-100 text-gray-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                        ${{ globalService.league?.salary_cap | number:'1.0-0' }}
+                     </span>
+   
+                     <div class="py-2">
+                        <hr class="border-0 border-t-2 border-gray-300">
+                     </div>
+   
+                     <b>Projected Cap Space: &nbsp;&nbsp;&nbsp; </b>
+                     <span 
+                        [ngClass]="{
+                           'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': team.cap_space < 0,
+                           'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': team.cap_space > 0 && team.cap_space < 2000000,
+                           'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': team.cap_space >= 2000000
+                        }"
+                        class="text-sm font-medium me-2 px-2.5 py-0.5 rounded">
+                        ${{ team.cap_space | number:'1.0-0' }}
+                     </span>
+                  </span>
+               </td>
+            </tr>
+         </table>   
+      </div>
+   </div>   
+   
+   <!-- Contract Summary card -->
+    <div class="flex h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
+      <div class="w-full">
+         <!-- Header Row with Dark Background -->
+         <div class="bg-green-400 text-white p-2 rounded-t-md">
+            <h3 class="font-semibold text-lg">Contract Summary</h3>
+         </div>
+         
+         <!-- Content Area -->
+         <div class="p-4">
+            <table class="w-full">
+               <tr>
+                  <td class="items-left align-top">
+                     <h4 class="font-semibold text-lg">
+                        <span class="mb-6 text-lg font-normal text-gray-500 lg:text-sm dark:text-gray-400">Forwards:</span>   
+                        {{ team.forwards.length }}/{{ globalService.league?.min_forwards }}
+                     </h4>
+                     <h4 class="font-semibold text-lg">
+                        <span class="mb-6 text-lg font-normal text-gray-500 lg:text-sm dark:text-gray-400">Defensemen:</span> 
+                        {{ team.defense.length }}/{{ globalService.league?.min_defense }}
+                     </h4>
+                     <h4 class="font-semibold text-lg">
+                        <span class="mb-6 text-lg font-normal text-gray-500 lg:text-sm dark:text-gray-400">Goalies:</span> 
+                        {{ team.goalies.length }}/{{ globalService.league?.min_goalies }}
+                     </h4>
+                     <h4 class="font-semibold text-lg">
+                        <span class="mb-6 text-lg font-normal text-gray-500 lg:text-sm dark:text-gray-400">Injured Reserve:</span> 
+                        {{ team.injured_reserve.length }}/{{ globalService.league?.ir_slots }}
+                     </h4>
+                     
+                     <div class="py-2">
+                        <hr class="border-0 border-t-2 border-gray-300">   
+                     </div>
+                     
+                     <h4 class="font-semibold text-lg">
+                        <span class="mb-6 text-lg font-bold text-gray-500 lg:text-sm dark:text-gray-400">Total Contracts:</span>
+                        {{ team.roster_size }}/{{ globalService.league?.max_roster_size }}
+                     </h4>
+
+                     <div class="py-2">
+                        <hr class="border-0 border-t-2 border-gray-300">   
+                     </div>
+
+                     <h4 class="font-semibold text-lg">
+                        <span class="mb-6 text-lg font-normal text-gray-500 lg:text-sm dark:text-gray-400">Rookie Bank:</span>
+                        {{ team.rookie_bank.length }}/{{ globalService.league?.rookie_bank_size }}
+                     </h4>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </div>
+   
+ </div>
+
+ <!-- 3 column layout with 2/3 merge -->
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+   
+   <!-- Trade Block card -->
+   <div class="col-span-1 flex h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md">
+      <div class="w-full">
+         <!-- Header Row with Dark Background -->
+         <div class="bg-green-400 text-white p-2 rounded-t-md">
+            <h3 class="font-semibold text-lg">Trade Block</h3>
+         </div>
+         
+         <!-- Content Area -->
+         <div class="p-4">
+            <table class="w-full">
+               <tr>
+                  <td class="items-left align-top">
+                  <h4 class="text-lg font-semibold text-gray-500 lg:text-sm dark:text-gray-400">
+                     <ol class="space-y-1 list-decimal">
+                        <li *ngFor="let playerOnBlock of [].constructor(6); let i = index" class="border-0 border-b border-gray-300 pb-2 flex justify-between items-center">
+                            <span class="block" style="min-height: 20px;">
+                                <span class="pr-3">{{ i+1 }}.</span> 
+                                {{ team.trade_block[i] ? (team.trade_block[i].first_name || '') + ' ' + (team.trade_block[i].last_name || '') : ' ' }}
+                            </span>
+                            <a *ngIf="editRights && (team.trade_block[i]?.first_name || team.trade_block[i]?.last_name)" 
+                               (click)="rosterMove(team.trade_block[i], 'trade-block')" 
+                               class="text-red-500 ml-auto cursor-pointer hover:text-red-600">Remove</a>
+                        </li>
+                    </ol>                    
+                  </h4>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>
+   </div>
+
+   <!-- Draft Capital Card -->
+   <div class="flex h-auto bg-white dark:bg-gray-800 border border-gray-300 rounded-md shadow-md col-span-2">
+      <div class="w-full">
+         <!-- Header Row with Dark Background -->
+         <div class="bg-green-400 text-white p-2 rounded-t-md flex justify-between items-center">
+            <!-- Title -->
+            <h3 class="font-semibold text-lg">Draft Capital</h3>
+        
+            <!-- Buttons -->
+            <div class="inline-flex rounded-md shadow-sm">
+                <a (click)="setDisplay('general')" aria-current="page" 
+                  class="cursor-pointer px-4 py-1 text-xs font-medium text-gray-900 border border-gray-200 rounded-s-lg hover:text-green-500 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-gray-800 focus:text-gray-800 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-green-500 dark:focus:text-white"
+                  [ngClass]="{'bg-gray-100 text-green-500' : displaying === 'general',
+                           'bg-white' : displaying !== 'general'}"
+                  >
+                    General Draft
+                </a>
+                <a (click)="setDisplay('rookie')" 
+                  class="cursor-pointer px-4 py-1 text-xs font-semibold text-gray-900 border-t border-b border-gray-200 hover:bg-gray-100 hover:text-green-500 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                  [ngClass]="{'bg-gray-100 text-green-500' : displaying === 'rookie',
+                           'bg-white' : displaying !== 'rookie'}"
+                  >   
+                  Rookie Draft
+                </a>
+                <a (click)="setDisplay('fa')" 
+                  class="cursor-pointer px-4 py-1 text-xs font-medium text-gray-900 border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-green-500 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                  [ngClass]="{'bg-gray-100 text-green-500' : displaying === 'fa',
+                           'bg-white' : displaying !== 'fa'}"
+                  >
+                    FA Picks
+                </a>
+            </div>
+        </div>
+        
+         
+         <!-- General Draft Picks -->
+         <div *ngIf="displaying === 'general'" class="md:p-4 overflow-x-auto md:overflow-visible">
+               <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md md:border-2 max-w-full">
+                  <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                     <tr class="border-b-2">
+                        <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold sticky left-0 z-10 bg-gray-100">Round</th>
+                        <th *ngFor="let round of [].constructor(globalService.league?.general_draft_length); let i = index"  class="px-4 py-2 text-center border-r-2 font-bold text-sm">{{ i + 1 }}</th>
+                        <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold">Total</th>
+                     </tr>                   
+                  </thead>
+                  <tbody>
+                     <tr *ngFor="let year of getDraftYears()" class="border-b-2">
+                        <td class="py-0.5 px-2.5 text-center border-r-2 sticky left-0 bg-white z-10">
+                           <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                              {{ year }}
+                           </span>
+                        </td>
+                        <td *ngFor="let round of [].constructor(globalService.league?.general_draft_length); let i = index" 
+                           class="p-1.5 text-center border-r-2 relative group">
+                        
+                           <ng-container *ngIf="getPicksByRound(year, i + 1, 'general') > 0; else noPicks">
+                              
+                              <button *ngIf="getPicksByRound(year, i + 1, 'general') > 1" type="button"
+                                    class="rounded-full w-6 h-6 bg-green-400 text-white p-1.5 inline-flex items-center justify-center font-bold text-sm"
+                                    data-popover-target="popover-general" data-popover-placement="left">
+                              {{ getPicksByRound(year, i + 1, 'general') }}
+                              </button>
+                              
+                              <button *ngIf="getPicksByRound(year, i + 1, 'general') <= 1" type="button"
+                                    class="font-bold text-sm rounded-full w-6 h-6 border border-gray-800 p-1.5 inline-flex items-center justify-center"
+                                    data-popover-target="popover-general" data-popover-placement="left">
+                              {{ getPicksByRound(year, i + 1, 'general') }}
+                              </button>
+                              
+                              <!-- Popover -->
+                              <div data-popover id="popover-general" role="tooltip"
+                                 class="hidden absolute left-[-15.5rem] top-[-2rem] z-10 md:group-hover:block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
+                              
+                                 <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                    <h3 class="text-left font-bold text-gray-900 dark:text-white">Round {{ i + 1 }} (General, {{ year }})</h3>
+                                 </div>
+                                 
+                                 <div class="px-3 py-2 text-left">
+                                    <div *ngFor="let pick of displayPicksByRound(year, i + 1, 'general'); let j = index">
+                                       <span>{{ j + 1 }}.</span>
+                                       
+                                       <span *ngIf="pick.assigned_to === pick.owned_by">
+                                       Own Pick <span *ngIf="pick.pick_number">(#{{ pick.pick_number }})</span>
+                                       </span>
+                                       
+                                       <span *ngIf="pick.assigned_to !== pick.owned_by">
+                                          Acquired from 
+                                          <span class="font-semibold">{{ globalService.getTeamName(pick.assigned_to) }}</span>
+                                          <span *ngIf="pick.pick_number">&nbsp;(#{{ pick.pick_number }})</span>
+                                       </span>
+                                    </div>                               
+                                 </div>
+                                 <div data-popper-arrow></div>
+                              </div>
+                              
+                           </ng-container>
+                           
+                           <ng-template #noPicks>
+                              
+                           </ng-template>
+                        </td>                   
+                        <td class="py-2 text-center border-r-2 font-extrabold text-sm">
+                           {{ getTotalPicksByYear(year, 'general') }}   
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>  
+         </div>
+
+         <!-- Rookie Draft Picks -->
+         <div *ngIf="displaying === 'rookie'" class="md:p-4 overflow-x-auto md:overflow-visible">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md md:border-2">
+               <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr class="border-b-2">
+                     <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold sticky left-0">Round</th>
+                     <th *ngFor="let round of [].constructor(globalService.league?.rookie_draft_length); let i = index"  class="px-4 py-2 text-center border-r-2 font-bold text-sm">{{ i + 1 }}</th>
+                     <th class="py-1.5 text-center max-w-[4%] border-r-2 font-bold">Total</th>
+                  </tr>                   
+               </thead>
+               <tbody>
+                  <tr *ngFor="let year of getDraftYears()" class="border-b-2">
+                     <td class="py-0.5 px-2.5 text-center border-r-2 sticky left-0 bg-white z-10">
+                        <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                           {{ year }}
+                        </span>
+                     </td>
+                     <td *ngFor="let round of [].constructor(globalService.league?.rookie_draft_length); let i = index" 
+                        class="p-1.5 text-center border-r-2 relative group">
+                     
+                        <ng-container *ngIf="getPicksByRound(year, i + 1, 'rookie') > 0; else noPicks">
+                           
+                           <!-- Button for more than 1 pick -->
+                           <button *ngIf="getPicksByRound(year, i + 1, 'rookie') > 1" type="button"
+                                 class="rounded-full w-6 h-6 bg-green-400 text-white p-1.5 inline-flex items-center justify-center font-bold text-sm"
+                                 data-popover-target="popover-rookie" data-popover-placement="left">
+                              {{ getPicksByRound(year, i + 1, 'rookie') }}
+                           </button>
+                           
+                           <!-- Button for 1 pick or less -->
+                           <button *ngIf="getPicksByRound(year, i + 1, 'rookie') <= 1" type="button"
+                                 class="font-bold text-sm rounded-full w-6 h-6 border border-gray-800 p-1.5 inline-flex items-center justify-center"
+                                 data-popover-target="popover-rookie" data-popover-placement="left">
+                              {{ getPicksByRound(year, i + 1, 'rookie') }}
+                           </button>
+                           
+                           <!-- Popover -->
+                           <div data-popover id="popover-rookie" role="tooltip"
+                              class="absolute left-[-13.5rem] top-[-2rem] z-10 hidden md:group-hover:block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
+                           
+                           <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                              <h3 class="text-left font-bold text-gray-900 dark:text-white">Round {{ i + 1 }} (Rookie, {{ year }})</h3>
+                           </div>
+                           
+                           <div class="px-3 py-2 text-left">
+                              <div *ngFor="let pick of displayPicksByRound(year, i + 1, 'rookie'); let j = index">
+                                 <span>{{ j + 1 }}.</span>
+                                 
+                                 <span *ngIf="pick.assigned_to === pick.owned_by">
+                                 Own Pick <span *ngIf="pick.pick_number">(#{{ pick.pick_number }})</span>
+                                 </span>
+                                 
+                                 <span *ngIf="pick.assigned_to !== pick.owned_by">
+                                 Acquired from 
+                                 <span class="font-semibold">{{ globalService.getTeamName(pick.assigned_to) }}</span>
+                                 <span *ngIf="pick.pick_number">&nbsp;(#{{ pick.pick_number }})</span>
+                                 </span>
+                              </div>                               
+                           </div>
+                           <div data-popper-arrow></div>
+                           </div>
+                           
+                        </ng-container>
+                        
+                        <ng-template #noPicks>
+                           
+                        </ng-template>
+                     </td>
+                                 
+                     <td class="py-2 text-center border-r-2 font-extrabold text-sm">
+                        {{ getTotalPicksByYear(year, 'rookie') }}   
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+
+         <!-- FA Picks -->
+         <div *ngIf="displaying === 'fa'" class="overflow-x-auto md:overflow-visible">
+            <div class="max-h-64 overflow-y-auto">
+               <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md md:border-2">
+                  <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                     <tr class="border-b-2">
+                        <th *ngFor="let month of getFAMonths()" class="px-4 py-2 text-center border-r-2 font-bold text-sm">
+                           {{ month }}
+                        </th>                  
+                  </thead>
+                     <tbody>
+                     <tr class="border-b-2">
+                        <td *ngFor="let month of getFAMonths()" class="py-1.5 text-center align-top border-r-2">
+                           <div *ngFor="let pick of getFAPicksByMonth(getMonthIndex(month))" class="mb-2 relative group">
+                              <button data-popover-target="popover-fa" data-popover-placement="left" type="button"
+                              class="text-center justify-center bg-gray-100 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 border"
+                              [ngClass]="{
+                                 'text-gray-400 border-gray-300': pick.owned_by !== team.team_id, 
+                                 'text-gray-800 border-gray-500 hover:bg-gray-200': pick.owned_by === team.team_id,
+                                 'text-red-600 border-red-600 bg-red-200 hover:bg-red-100': (!pick.player_taken && globalService.faIsExpired(pick) && pick.owned_by === team.team_id) || pick.player_taken === 'Penalty',
+                                 'text-green-600 border-green-400 bg-green-200 hover:bg-green-100': pick.player_taken && pick.owned_by === team.team_id,
+                                 'text-yellow-600 border-yellow-600 bg-yellow-100 hover:bg-yellow-200': pick.assigned_to !== team.team_id && !globalService.faIsExpired(pick) && !pick.player_taken
+                              }">
+                              FA{{ pick.week }}<br>
+                              </button>
+                              
+                              <!-- Popover -->
+                              <div *ngIf="pick.owned_by === team.team_id" data-popover id="popover-fa" role="tooltip" class="absolute left-[-14.5rem] top-[-2rem] z-10 hidden md:group-hover:block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
+                              <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                 <h3 class="text-left font-bold text-gray-900 dark:text-white">FA Week {{ pick.week }} ({{ currentSeason }})</h3>
+                              </div>
+                              <div class="px-3 py-2 text-left">
+                                 <p *ngIf="pick.assigned_to !== pick.owned_by">Acquired from: <span class="font-semibold">{{ globalService.getTeamName(pick.assigned_to) }}</span></p>
+                                 <p *ngIf="!globalService.faIsExpired(pick)" class="text-green-400 font-semibold">Expiring {{ globalService.getDate(pick.expiry_date) | date:'MM-dd-yyyy' }}</p>
+                                 <p *ngIf="globalService.faIsExpired(pick)" class="text-red-500 font-semibold">EXPIRED</p>
+                                 <p *ngIf="globalService.faIsExpired(pick) && !pick.player_taken">Player Taken: <span class="font-semibold">NO SELECTION</span></p>
+                                 <p *ngIf="pick.player_taken">Player Taken: <span class="font-semibold">{{ pick.player_taken }}</span></p>
+                              </div>
+                              <div data-popper-arrow></div>
+                              </div>
+                           </div>                                                                                               
+                        </td>                  
+                     </tr>
+                  </tbody>
+               </table>
+            </div>  
+         </div>
+
+      </div>
+   </div>
+</div>
+ 
+ <!-- Forwards Section -->
+ <div class="bg-gray-50 dark:bg-gray-800 relative overflow-x-auto">
+      <div class="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+         <div class="relative">
+            <h4 class="font-bold text-2xl">
+               Forwards
+               <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.forwards.length }}/{{ globalService.league?.min_forwards }} </span>  
+           </h4>
+         </div>
+      </div>
+
+      <!-- Forward Salary Table -->
+      <div class="overflow-x-auto rounded m:rounded-lg shadow-md border-2">
+         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+           <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+             <tr class="border-b-2">
+               <th *ngIf="editRights" scope="col" class="md:p-4 md:sticky md:left-0 bg-gray-50 dark:bg-gray-700 z-10">
+
+               </th>
+       
+               <!-- Player Column -->
+               <th scope="col" class="p-4 bg-gray-50 md:sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
+               [ngClass]="{
+                  'left-12' : editRights,
+                  'left-0 md:border-r-2 px-6 min-w-[275px]': !editRights,
+                  'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
+               }"
+               (click)="sortingService.toggleSort(team.forwards, 'first_name')"
+               >
+                  <span class="flex items-center">
+                     Player
+                     <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path *ngIf="sortingService.sortColumn !== 'first_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                        <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                        <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                     </svg>
+                  </span>  
+               </th>
+       
+               <!-- Action Column -->
+               <th *ngIf="editRights" scope="col" class="text-center md:p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 z-10 md:border-r-2">
+                 
+               </th>
+       
+               <!-- Dynamic Columns -->
+               <th *ngFor="let year of getContractSeasons(team.forwards); let i = index" 
+                  scope="col" 
+                  class="px-6 py-3 min-w-32 hidden md:table-cell"
+                  [ngClass]="{
+                     'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
+                     'hover:cursor-pointer hover:text-gray-500': i === 0,
+                   }"                   
+                  (click)="i === 0 && sortingService.toggleSort(team.forwards, 'aav_current')"
+               >
+                  <span class="flex items-center">
+                     {{ year }}
+                     <!-- Sorting arrow only for the first year -->
+                     <svg *ngIf="i === 0" class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path *ngIf="sortingService.sortColumn !== 'aav_current'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                        <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                        <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                     </svg>
+                  </span> 
+               </th>
+
+             </tr>
+           </thead>
+           <tbody>
+             <tr *ngFor="let forward of team.forwards" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+               <td *ngIf="editRights" class="p-2 md:p-4 md:sticky md:left-0 bg-white dark:bg-gray-800 z-10">
+                  <div (click)="openModal(dropPlayerModal, forward)" class="flex items-center">
+                     <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
+                           aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                           width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
+                              stroke-width="2" 
+                              d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                     </svg>
+                  </div>                    
+               </td>
+
+               <!-- Player Column -->
+               <td class="flex items-left px-2 py-2 md:min-w-52 text-gray-900 md:sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
+                  [ngClass]="{
+                     'md:left-12' : editRights,
+                     'md:left-0 md:border-r-2 md:px-6' : !editRights
+                  }"
+               >
+                  <img class="w-10 h-10 rounded-full" src="{{forward.logo}}" alt="Player image">
+                  <div class="ps-3 pe-3 bg-white">
+                     <div class="text-sm font-semibold">{{ forward.first_name }} {{ forward.last_name }}</div>
+                     <div class="font-normal text-xs text-gray-500">
+                        {{ forward.position }} - {{ forward.short_code }}
+                        
+                        <!-- Mobile Display -->
+                        <div class="inline-flex md:hidden font-normal text-gray-500 text-xs">
+                           <div *ngIf="forward.contract_status === 'Active'" class="md:hidden inline-flex font-semibold">
+                              &nbsp;| {{ forward.aav_current > 0 ? '$' +(forward.aav_current | number:'1.0-0') : 'N/A' }} x {{ forward.years_left_current }}
+                           </div>
+                        </div>
+
+                        <!-- Salary Retention Tag -->
+                        <span *ngIf="forward.retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ forward.retention_perc }}% RET</span>
+                     </div>
+
+                  </div>
+               </td>
+
+               <!-- Action Column -->
+               <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 md:border-r-2">
+                  <select (change)="rosterMove(forward, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                     <option value="">Action</option>
+                     <option value="ir">Place on IR</option>
+                     <option *ngIf="!forward.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                     <option *ngIf="forward.onTradeBlock" value="trade-block">Remove from Trade Block</option>         
+                  </select> 
+               </td>
+       
+               <!-- Salary Columns -->
+               <ng-container *ngIf="forward.years_left_current">
+
+                  <td *ngFor="let aav of generateRange(forward.years_left_current); let i = index" class="px-6 py-2 hidden md:table-cell">
+                     <ng-container *ngIf="i === 0; else noRetention">
+                        {{ forward.aav_current - (forward.aav_current * (forward.retention_perc / 100)) | number:'1.0-0' }}
+                     </ng-container>
+
+                     <ng-template #noRetention>
+                        {{ forward.aav_current | number:'1.0-0' }}
+                     </ng-template>
+                  </td>
+
+               </ng-container>
+
+               <ng-container *ngIf="forward.years_left_next">
+                  <td *ngFor="let aav of generateRange(forward.years_left_next)" class="px-6 py-2 hidden md:table-cell">
+                     {{ forward.aav_next | number:'1.0-0' }}
+                  </td>
+               </ng-container>
+
+               <td class="px-6 py-2 hidden md:table-cell">
+                  <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                        [ngClass]="{
+                        'bg-red-600': forward.expiry_status === 'UFA',
+                        'bg-blue-600': forward.expiry_status === 'RFA'
+                        }">
+                     {{ forward.expiry_status }}
+                  </span>
+               </td>
+               
+             </tr>
+           </tbody>
+         </table>
+       </div>       
+   </div>
+
+   <!-- Defense Section -->
+   <div class="bg-gray-50 dark:bg-gray-800 relative overflow-x-auto">
+      <div class="pt-8 flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+         <div class="relative">
+            <h4 class="font-bold text-2xl">
+               Defensemen
+               <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.defense.length }}/{{ globalService.league?.min_defense }}</span>  
+         </h4>
+         </div>
+   </div>
+
+   <!-- Defense Salary Table -->
+   <div class="overflow-x-auto rounded m:rounded-lg shadow-md border-2">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr class="border-b-2">
+            <th *ngIf="editRights" scope="col" class="md:p-4 md:sticky md:left-0 bg-gray-50 dark:bg-gray-700 z-10">
+
+            </th>
+    
+            <!-- Player Column -->
+            <th scope="col" class="p-4 bg-gray-50 md:sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
+            [ngClass]="{
+               'left-12' : editRights,
+               'left-0 md:border-r-2 px-6 min-w-[275px]': !editRights,
+               'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
+            }"
+            (click)="sortingService.toggleSort(team.defense, 'first_name')"
+            >
+               <span class="flex items-center">
+                  Player
+                  <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'first_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span>  
+            </th>
+    
+            <!-- Action Column -->
+            <th *ngIf="editRights" scope="col" class="text-center md:p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 z-10 md:border-r-2">
+              
+            </th>
+    
+            <!-- Dynamic Columns -->
+            <th *ngFor="let year of getContractSeasons(team.defense); let i = index" 
+               scope="col" 
+               class="px-6 py-3 min-w-32 hidden md:table-cell"
+               [ngClass]="{
+                  'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
+                  'hover:cursor-pointer hover:text-gray-500': i === 0,
+                }"                   
+               (click)="i === 0 && sortingService.toggleSort(team.defense, 'aav_current')"
+            >
+               <span class="flex items-center">
+                  {{ year }}
+                  <!-- Sorting arrow only for the first year -->
+                  <svg *ngIf="i === 0" class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'aav_current'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span> 
+            </th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let defenseman of team.defense" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <td *ngIf="editRights" class="p-2 md:p-4 md:sticky md:left-0 bg-white dark:bg-gray-800 z-10">
+               <div (click)="openModal(dropPlayerModal, defenseman)" class="flex items-center">
+                  <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
+                           stroke-width="2" 
+                           d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                  </svg>
+               </div>                    
+            </td>
+
+            <!-- Player Column -->
+            <td class="flex items-left px-2 py-2 md:min-w-52 text-gray-900 md:sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
+               [ngClass]="{
+                  'md:left-12' : editRights,
+                  'md:left-0 md:border-r-2 md:px-6' : !editRights
+               }"
+            >
+               <img class="w-10 h-10 rounded-full" src="{{defenseman.logo}}" alt="Player image">
+               <div class="ps-3 pe-3 bg-white">
+                  <div class="text-sm font-semibold">{{ defenseman.first_name }} {{ defenseman.last_name }}</div>
+                  <div class="font-normal text-xs text-gray-500">
+                     {{ defenseman.position }} - {{ defenseman.short_code }}
+                     
+                     <!-- Mobile Display -->
+                     <div class="inline-flex md:hidden font-normal text-gray-500 text-xs">
+                        <div *ngIf="defenseman.contract_status === 'Active'" class="md:hidden inline-flex font-semibold">
+                           &nbsp;| {{ defenseman.aav_current > 0 ? '$' +(defenseman.aav_current | number:'1.0-0') : 'N/A' }} x {{ defenseman.years_left_current }}
+                        </div>
+                     </div>
+
+                     <!-- Salary Retention Tag -->
+                     <span *ngIf="defenseman.retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ defenseman.retention_perc }}% RET</span>
+                  </div>
+
+               </div>
+            </td>
+
+            <!-- Action Column -->
+            <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 md:border-r-2">
+               <select (change)="rosterMove(defenseman, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                  <option value="">Action</option>
+                  <option value="ir">Place on IR</option>
+                  <option *ngIf="!defenseman.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                  <option *ngIf="defenseman.onTradeBlock" value="trade-block">Remove from Trade Block</option>         
+               </select> 
+            </td>
+    
+            <!-- Salary Columns -->
+            <ng-container *ngIf="defenseman.years_left_current">
+
+               <td *ngFor="let aav of generateRange(defenseman.years_left_current); let i = index" class="px-6 py-2 hidden md:table-cell">
+                  <ng-container *ngIf="i === 0; else noRetention">
+                     {{ defenseman.aav_current - (defenseman.aav_current * (defenseman.retention_perc / 100)) | number:'1.0-0' }}
+                  </ng-container>
+
+                  <ng-template #noRetention>
+                     {{ defenseman.aav_current | number:'1.0-0' }}
+                  </ng-template>
+               </td>
+
+            </ng-container>
+
+            <ng-container *ngIf="defenseman.years_left_next">
+               <td *ngFor="let aav of generateRange(defenseman.years_left_next)" class="px-6 py-2 hidden md:table-cell">
+                  {{ defenseman.aav_next | number:'1.0-0' }}
+               </td>
+            </ng-container>
+
+            <td class="px-6 py-2 hidden md:table-cell">
+               <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                     [ngClass]="{
+                     'bg-red-600': defenseman.expiry_status === 'UFA',
+                     'bg-blue-600': defenseman.expiry_status === 'RFA'
+                     }">
+                  {{ defenseman.expiry_status }}
+               </span>
+            </td>
+            
+          </tr>
+        </tbody>
+      </table>
+    </div>       
+</div>
+
+   <!-- Goalie Section -->
+   <div class="bg-gray-50 dark:bg-gray-800 relative overflow-x-auto">
+      <div class="pt-8 flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+         <div class="relative">
+            <h4 class="font-bold text-2xl">
+               Goalies
+               <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.goalies.length }}/{{ globalService.league?.min_goalies }}</span>  
+         </h4>
+         </div>
+   </div>
+
+   <!-- Goalie Salary Table -->
+   <div class="overflow-x-auto rounded m:rounded-lg shadow-md border-2">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr class="border-b-2">
+            <th *ngIf="editRights" scope="col" class="md:p-4 md:sticky md:left-0 bg-gray-50 dark:bg-gray-700 z-10">
+
+            </th>
+    
+            <!-- Player Column -->
+            <th scope="col" class="p-4 bg-gray-50 md:sticky dark:bg-gray-700 z-10 hover:text-gray-500 hover:cursor-pointer"
+            [ngClass]="{
+               'left-12' : editRights,
+               'left-0 md:border-r-2 px-6 min-w-[275px]': !editRights,
+               'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
+            }"
+            (click)="sortingService.toggleSort(team.goalies, 'first_name')"
+            >
+               <span class="flex items-center">
+                  Player
+                  <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'first_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span>  
+            </th>
+    
+            <!-- Action Column -->
+            <th *ngIf="editRights" scope="col" class="text-center md:p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 z-10 md:border-r-2">
+              
+            </th>
+    
+            <!-- Dynamic Columns -->
+            <th *ngFor="let year of getContractSeasons(team.goalies); let i = index" 
+               scope="col" 
+               class="px-6 py-3 min-w-32 hidden md:table-cell"
+               [ngClass]="{
+                  'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
+                  'hover:cursor-pointer hover:text-gray-500': i === 0,
+                }"                   
+               (click)="i === 0 && sortingService.toggleSort(team.goalies, 'aav_current')"
+            >
+               <span class="flex items-center">
+                  {{ year }}
+                  <!-- Sorting arrow only for the first year -->
+                  <svg *ngIf="i === 0" class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'aav_current'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span> 
+            </th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let goalie of team.goalies" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <td *ngIf="editRights" class="p-2 md:p-4 md:sticky md:left-0 bg-white dark:bg-gray-800 z-10">
+               <div (click)="openModal(dropPlayerModal, goalie)" class="flex items-center">
+                  <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
+                           stroke-width="2" 
+                           d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                  </svg>
+               </div>                    
+            </td>
+
+            <!-- Player Column -->
+            <td class="flex items-left px-2 py-2 md:min-w-52 text-gray-900 md:sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
+               [ngClass]="{
+                  'md:left-12' : editRights,
+                  'md:left-0 md:border-r-2 md:px-6' : !editRights
+               }"
+            >
+               <img class="w-10 h-10 rounded-full" src="{{goalie.logo}}" alt="Player image">
+               <div class="ps-3 pe-3 bg-white">
+                  <div class="text-sm font-semibold">{{ goalie.first_name }} {{ goalie.last_name }}</div>
+                  <div class="font-normal text-xs text-gray-500">
+                     {{ goalie.position }} - {{ goalie.short_code }}
+                     
+                     <!-- Mobile Display -->
+                     <div class="inline-flex md:hidden font-normal text-gray-500 text-xs">
+                        <div *ngIf="goalie.contract_status === 'Active'" class="md:hidden inline-flex font-semibold">
+                           &nbsp;| {{ goalie.aav_current > 0 ? '$' +(goalie.aav_current | number:'1.0-0') : 'N/A' }} x {{ goalie.years_left_current }}
+                        </div>
+                     </div>
+
+                     <!-- Salary Retention Tag -->
+                     <span *ngIf="goalie.retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ goalie.retention_perc }}% RET</span>
+                  </div>
+
+               </div>
+            </td>
+
+            <!-- Action Column -->
+            <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 md:border-r-2">
+               <select (change)="rosterMove(goalie, $event)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                  <option value="">Action</option>
+                  <option value="ir">Place on IR</option>
+                  <option *ngIf="!goalie.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                  <option *ngIf="goalie.onTradeBlock" value="trade-block">Remove from Trade Block</option>         
+               </select> 
+            </td>
+    
+            <!-- Salary Columns -->
+            <ng-container *ngIf="goalie.years_left_current">
+
+               <td *ngFor="let aav of generateRange(goalie.years_left_current); let i = index" class="px-6 py-2 hidden md:table-cell">
+                  <ng-container *ngIf="i === 0; else noRetention">
+                     {{ goalie.aav_current - (goalie.aav_current * (goalie.retention_perc / 100)) | number:'1.0-0' }}
+                  </ng-container>
+
+                  <ng-template #noRetention>
+                     {{ goalie.aav_current | number:'1.0-0' }}
+                  </ng-template>
+               </td>
+
+            </ng-container>
+
+            <ng-container *ngIf="goalie.years_left_next">
+               <td *ngFor="let aav of generateRange(goalie.years_left_next)" class="px-6 py-2 hidden md:table-cell">
+                  {{ goalie.aav_next | number:'1.0-0' }}
+               </td>
+            </ng-container>
+
+            <td class="px-6 py-2 hidden md:table-cell">
+               <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                     [ngClass]="{
+                     'bg-red-600': goalie.expiry_status === 'UFA',
+                     'bg-blue-600': goalie.expiry_status === 'RFA'
+                     }">
+                  {{ goalie.expiry_status }}
+               </span>
+            </td>
+            
+          </tr>
+        </tbody>
+      </table>
+    </div>       
+</div>
+
+
+<!-- IR Section -->
+<div class="bg-gray-50 dark:bg-gray-800 relative overflow-x-auto">
+   <div class="pt-8 flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+      <div class="relative">
+         <h4 class="font-bold text-2xl">
+            Injured Reserve
+            <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.injured_reserve.length }}/{{ globalService.league?.ir_slots }}</span>  
+        </h4>
+      </div>
+</div>
+
+   <!-- IR Table -->
+   <div class="overflow-x-auto rounded m:rounded-lg shadow-md border-2">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr class="border-b-2">
+            <!-- Checkbox Column -->
+            <th *ngIf="editRights" scope="col" class="p-4 md:sticky md:left-0 bg-gray-50 dark:bg-gray-700 md:z-10">
+
+            </th>
+    
+            <!-- Player Column -->
+            <th scope="col" class="p-4 bg-gray-50 md:sticky dark:bg-gray-700 md:z-10 hover:text-gray-500 hover:cursor-pointer"
+            [ngClass]="{
+               'md:left-12' : editRights,
+               'md:left-0 md:border-r-2 px-6 min-w-[275px]': !editRights,
+               'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
+            }"
+            (click)="sortingService.toggleSort(team.injured_reserve, 'first_name')"
+            >
+               <span class="flex items-center">
+                  Player
+                  <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'first_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span>  
+            </th>
+    
+            <!-- Action Column -->
+            <th *ngIf="editRights" scope="col" class="text-center p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 md:z-10 md:border-r-2">
+              
+            </th>
+    
+            <!-- Dynamic Columns -->
+            <th *ngFor="let year of getContractSeasons(team.injured_reserve); let i = index" 
+               scope="col" 
+               class="px-6 py-3 hover:text-gray-500 hover:cursor-pointer min-w-32 hidden md:table-cell"
+               [ngClass]="{
+                  'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
+                  'hover:cursor-pointer hover:text-gray-500': i === 0,
+               }"
+               (click)="i === 0 && sortingService.toggleSort(team.injured_reserve, 'aav_current')"
+            >
+               <span class="flex items-center">
+                  {{ year }}
+                  <!-- Sorting arrow only for the first year -->
+                  <svg *ngIf="i === 0" class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'aav_current'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span> 
+            </th>
+          </tr>
+        </thead>
+         <tbody>
+            <tr *ngFor="let row of [].constructor(globalService.league?.ir_slots); let i = index" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+               <!-- Check if a player exists at this index -->
+               <ng-container *ngIf="team.injured_reserve[i]; else emptyRow">
+                  <!-- Checkbox Column -->
+                  <td *ngIf="editRights" class="p-2 md:p-4 md:sticky md:left-0 bg-white dark:bg-gray-800 md:z-10">
+                     <div (click)="openModal(dropPlayerModal, team.injured_reserve[i])" class="flex items-center">
+                        <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
+                              aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                              width="24" height="24" fill="none" viewBox="0 0 24 24">
+                           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
+                                 stroke-width="2" 
+                                 d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                        </svg>
+                     </div>                    
+                  </td>
+            
+                  <!-- Player Column -->
+                  <td class="flex items-left px-2 py-2 md:min-w-52 text-gray-900 md:sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
+                     [ngClass]="{
+                        'md:left-12' : editRights,
+                        'md:left-0 md:border-r-2 px-6 min-w-[275px]' : !editRights
+                     }"
+                  >
+                     <img class="w-10 h-10 rounded-full" [src]="team.injured_reserve[i].logo" alt="Player image">
+                     <div class="ps-3 pe-3 bg-white">
+                        <div class="text-sm font-semibold">{{ team.injured_reserve[i].first_name }} {{ team.injured_reserve[i].last_name }}</div>
+                        <div class="font-normal text-xs text-gray-500">
+                           {{ team.injured_reserve[i].position }} - {{ team.injured_reserve[i].short_code }}
+                           
+                           <!-- Mobile Display -->
+                           <div class="inline-flex md:hidden font-normal text-gray-500 text-xs">
+                              <div *ngIf="team.injured_reserve[i].contract_status === 'Active'" class="md:hidden inline-flex font-semibold">
+                                 &nbsp;| {{ team.injured_reserve[i].aav_current > 0 ? '$' +(team.injured_reserve[i].aav_current | number:'1.0-0') : 'N/A' }} x {{ team.injured_reserve[i].years_left_current }}
+                              </div>
+                           </div>
+   
+                           <!-- Salary Retention Tag -->
+                           <span *ngIf="team.injured_reserve[i].retention_perc > 0" class="bg-blue-100 text-blue-800 text-[9px] font-medium ml-2 me-2 px-1.5 py-0.5 rounded dark:bg-blue-700 dark:text-blue-400 border border-blue-400">{{ team.injured_reserve[i].retention_perc }}% RET</span>
+                           <span class="bg-red-100 text-red-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded border border-red-400">IR</span>
+                        </div>
+   
+                     </div>
+                  </td>
+            
+                  <!-- Action Column -->
+                  <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 md:border-r-2">
+                     <select (change)="rosterMove(team.injured_reserve[i], $event, callUpModal)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                        <option value="">Action</option>
+                        <option value="ir">Activate to Main Roster</option>
+                        <option *ngIf="!team.injured_reserve[i]?.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                        <option *ngIf="team.injured_reserve[i]?.onTradeBlock" value="trade-block">Remove from Trade Block</option>         
+                     </select> 
+                  </td>
+               
+                  <!-- Salary Columns -->
+                  <ng-container *ngIf="team.injured_reserve[i].years_left_current">
+                     <td *ngFor="let aav of generateRange(team.injured_reserve[i].years_left_current); let j = index" class="px-6 py-2 hidden md:table-cell">
+                        <ng-container *ngIf="j === 0; else noRetention">
+                           {{ team.injured_reserve[i].aav_current - (team.injured_reserve[i].aav_current * (team.injured_reserve[i].retention_perc / 100)) | number:'1.0-0' }}
+                        </ng-container>
+
+                        <ng-template #noRetention>
+                           {{ team.injured_reserve[i].aav_current | number:'1.0-0' }}
+                        </ng-template>
+                     </td>
+                  </ng-container>
+            
+                  <ng-container *ngIf="team.injured_reserve[i]?.years_left_next">
+                     <td *ngFor="let aav of generateRange(team.injured_reserve[i].years_left_next)" class="px-6 py-2 hidden md:table-cell">
+                        {{ team.injured_reserve[i].aav_next | number:'1.0-0' }}
+                     </td>
+                  </ng-container>
+            
+                  <td class="px-6 py-2 hidden md:table-cell">
+                     <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                           [ngClass]="{
+                           'bg-red-600': team.injured_reserve[i].expiry_status === 'UFA',
+                           'bg-blue-600': team.injured_reserve[i].expiry_status === 'RFA'
+                           }">
+                        {{ team.injured_reserve[i].expiry_status }}
+                     </span>
+                  </td>
+               </ng-container>
+         
+               <!-- Empty Row Template -->
+               <ng-template #emptyRow>
+                  <td *ngIf="editRights" class="p-4 md:sticky md:left-0 bg-white dark:bg-gray-800 md:z-10 min-h-8"></td>
+                  <td class="flex items-left px-2 py-4 md:sticky md:min-w-52 text-gray-900 whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
+                     [ngClass]="{
+                        'left-12' : editRights,
+                        'left-0 md:border-r-2 px-6 min-w-[275px]' : !editRights
+                     }"
+                  >
+                     <div class="text-sm font-semibold">
+                        -- Empty Slot --
+                     </div>
+                  </td>
+                  <td *ngIf="editRights" class="p-4 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 border-r-2"></td>
+               </ng-template>
+         </tr>        
+        </tbody>
+      </table>
+    </div>       
+</div>
+
+
+   <!-- Rookie Section -->
+   <div class="bg-gray-50 dark:bg-gray-800 relative overflow-x-auto">
+      <div class="pt-8 flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
+         <div class="relative">
+            <h4 class="font-bold text-2xl">
+               Rookie Bank
+               <span class="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">{{ team.rookie_bank.length }}/{{ globalService.league?.rookie_bank_size }}</span>  
+         </h4>
+         </div>
+   </div>
+
+   <!-- Rookie Salary Table -->
+   <div class="overflow-x-auto rounded m:rounded-lg shadow-md border-2">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr class="border-b-2">
+            <!-- Checkbox Column -->
+            <th *ngIf="editRights" scope="col" class="p-4 md:sticky md:left-0 bg-gray-50 dark:bg-gray-700 md:z-10">
+
+            </th>
+    
+            <!-- Player Column -->
+            <th scope="col" class="p-4 bg-gray-50 md:sticky dark:bg-gray-700 md:z-10 hover:text-gray-500 hover:cursor-pointer"
+            [ngClass]="{
+               'md:left-12' : editRights,
+               'md:left-0 md:border-r-2 px-6 min-w-[275px]': !editRights,
+               'text-green-400 hover:text-green-600': sortingService.sortColumn === 'first_name'
+            }"
+            (click)="sortingService.toggleSort(team.rookie_bank, 'first_name')"
+            >
+               <span class="flex items-center">
+                  Player
+                  <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'first_name'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'first_name' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span>  
+            </th>
+    
+            <!-- Action Column -->
+            <th *ngIf="editRights" scope="col" class="text-center p-4 min-w-32 md:sticky md:left-64 bg-gray-50 dark:bg-gray-700 md:z-10 md:border-r-2">
+              
+            </th>
+    
+            <!-- Dynamic Columns -->
+            <th *ngFor="let year of getContractSeasons(team.rookie_bank); let i = index" 
+               scope="col" 
+               class="px-6 py-3 hover:text-gray-500 hover:cursor-pointer min-w-32 hidden md:table-cell"
+               [ngClass]="{
+                  'text-green-400 hover:text-green-600': sortingService.sortColumn === 'aav_current' && i === 0,
+                  'hover:cursor-pointer hover:text-gray-500': i === 0,
+               }"
+               (click)="i === 0 && sortingService.toggleSort(team.rookie_bank, 'aav_current')"
+            >
+               <span class="flex items-center">
+                  {{ year }}
+                  <!-- Sorting arrow only for the first year -->
+                  <svg *ngIf="i === 0" class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path *ngIf="sortingService.sortColumn !== 'aav_current'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                     <path *ngIf="sortingService.sortColumn === 'aav_current' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                  </svg>
+               </span> 
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rookie of team.rookie_bank" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <!-- Checkbox Column -->
+            <td *ngIf="editRights" class="p-4 md:sticky md:left-0 bg-white dark:bg-gray-800 md:z-10">
+               <div (click)="openModal(dropPlayerModal, rookie)" class="flex items-center">
+                  <svg class="w-6 h-6 text-red-500 dark:text-white hover:fill-red-500 hover:text-white hover:cursor-pointer" 
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" 
+                           stroke-width="2" 
+                           d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                  </svg>
+               </div>                    
+            </td>
+
+            <!-- Player Column -->
+            <td class="flex items-left px-2 py-2 md:min-w-52 text-gray-900 md:sticky whitespace-nowrap dark:text-white bg-white dark:bg-gray-800 md:z-10"
+               [ngClass]="{
+                  'left-12' : editRights,
+                  'left-0 md:border-r-2 px-6 min-w-[275px]': !editRights
+               }"
+            >
+               <img class="w-10 h-10 rounded-full" src="{{rookie.logo}}" alt="Player image">
+               <div class="ps-3 pe-3 bg-white">
+                  <div class="text-sm font-semibold">{{ rookie.first_name }} {{ rookie.last_name }}</div>
+                  <div class="font-normal text-xs text-gray-500">
+                     {{ rookie.position }} - {{ rookie.short_code }}
+                     
+                     <!-- Mobile Display -->
+                     <div class="inline-flex md:hidden font-normal text-gray-500 text-xs">
+                        <div *ngIf="rookie.contract_status === 'Active'" class="md:hidden inline-flex font-semibold">
+                           &nbsp;| {{ rookie.aav_current > 0 ? '$' +(rookie.aav_current | number:'1.0-0') : 'N/A' }} x {{ rookie.years_left_current }}
+                        </div>
+                     </div>
+
+                     <!-- Rookie Tag -->
+                     <span class="bg-green-100 text-green-800 text-[9px] font-medium ml-1 me-2 px-1.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Rookie</span>
+                  </div>
+
+               </div>
+            </td>
+
+            <!-- Action Column -->
+            <td *ngIf="editRights" class="text-center px-2 py-2 md:sticky md:left-64 bg-white dark:bg-gray-800 md:z-10 md:border-r-2">
+               <select (change)="rosterMove(rookie, $event, callUpModal)" class="inline-flex items-center max-w-[90px] text-sm px-3 py-1.5 font-medium rounded-lg text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                  <option value="">Action</option>
+                  <option *ngIf="!rookie.onTradeBlock" value="trade-block">Add to Trade Block</option>
+                  <option *ngIf="rookie.onTradeBlock" value="trade-block">Remove from Trade Block</option>
+                  <option value="callup">Call-Up</option>           
+               </select> 
+            </td>
+    
+            <!-- Salary Columns -->
+            <ng-container *ngIf="rookie.years_left_current">
+               <td *ngFor="let aav of generateRange(rookie.years_left_current); let i = index" class="px-6 py-2 hidden md:table-cell">
+                  {{ rookie.aav_current | number:'1.0-0' }}
+               </td>
+            </ng-container>
+
+            <ng-container *ngIf="rookie.years_left_next">
+               <td *ngFor="let aav of generateRange(rookie.years_left_next)" class="px-6 py-2 hidden md:table-cell">
+                  {{ rookie.aav_next | number:'1.0-0' }}
+               </td>
+            </ng-container>
+
+            <td class="px-6 py-2 hidden md:table-cell">
+               <span class="text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                     [ngClass]="{
+                     'bg-red-600': rookie.expiry_status === 'UFA',
+                     'bg-blue-600': rookie.expiry_status === 'RFA'
+                     }">
+                  {{ rookie.expiry_status }}
+               </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>       
+</div>
+
+
+<!-- Edit Team Modal -->
+   <ng-template #editTeamModal id="editTeamModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+      <div class="relative w-full max-w-2xl max-h-full">
+            <form (ngSubmit)="editTeamFormSubmit($event)" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+   
+               <div class="flex items-start justify-between p-4 rounded-t md:w-[400px]">
+                  <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                     Edit Team Info
+                  </h3>
+                  <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
+                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                  </svg>
+                  <span class="sr-only">Close modal</span>
+               </button>
+               </div>
+   
+               <div class="p-6 space-y-6">
+                  <div class="col-span-6 sm:col-span-3">
+                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Team Name</label>
+                        <input type="text" [(ngModel)]="formData.team_name" name="team-name" id="team-name" class="shadow-sm bg-gray-50  text-gray-900 text-sm rounded-lg border border-green-400 focus:ring-green-600 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [placeholder]="team.team_name" required="">
+                  </div>
+                  <div>
+                     <label for="picture" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Picture</label>
+                     <input (change)="uploadFile($event)" name="picture" id="picture" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
+                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PNG, JPG (MAX. 1MB)</p>          
+                 </div>
+               </div>
+   
+               <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse rounded-b">
+                  <button type="submit" class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Save Changes</button>
+                  <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+               </div>
+         </form>
+      </div>
+</ng-template>
+
+<!-- Drop From Roster Modal -->
+<ng-template #dropPlayerModal id="dropPlayerModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] max-h-full">
+   <div id="popup-modal" tabindex="-1" class="relative p-4 w-full max-w-md max-h-full">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+         <button (click)="closeModal()" type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+         </button>
+         <div class="p-4 md:p-5 text-center">
+            <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            </svg>
+            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Drop <b>{{selected.first_name }} {{ selected.last_name }}</b> from your roster?</h3>
+            <button type="submit" (click)="dropPlayer(selected); closeModal()" class="mr-4 bg-red-500 border border-red-500 hover:bg-red-600 text-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-500 dark:hover:bg-red-600">
+               Drop Player
+            </button>
+            <button type="submit" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+               Cancel
+            </button>
+         </div>
+      </div>
+   </div>
+</ng-template>
+
+<!-- Call-Up Player Modal -->
+<ng-template #callUpModal id="callUpModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+   <div class="relative w-full max-w-2xl max-h-full">
+         <form class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+
+            <div class="flex items-start justify-between p-4 rounded-t">
+               <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                  Promote <span class="bg-gray-100 text-gray-600 font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">{{selected.first_name }} {{ selected.last_name }}</span>to your active roster?
+               </h3>
+               <button type="button" (click)="closeModal(); ngOnInit()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="editUserModal">
+               <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+               </svg>
+               <span class="sr-only">Close modal</span>
+            </button>
+            </div>
+
+            <!-- Validation Timeline -->
+            <div class="p-6 space-y-6 md:w-[600px]">
+               <div class="items-center justify-center">
+                  <ol class="flex items-center justify-center">
+                     <li class="relative w-full mb-6">
+                        <div class="flex items-center">
+                           <div 
+                              class="z-10 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0"
+                              [ngClass]="{'bg-green-400': contractIsValid(), 'bg-red-500': !contractIsValid() || !hasContract(selected)}">
+                              <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 3v4a1 1 0 0 1-1 1H5m4 8h6m-6-4h6m4-8v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z"/>
+                              </svg>
+                           </div>
+                           <div class="flex w-full bg-gray-200 h-0.5 dark:bg-gray-700"></div>
+                        </div>
+                        <div class="mt-3">
+                           <h3 class="font-medium text-gray-900 dark:text-white">Contracts</h3>
+                        </div>
+                  </li>
+                  <li class="relative w-full mb-6">
+                     <div class="flex items-center">
+                        <div class="flex w-[50%] bg-gray-200 h-0.5 dark:bg-gray-700"></div>
+                        <div class="z-10 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0"
+                           [ngClass]="{'bg-green-400': (capIsValid(selected) && !toSwap) || (toSwap && swapIsValid(selected, toSwap)), 'bg-red-500': (!capIsValid(selected) && !toSwap) || (toSwap && !swapIsValid(selected, toSwap))}">
+                           <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"/>
+                            </svg>                               
+                         </div>
+                         <div class="flex w-[50%] bg-gray-200 h-0.5 dark:bg-gray-700"></div>
+                     </div>
+                     <div class="mt-3">
+                         <h3 class="font-medium text-center text-gray-900 dark:text-white">Cap space</h3>
+                     </div>
+                 </li>
+                  <li class="relative w-full mb-6">
+                     <div class="flex items-center">
+                           <div class="flex w-full bg-gray-200 h-0.5 dark:bg-gray-700"></div>
+                           <div *ngIf="validateCallup(selected)" class="z-10 bg-green-400 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0">
+                                 <svg class="w-5 h-5 text-white dark:text-blue-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
+                                 </svg>
+                           </div>
+                           <div *ngIf="!validateCallup(selected)" class="z-10 bg-red-500 flex items-center justify-center w-10 h-10 rounded-full ring-0 ring-white dark:ring-gray-900 shrink-0">
+                              <svg class="w-5 h-5 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                               </svg>                                  
+                        </div>
+                     </div>
+                     <div class="mt-3 text-right justify-end">
+                        <h3 *ngIf="validateCallup(selected)" class="font-medium text-gray-900 dark:text-white">Callup is Valid</h3>
+                        <h3 *ngIf="!validateCallup(selected)" class="font-medium text-gray-900 dark:text-white">Callup is Invalid</h3>
+                     </div>
+                  </li>
+               </ol>
+
+               <!-- Warnings -->
+               <div *ngIf="!contractIsValid()">
+                  <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                           <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only">Info</span>
+                        <div>
+                           <span class="font-bold">Roster is Full!</span><br> You can't carry any more contracts. Please make a roster move before proceeding.
+                        </div>
+                   </div>
+               </div>
+
+               <!-- Cap space warning -->
+               <div *ngIf="!capIsValid(selected) && !toSwap || toSwap && !swapIsValid(selected, toSwap)">
+                  <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                     <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                       <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                     </svg>
+                     <span class="sr-only">Info</span>
+                     <div>
+                       <span class="font-bold">Not enough cap space! (${{ globalService.loggedInTeam?.cap_space | number:'1.0-0' }}) </span><br> You don't have the cap space to call up this player. Please make a roster move before proceeding.
+                     </div>
+                  </div>
+               </div>
+
+               <!-- IR Swap Dropdown Option -->
+               <div *ngIf="!capIsValid(selected) && selected.onIR || toSwap">
+                  <div class="grid grid-cols-6 gap-6">
+                     <div class="col-span-6 sm:col-span-3">
+                        <label for="fa_pick" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                           Swap with another player?
+                        </label>
+                        
+                        <div class="relative max-h-[200px] overflow-y-auto">
+                           <select
+                              name="fa_pick"
+                              [(ngModel)]="toSwap"
+                              class="max-h-[200px] overflow-y-auto bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-400"
+                              >
+                              <option *ngFor="let player of team.roster" [ngValue]="player">
+                                 {{ player.first_name }} {{ player.last_name }} ({{ player.aav_current| number:'1.0-0' }} AAV)
+                              </option>
+                           </select>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Unsigned player warning -->
+               <div *ngIf="!hasContract(selected)">
+                  <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                     <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                       <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                     </svg>
+                     <span class="sr-only">Info</span>
+                     <div>
+                       <span class="font-bold">This player is unsigned!</span><br> There is no contract associated to this player in the database. You must edit the player contract details from the <a class="underline cursor-pointer hover:font-semibold" [routerLink]="['/', globalService.league?.league_id, 'players']" (click)="closeModal()">player database</a> before adding them to your roster
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Rookie callup warning -->
+               <div *ngIf="validateCallup(selected) && selected.isRookie">
+                  <div class="flex items-center p-4 mb-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800" role="alert">
+                     <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                       <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                     </svg>
+                     <span class="sr-only">Info</span>
+                     <div>
+                       <span class="font-bold">This action cannot be undone!</span><br>Once a rookie is called up to your active roster, they cannot be sent back down and will need to be protected in the offseason.
+                     </div>
+                  </div>
+               </div>
+
+            </div>
+         </div>
+
+         <div class="flex items-center px-6 pb-6 space-x-3 rtl:space-x-reverse rounded-b">
+            <button 
+               type="submit" 
+               (click)="selected.isRookie ? callupPlayer(selected) : selected.onIR ? toggleIR(selected) : null; closeModal()" 
+               class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800"
+               [disabled]="!validateCallup(selected)"
+               [ngClass]="{
+                  'bg-green-400 hover:bg-green-500 focus:ring-green-300': validateCallup(selected),
+                  'bg-green-300 cursor-not-allowed': !validateCallup(selected)
+               }" 
+               >
+               Call Up Player
+            </button>
+            <button type="button" (click)="closeModal()" class="text-green-400 bg-white hover:bg-green-500 hover:text-white border border-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">Cancel</button>
+         </div>
+      </form>
+   </div>
+</ng-template>
