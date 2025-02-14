@@ -151,7 +151,7 @@
                                         type="number" 
                                         [(ngModel)]="leagueSettings.salary_cap"
                                         [disabled]="!inEditMode"
-                                        class="bg-gray-50 border border-gray-300 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 max-w-24 p-1 text-left"
+                                        class="bg-gray-50 border border-gray-300 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 max-w-20 p-1 text-left"
                                         [ngClass]="{
                                             'text-gray-900 font-normal': inEditMode,
                                             'text-gray-400 cursor-not-allowed': !inEditMode
@@ -212,6 +212,21 @@
                                         [(ngModel)]="leagueSettings.max_retention_perc"
                                         [disabled]="!inEditMode"
                                         class="bg-gray-50 border border-gray-300 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 max-w-16 p-1 text-left"
+                                        [ngClass]="{
+                                            'text-gray-900 font-normal': inEditMode,
+                                            'text-gray-400 cursor-not-allowed': !inEditMode
+                                        }"
+                                        required
+                                    />
+                                </div>
+
+                                <div class="flex items-center justify-between mt-1">
+                                    Protection Sheet Limit:
+                                    <input 
+                                        type="number" 
+                                        [(ngModel)]="leagueSettings.protection_sheet_limit"
+                                        [disabled]="!inEditMode"
+                                        class="bg-gray-50 border border-gray-300 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 max-w-20 p-1 text-left"
                                         [ngClass]="{
                                             'text-gray-900 font-normal': inEditMode,
                                             'text-gray-400 cursor-not-allowed': !inEditMode

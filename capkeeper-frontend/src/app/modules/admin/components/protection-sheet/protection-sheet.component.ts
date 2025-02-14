@@ -22,9 +22,9 @@ export class ProtectionSheetComponent {
   league_id!: string;
   salary_cap: number = 0;
   team!: Team;
-  sheet_cap: number = 47000000;
+  sheet_cap: number = 0;
   sheet_total: number = 0;
-  bench_cap: number = 5000000 + (47000000/2);
+  bench_cap: number = 0;
   bench_total: number = 0;
   max_f: number = 5;
   max_d: number = 3;
@@ -66,6 +66,10 @@ export class ProtectionSheetComponent {
   
     if (this.globalService.loggedInTeam) {
       this.setProtectionSheet(this.globalService.loggedInTeam.team_id);
+      if (this.globalService.league) {
+        this.sheet_cap = this.globalService.league.protection_sheet_limit;
+        this.bench_cap = 5000000 + (this.sheet_cap/2);
+      }
     }
   }
   

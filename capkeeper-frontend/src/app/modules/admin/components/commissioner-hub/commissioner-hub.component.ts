@@ -271,6 +271,7 @@ export class CommissionerHubComponent {
       rookie_draft_length: this.leagueSettings.rookie_draft_length,
       retention_slots: this.leagueSettings.retention_slots,
       max_retention_perc: this.leagueSettings.max_retention_perc,
+      protection_sheet_limit: this.leagueSettings.protection_sheet_limit,
     };
     
     this.http.post(`/api/${this.league_id}/edit-league`, payload)
