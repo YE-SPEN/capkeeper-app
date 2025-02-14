@@ -22,9 +22,9 @@ export class ProtectionSheetComponent {
   league_id!: string;
   salary_cap: number = 0;
   team!: Team;
-  sheet_cap: number = 47000000;
+  sheet_cap: number = 45000000;
   sheet_total: number = 0;
-  bench_cap: number = 5000000 + (47000000/2);
+  bench_cap: number = 5000000 + (45000000/2);
   bench_total: number = 0;
   max_f: number = 5;
   max_d: number = 3;
