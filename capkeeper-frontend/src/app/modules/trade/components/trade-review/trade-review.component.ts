@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TradeProposalComponent } from '../trade-proposal/trade-proposal.component';
+import { TradeProposalComponent } from '../../../trade/components/trade-proposal/trade-proposal.component';
 import { TeamService } from '../../../../services/team.service';
 import { GlobalService } from '../../../../services/global.service';
 import { BsModalService } from 'ngx-bootstrap/modal';

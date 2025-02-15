@@ -1,16 +1,18 @@
 import { Component, TemplateRef } from '@angular/core';
-import { GlobalService } from '../../../../services/global.service';
-import { PlayerService } from '../../../../services/player.service';
-import { CommissionerService } from '../../../../services/commissioner.service';
-import { SortingService } from '../../../../services/sorting.service';
-import { UploadService } from '../../../../services/upload.service';
-import { ToastService } from '../../../../services/toast-service.service';
+import { GlobalService } from '@app/services/global.service';
+import { PlayerService } from '@app/services/player.service';
+import { CommissionerService } from '@app/services/commissioner.service';
+import { SortingService } from '@app/services/sorting.service';
+import { UploadService } from '@app/services/upload.service';
+import { ToastService } from '@app/services/toast-service.service';
+import { PaginationService } from '@app/services/pagination.service';
+import { TeamService } from '@app/services/team.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Team, Player, FA_Pick, Season, User, League, Draft_Pick, Draft, Pick_History } from '../../../../types';
-import { TeamService } from '../../../../services/team.service';
+
 
 @Component({
   selector: 'app-commissioner-hub',
@@ -63,6 +65,7 @@ export class CommissionerHubComponent {
     public sortingService: SortingService,
     private toastService: ToastService,
     public uploadService: UploadService,
+    public paginationService: PaginationService,
     private modalService: BsModalService,
     private router: Router,
     protected route: ActivatedRoute,
@@ -131,10 +134,39 @@ export class CommissionerHubComponent {
   
   setDisplay(display: 'users' | 'teams' | 'draft' | 'fa'): void {
     this.displaying = display;
+    this.clearFilters();
   }
 
   toggleEditMode(): void {
     this.inEditMode = !this.inEditMode;
+  }
+
+  getTeamPicture(team_id: string): string | null {
+    if (!this.allTeams || this.allTeams.length === 0) {
+      return null;
+    }
+    const team = this.allTeams.find(team => team.team_id === team_id);
+    return team ? team.picture || null : null;
+  }
+
+  getDraftYears(): number[] {
+    const yearSet = new Set<number>();
+    this.allDraftPicks.forEach(pick => {
+      if (pick.year) {
+        yearSet.add(pick.year);
+      }
+    });
+    return Array.from(yearSet).sort((a, b) => a - b);
+  }
+
+  getFAYears(): number[] {
+    const yearSet = new Set<number>();
+    this.allFAs.forEach(fa => {
+      if (fa.year) {
+        yearSet.add(fa.year);
+      }
+    });
+    return Array.from(yearSet).sort((a, b) => a - b);
   }
 
   getManagers(team: Team): User[] {
@@ -208,12 +240,16 @@ export class CommissionerHubComponent {
     this.filteredDraftPicks = this.allDraftPicks
       .filter(pick => this.inYearFilter(pick) && this.inPickTypeFilter(pick) && this.inTeamFilter(pick));
     this.sortingService.sort(this.filteredDraftPicks, this.sortingService.sortColumn, this.sortingService.sortDirection);
+    this.paginationService.calculateTotalPages(this.filteredDraftPicks);
+    this.paginationService.setPage(1);
   }
 
   filterFAs(): void {
     this.filteredFAPicks = this.allFAs
       .filter(fa => this.inYearFilter(fa) && this.inTeamFilter(fa));
     this.sortingService.sort(this.filteredFAPicks, this.sortingService.sortColumn, this.sortingService.sortDirection);
+    this.paginationService.calculateTotalPages(this.filteredFAPicks);
+    this.paginationService.setPage(1);
   }
 
   inYearFilter(pick: Draft_Pick | FA_Pick): boolean {
@@ -690,34 +726,6 @@ export class CommissionerHubComponent {
   closeModal() {
     this.modalRef.hide();
     this.clearForms();
-  }
-
-  getTeamPicture(team_id: string): string | null {
-    if (!this.allTeams || this.allTeams.length === 0) {
-      return null;
-    }
-    const team = this.allTeams.find(team => team.team_id === team_id);
-    return team ? team.picture || null : null;
-  }
-
-  getDraftYears(): number[] {
-    const yearSet = new Set<number>();
-    this.allDraftPicks.forEach(pick => {
-      if (pick.year) {
-        yearSet.add(pick.year);
-      }
-    });
-    return Array.from(yearSet).sort((a, b) => a - b);
-  }
-
-  getFAYears(): number[] {
-    const yearSet = new Set<number>();
-    this.allFAs.forEach(fa => {
-      if (fa.year) {
-        yearSet.add(fa.year);
-      }
-    });
-    return Array.from(yearSet).sort((a, b) => a - b);
   }
 
 }

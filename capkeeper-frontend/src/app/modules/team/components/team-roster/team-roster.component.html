@@ -32,7 +32,7 @@
                         <div *ngIf="inboxIsOpen" id="dropdownUsers" class="absolute z-50 bg-white rounded-lg shadow w-auto dark:bg-gray-700 left-0 top-full">
                            <ul class="text-xs font-semibold overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
                              <li *ngFor="let trade of team.inbox" class="border-gray-200 border-b rounded-lg">
-                               <a [routerLink]="['/', league_id, 'team', 'trade', trade.trade_id]" class="flex items-center justify-between text-gray-900 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white whitespace-nowrap">
+                               <a [routerLink]="['/', league_id, 'trade', 'review', trade.trade_id]" class="flex items-center justify-between text-gray-900 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white whitespace-nowrap">
                                  <span>Trade Request received from {{ globalService.getTeamName(trade.requested_by) }}</span>
                                  <svg class="w-6 h-6 text-green-400 dark:text-white ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/>
@@ -54,7 +54,7 @@
                 </div>
                 
                  <div *ngIf="!editRights">
-                     <a type="button" [routerLink]="['/', globalService.league?.league_id, 'team', 'trade']" [queryParams]="{ team: team_id }" class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
+                     <a type="button" [routerLink]="['/', globalService.league?.league_id, 'trade', 'propose']" [queryParams]="{ team: team_id }" class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-green-400 rounded-lg hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-800">
                         <svg class="w-4 h-4 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/>
                         </svg>
@@ -326,7 +326,6 @@
                                        </span>
                                     </div>                               
                                  </div>
-                                 <div data-popper-arrow></div>
                               </div>
                               
                            </ng-container>
@@ -365,14 +364,14 @@
                      
                         <ng-container *ngIf="getPicksByRound(year, i + 1, 'rookie') > 0; else noPicks">
                            
-                           <!-- Button for more than 1 pick -->
+                           <!-- more than 1 pick -->
                            <button *ngIf="getPicksByRound(year, i + 1, 'rookie') > 1" type="button"
                                  class="rounded-full w-6 h-6 bg-green-400 text-white p-1.5 inline-flex items-center justify-center font-bold text-sm"
                                  data-popover-target="popover-rookie" data-popover-placement="left">
                               {{ getPicksByRound(year, i + 1, 'rookie') }}
                            </button>
                            
-                           <!-- Button for 1 pick or less -->
+                           <!-- 1 pick or less -->
                            <button *ngIf="getPicksByRound(year, i + 1, 'rookie') <= 1" type="button"
                                  class="font-bold text-sm rounded-full w-6 h-6 border border-gray-800 p-1.5 inline-flex items-center justify-center"
                                  data-popover-target="popover-rookie" data-popover-placement="left">
@@ -381,28 +380,27 @@
                            
                            <!-- Popover -->
                            <div data-popover id="popover-rookie" role="tooltip"
-                              class="absolute left-[-13.5rem] top-[-2rem] z-10 hidden md:group-hover:block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
+                              class="absolute left-[-13.5rem] top-[-2rem] z-50 hidden md:group-hover:block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
                            
-                           <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                              <h3 class="text-left font-bold text-gray-900 dark:text-white">Round {{ i + 1 }} (Rookie, {{ year }})</h3>
-                           </div>
-                           
-                           <div class="px-3 py-2 text-left">
-                              <div *ngFor="let pick of displayPicksByRound(year, i + 1, 'rookie'); let j = index">
-                                 <span>{{ j + 1 }}.</span>
-                                 
-                                 <span *ngIf="pick.assigned_to === pick.owned_by">
-                                 Own Pick <span *ngIf="pick.pick_number">(#{{ pick.pick_number }})</span>
-                                 </span>
-                                 
-                                 <span *ngIf="pick.assigned_to !== pick.owned_by">
-                                 Acquired from 
-                                 <span class="font-semibold">{{ globalService.getTeamName(pick.assigned_to) }}</span>
-                                 <span *ngIf="pick.pick_number">&nbsp;(#{{ pick.pick_number }})</span>
-                                 </span>
-                              </div>                               
-                           </div>
-                           <div data-popper-arrow></div>
+                              <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                 <h3 class="text-left font-bold text-gray-900 dark:text-white">Round {{ i + 1 }} (Rookie, {{ year }})</h3>
+                              </div>
+                              
+                              <div class="px-3 py-2 text-left">
+                                 <div *ngFor="let pick of displayPicksByRound(year, i + 1, 'rookie'); let j = index">
+                                    <span>{{ j + 1 }}.</span>
+                                    
+                                    <span *ngIf="pick.assigned_to === pick.owned_by">
+                                    Own Pick <span *ngIf="pick.pick_number">(#{{ pick.pick_number }})</span>
+                                    </span>
+                                    
+                                    <span *ngIf="pick.assigned_to !== pick.owned_by">
+                                    Acquired from 
+                                    <span class="font-semibold">{{ globalService.getTeamName(pick.assigned_to) }}</span>
+                                    <span *ngIf="pick.pick_number">&nbsp;(#{{ pick.pick_number }})</span>
+                                    </span>
+                                 </div>                               
+                              </div>
                            </div>
                            
                         </ng-container>
@@ -422,7 +420,7 @@
 
          <!-- FA Picks -->
          <div *ngIf="displaying === 'fa'" class="overflow-x-auto md:overflow-visible">
-            <div class="max-h-64 overflow-y-auto">
+            <div>
                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-md md:border-2">
                   <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                      <tr class="border-b-2">
@@ -447,18 +445,21 @@
                               </button>
                               
                               <!-- Popover -->
-                              <div *ngIf="pick.owned_by === team.team_id" data-popover id="popover-fa" role="tooltip" class="absolute left-[-14.5rem] top-[-2rem] z-10 hidden md:group-hover:block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
-                              <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                                 <h3 class="text-left font-bold text-gray-900 dark:text-white">FA Week {{ pick.week }} ({{ currentSeason }})</h3>
-                              </div>
-                              <div class="px-3 py-2 text-left">
-                                 <p *ngIf="pick.assigned_to !== pick.owned_by">Acquired from: <span class="font-semibold">{{ globalService.getTeamName(pick.assigned_to) }}</span></p>
-                                 <p *ngIf="!globalService.faIsExpired(pick)" class="text-green-400 font-semibold">Expiring {{ globalService.getDate(pick.expiry_date) | date:'MM-dd-yyyy' }}</p>
-                                 <p *ngIf="globalService.faIsExpired(pick)" class="text-red-500 font-semibold">EXPIRED</p>
-                                 <p *ngIf="globalService.faIsExpired(pick) && !pick.player_taken">Player Taken: <span class="font-semibold">NO SELECTION</span></p>
-                                 <p *ngIf="pick.player_taken">Player Taken: <span class="font-semibold">{{ pick.player_taken }}</span></p>
-                              </div>
-                              <div data-popper-arrow></div>
+                              <div *ngIf="pick.owned_by === team.team_id" 
+                                 data-popover id="popover-fa" 
+                                 role="tooltip" 
+                                 class="absolute left-[-14.5rem] top-[-2rem] z-[9999] hidden md:group-hover:block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto"
+                              >
+                                 <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                    <h3 class="text-left font-bold text-gray-900 dark:text-white">FA Week {{ pick.week }} ({{ currentSeason }})</h3>
+                                 </div>
+                                 <div class="px-3 py-2 text-left">
+                                    <p *ngIf="pick.assigned_to !== pick.owned_by">Acquired from: <span class="font-semibold">{{ globalService.getTeamName(pick.assigned_to) }}</span></p>
+                                    <p *ngIf="!globalService.faIsExpired(pick)" class="text-green-400 font-semibold">Expiring {{ globalService.getDate(pick.expiry_date) | date:'MM-dd-yyyy' }}</p>
+                                    <p *ngIf="globalService.faIsExpired(pick)" class="text-red-500 font-semibold">EXPIRED</p>
+                                    <p *ngIf="globalService.faIsExpired(pick) && !pick.player_taken">Player Taken: <span class="font-semibold">NO SELECTION</span></p>
+                                    <p *ngIf="pick.player_taken">Player Taken: <span class="font-semibold">{{ pick.player_taken }}</span></p>
+                                 </div>
                               </div>
                            </div>                                                                                               
                         </td>                  

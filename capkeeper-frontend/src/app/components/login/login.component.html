@@ -116,7 +116,7 @@
             <div *ngIf="globalService.inboxMenuIsOpen" id="dropdownUsers" class="absolute top-full right-0 z-50 bg-white rounded-lg shadow w-auto dark:bg-gray-700">
               <ul class="text-xs font-semibold overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
                 <li *ngFor="let trade of globalService.loggedInTeam.inbox" class="border-gray-200 border-b rounded-lg">
-                  <a [routerLink]="['/', globalService.league?.league_id, 'trade', trade.trade_id]" class="rounded-lg flex items-center justify-between text-gray-900 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white whitespace-nowrap">
+                  <a [routerLink]="['/', globalService.league?.league_id, 'trade', 'review', trade.trade_id]" class="rounded-lg flex items-center justify-between text-gray-900 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white whitespace-nowrap">
                     <span>Trade Request received from {{ globalService.getTeamName(trade.requested_by) }}</span>
                     <svg class="w-6 h-6 text-green-400 dark:text-white ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/>

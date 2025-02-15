@@ -1,10 +1,9 @@
-import { AfterViewInit, Component, ElementRef, ViewChild  } from '@angular/core';
-import { GlobalService } from '../../../../services/global.service';
-import { SortingService } from '../../../../services/sorting.service';
-import { User, Activity, Asset } from '../../../../types';
+import { Component, ElementRef, ViewChild  } from '@angular/core';
+import { GlobalService } from '@app/services/global.service';
+import { SortingService } from '@app/services/sorting.service';
+import { PaginationService } from '@app/services/pagination.service';
+import { User, Activity, Asset } from '@app/types';
 import { ActivatedRoute } from '@angular/router';
-import { TeamService } from '../../../../services/team.service';
-declare const window: any;
 
 @Component({
   selector: 'app-league-activity',
@@ -24,20 +23,17 @@ export class LeagueActivityComponent {
   end_date: string = this.getSearchDate(0);
   rangeIsCustom: boolean = false;
   activity_log: Activity[] = [];
-  filtered_activity_log: Activity[] = [];
+  filteredActivityLog: Activity[] = [];
   selected_users: User[] = [];
   trade_items: Asset[] = [];
   users: User[] = [];
   activityFilter = 'all'
-  currentPage = 1;
-  totalPages!: number;
-  pageSize = 25;
   tradeData: { [key: string]: { partners: string[], assetsByTeam: { [team_id: string]: any[] } } } = {};
 
   constructor(
     public globalService: GlobalService,
     public sortingService: SortingService,
-    private teamService: TeamService,
+    public paginationService: PaginationService,
     private route: ActivatedRoute,
   ) { }
 
@@ -64,29 +60,7 @@ export class LeagueActivityComponent {
         dropdownMenu.classList.add('hidden');
       });
     }
-  
-    /*const Datepicker = window.Flowbite.Datepicker;
-    const options = {
-      autoHide: true,
-      orientation: 'bottom',
-      autoSelectToday: true,
-      format: 'yyyy-mm-dd',
-      defaultDate: new Date(),
-    };
-  
-    const startDatepicker = new Datepicker(this.datepickerRangeStart.nativeElement, options);
-    const endDatepicker = new Datepicker(this.datepickerRangeEnd.nativeElement, options);
-  
-    this.datepickerRangeStart.nativeElement.addEventListener('focus', () => startDatepicker.show());
-    this.datepickerRangeEnd.nativeElement.addEventListener('focus', () => endDatepicker.show());
-  
-    document.addEventListener('click', (event) => {
-      if (!this.datepickerRangeStart.nativeElement.contains(event.target) && !this.datepickerRangeEnd.nativeElement.contains(event.target)) {
-        startDatepicker.hide();
-        endDatepicker.hide();
-        this.getActivitiesByDate();
-      }
-    });*/
+
   }
 
   toggleUserSelectMenu(isOpen: boolean): void {
@@ -142,8 +116,8 @@ export class LeagueActivityComponent {
         this.activity_log = response.action_log;
         this.concatDateTimes(this.activity_log);
         this.filterActivities();
-        this.sortingService.sort(this.filtered_activity_log, this.sortingService.sortColumn, this.sortingService.sortDirection);
-        this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
+        this.sortingService.sort(this.filteredActivityLog, this.sortingService.sortColumn, this.sortingService.sortDirection);
+        this.paginationService.calculateTotalPages(this.filteredActivityLog);
       });
     }
   }
@@ -161,14 +135,14 @@ export class LeagueActivityComponent {
   searchActivities(): void {
     if (this.searchKey === '') { this.resetSearch(); return; }
     this.filterActivities();
-    this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
-    this.setPage(1);
+    this.paginationService.calculateTotalPages(this.filteredActivityLog);
+    this.paginationService.setPage(1);
   }
 
   resetSearch(): void {
     this.searchKey = '';
     this.filterActivities();
-    this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
+    this.paginationService.calculateTotalPages(this.filteredActivityLog);
   }
 
   isNew(activity: Activity): boolean {
@@ -202,10 +176,10 @@ export class LeagueActivityComponent {
   }
 
   filterActivities(): void {
-    this.filtered_activity_log = this.activity_log.filter(activity => this.inActivityTypeFilter(activity) && this.inUserFilter(activity) && activity.message.toLowerCase().includes(this.searchKey.toLowerCase()));
-    this.sortingService.sort(this.filtered_activity_log, this.sortingService.sortColumn, this.sortingService.sortDirection);
-    this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
-    this.setPage(1);
+    this.filteredActivityLog = this.activity_log.filter(activity => this.inActivityTypeFilter(activity) && this.inUserFilter(activity) && activity.message.toLowerCase().includes(this.searchKey.toLowerCase()));
+    this.sortingService.sort(this.filteredActivityLog, this.sortingService.sortColumn, this.sortingService.sortDirection);
+    this.paginationService.calculateTotalPages(this.filteredActivityLog);
+    this.paginationService.setPage(1);
   }
 
   inActivityTypeFilter(activity: Activity): boolean {
@@ -245,72 +219,11 @@ export class LeagueActivityComponent {
   deselectAllUsers(): void {
     this.selected_users = [];
     this.filterActivities();
-    this.currentPage = 1;
   }
 
   selectAllUsers(): void {
     this.selected_users = this.users;
     this.filterActivities();
-    this.currentPage = 1;
-  }
-
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
-  }
-
-  setPage(page: number): void {
-    this.currentPage = page;
-  }
-
-  getPageStart(): number {
-    return ((this.currentPage % this.pageSize) * this.pageSize) - (this.pageSize - 1);
-  }
-
-  getPageEnd(): number {
-    if (!this.filtered_activity_log) {
-      return 0; 
-    }
-    return Math.min((this.currentPage % this.pageSize * this.pageSize), this.filtered_activity_log.length);
-  }
-  
-  generatePageArray(): number[] {
-    let array = [];
-  
-    if (this.currentPage <= 3) {
-      const maxPage = Math.min(5, this.totalPages);
-      for (let i = 1; i <= maxPage; i++) {
-        array.push(i);
-      }
-      return array;
-    }
-  
-    if (this.currentPage >= this.totalPages - 2) {
-      const startPage = Math.max(this.totalPages - 4, 1); 
-      for (let i = startPage; i <= this.totalPages; i++) {
-        array.push(i);
-      }
-      return array;
-    }
-
-    for (let i = this.currentPage - 2; i <= this.currentPage + 2; i++) {
-      array.push(i);
-    }
-  
-    return array;
-  }
-  
-  setPageSize(size: number): void {
-    this.pageSize = size;
-    this.currentPage = 1;
-    this.totalPages = Math.ceil(this.filtered_activity_log.length / this.pageSize);
   }
 
   getTradePartners(trade_id: string): string[] {

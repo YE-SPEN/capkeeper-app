@@ -447,7 +447,7 @@
     <!-- Teams Tab -->
     <div *ngIf="displaying === 'teams'" class="dark:bg-gray-800" id="styled-profile" role="tabpanel" aria-labelledby="profile-tab">
         <!-- Main Teams Table -->
-        <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[800px]">
+        <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[650px]">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr class="border-b-2 sticky top-0 z-10">
@@ -584,7 +584,7 @@
     <div *ngIf="displaying === 'users'" id="styled-dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
         
         <!-- Main User Table -->
-            <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[800px]">
+            <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[650px]">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr class="border-b-2 sticky top-0 z-10">
@@ -708,200 +708,247 @@
     <div *ngIf="displaying === 'draft'" id="styled-dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
         
         <!-- Main User Table -->
-            <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[800px]">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr class="border-b-2 sticky top-0 z-10">
-                            <th scope="col" class="px-2 py-4 bg-gray-50 dark:bg-gray-700">
-                                Edit
-                            </th>
-                            <th scope="col" class="px-2 py-4 bg-gray-50 dark:bg-gray-700">
-                                <span class="flex items-center">
-                                    Asset ID
-                                </span>    
-                            </th>
-                            <th scope="col"
-                                class="px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'type'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'type')"
-                            >
+        <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[650px]">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr class="border-b-2 sticky top-0 z-10">
+                        <th scope="col" class="px-2 py-4 bg-gray-50 dark:bg-gray-700">
+                            Edit
+                        </th>
+                        <th scope="col" class="px-2 py-4 bg-gray-50 dark:bg-gray-700">
                             <span class="flex items-center">
-                                Type
+                                Asset ID
+                            </span>    
+                        </th>
+                        <th scope="col"
+                            class="px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                            [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'type'}"
+                            (click)="sortingService.toggleSort(filteredDraftPicks, 'type')"
+                        >
+                        <span class="flex items-center">
+                            Type
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path *ngIf="sortingService.sortColumn !== 'type'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                <path *ngIf="sortingService.sortColumn === 'type' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                <path *ngIf="sortingService.sortColumn === 'type' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                            </svg>
+                        </span>
+                        </th>
+                        <th scope="col" 
+                            class="px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                            [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'year'}"
+                            (click)="sortingService.toggleSort(filteredDraftPicks, 'year')"
+                        >
+                        <span class="flex items-center">
+                            Year
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path *ngIf="sortingService.sortColumn !== 'year'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                <path *ngIf="sortingService.sortColumn === 'year' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                <path *ngIf="sortingService.sortColumn === 'year' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                            </svg>                    
+                        </span>
+                        </th>
+                        <th scope="col" 
+                            class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                            [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'team_managed'}"
+                            (click)="sortingService.toggleSort(filteredDraftPicks, 'team_managed')"
+                        >
+                        <span class="flex items-center">
+                            Position
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path *ngIf="sortingService.sortColumn !== 'team_managed'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                <path *ngIf="sortingService.sortColumn === 'team_managed' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                <path *ngIf="sortingService.sortColumn === 'team_managed' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                            </svg>
+                        </span>
+                        </th>
+                        <th scope="col" 
+                            class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                            [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'assigned_to'}"
+                            (click)="sortingService.toggleSort(filteredDraftPicks, 'assigned_to')"
+                        >
+                            <span class="flex items-center">
+                                Assigned To
                                 <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path *ngIf="sortingService.sortColumn !== 'type'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                    <path *ngIf="sortingService.sortColumn === 'type' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                    <path *ngIf="sortingService.sortColumn === 'type' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                    <path *ngIf="sortingService.sortColumn !== 'assigned_to'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    <path *ngIf="sortingService.sortColumn === 'assigned_to' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                    <path *ngIf="sortingService.sortColumn === 'assigned_to' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
                                 </svg>
-                            </span>
-                            </th>
-                            <th scope="col" 
-                                class="px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'year'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'year')"
-                            >
+                            </span>    
+                        </th>
+                        <th scope="col" 
+                            class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                            [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'owned_by'}"
+                            (click)="sortingService.toggleSort(filteredDraftPicks, 'owned_by')"
+                        >
                             <span class="flex items-center">
-                                Year
+                                Owned By
                                 <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path *ngIf="sortingService.sortColumn !== 'year'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                    <path *ngIf="sortingService.sortColumn === 'year' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                    <path *ngIf="sortingService.sortColumn === 'year' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
-                                </svg>                    
-                            </span>
-                            </th>
-                            <th scope="col" 
-                                class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'team_managed'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'team_managed')"
-                            >
-                            <span class="flex items-center">
-                                Position
-                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path *ngIf="sortingService.sortColumn !== 'team_managed'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                    <path *ngIf="sortingService.sortColumn === 'team_managed' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                    <path *ngIf="sortingService.sortColumn === 'team_managed' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                    <path *ngIf="sortingService.sortColumn !== 'owned_by'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    <path *ngIf="sortingService.sortColumn === 'owned_by' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                    <path *ngIf="sortingService.sortColumn === 'owned_by' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
                                 </svg>
-                            </span>
-                            </th>
-                            <th scope="col" 
-                                class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'assigned_to'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'assigned_to')"
-                            >
-                                <span class="flex items-center">
-                                    Assigned To
-                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path *ngIf="sortingService.sortColumn !== 'assigned_to'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                        <path *ngIf="sortingService.sortColumn === 'assigned_to' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                        <path *ngIf="sortingService.sortColumn === 'assigned_to' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                            </span>    
+                        </th>
+                        <th scope="col" colspan="2"
+                            class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
+                            [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'player_taken'}"
+                            (click)="sortingService.toggleSort(filteredDraftPicks, 'player_taken')"
+                        >
+                            <span class="flex items-center">
+                                Player Taken
+                                <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path *ngIf="sortingService.sortColumn !== 'player_taken'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                                    <path *ngIf="sortingService.sortColumn === 'player_taken' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                    <path *ngIf="sortingService.sortColumn === 'player_taken' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
+                                </svg>
+                            </span>    
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let pick of filteredDraftPicks | slice:(paginationService.currentPage - 1) * paginationService.pageSize : paginationService.currentPage * paginationService.pageSize;" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+                        <td class="px-2 py-2 hidden md:table-cell text-sm">
+                            <a (click)="openModal(editAssetModal, pick)">
+                                <svg class="hidden w-6 h-6 align-text-top text-gray-500 dark:text-white hover:text-gray-700 md:inline-flex ms-1 hover:cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                                </svg> 
+                            </a>                              
+                        </td>
+                        
+                        <td class="px-2 py-2 hidden md:table-cell text-sm">
+                            {{ pick.asset_id }}
+                        </td>
+
+                        <td class="px-2 py-2 hidden md:table-cell text-sm">
+                            <div *ngIf="pick.type === 'general'">
+                                <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                                    {{ globalService.capitalizeFirstLetter(pick.type) }}
+                                </span>
+                            </div>
+                            <div *ngIf="pick.type === 'rookie'">
+                                <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
+                                    {{ globalService.capitalizeFirstLetter(pick.type) }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <td class="px-2py-2 hidden md:table-cell text-sm">
+                            <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                                {{ pick.year }}
+                                </span>
+                        </td>
+
+                        <td class="px-2 py-2 hidden md:table-cell text-sm">
+                            <div *ngIf="pick.position">
+                                {{ pick.round }}.{{ pick.position }} <span *ngIf="pick.pick_number">&nbsp;(#{{ pick.pick_number }})</span>
+                            </div>
+                            <div *ngIf="!pick.position">
+                                Round {{ pick.round }}
+                            </div>
+                        </td>
+
+                        <td class="px-2 py-2 dark:bg-gray-800">
+                            <div class="flex items-center">
+                                <img class="w-6 h-6 rounded-full" src="{{ getTeamPicture(pick.assigned_to) }}" alt="team photo">
+                                <span class="text-xs md:text-sm font-semibold text-gray-900 ms-3">{{ globalService.getTeamName(pick.assigned_to) }}</span>
+                            </div>      
+                        </td>
+                        
+                        <td class="px-2 py-2 dark:bg-gray-800">
+                            <div *ngIf="pick.assigned_to !== pick.owned_by" class="flex items-center">
+                                <img class="w-6 h-6 rounded-full" src="{{ getTeamPicture(pick.owned_by) }}" alt="team photo">
+                                <span class="text-xs md:text-sm font-semibold text-gray-900 ms-3">{{ globalService.getTeamName(pick.owned_by) }}</span>
+                            </div>
+                            <div *ngIf="pick.assigned_to === pick.owned_by">
+                                --
+                            </div>      
+                        </td>
+                                    
+                        <td class="px-2 py-2 hidden md:table-cell text-sm" [ngClass]="{'text-red-600': pick.player_taken === 'none' || pick.player_taken === 'penalty'}">
+                            <div *ngIf="pick.player_taken && pick.player_taken !== 'none' && pick.player_taken !== 'penalty'">
+                                {{ pick.player_full_name }}
+                            </div>    
+                            <div *ngIf="!pick.player_taken">
+                                --
+                            </div>
+                            <div *ngIf="pick.player_taken === 'none'">
+                                Burned
+                            </div> 
+                            <div *ngIf="pick.player_taken === 'penalty'">
+                                Penalty
+                            </div> 
+                        </td>
+                        <td class="px-2 py-2 hidden md:table-cell text-sm">
+                            <div *ngIf="pick.assigned_to !== pick.owned_by">
+                                <a (click)="openModal(pickHistoryModal, pick)" class="cursor-pointer font-medium text-green-500 dark:text-green-500 hover:underline flex items-center">
+                                    <svg class="w-4 h-4 text-green-500 dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                     </svg>
-                                </span>    
-                            </th>
-                            <th scope="col" 
-                                class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'owned_by'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'owned_by')"
-                            >
-                                <span class="flex items-center">
-                                    Owned By
-                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path *ngIf="sortingService.sortColumn !== 'owned_by'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                        <path *ngIf="sortingService.sortColumn === 'owned_by' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                        <path *ngIf="sortingService.sortColumn === 'owned_by' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
-                                    </svg>
-                                </span>    
-                            </th>
-                            <th scope="col" colspan="2"
-                                class="hidden md:table-cell px-2 py-4 bg-gray-50 dark:bg-gray-700 hover:text-gray-500 hover:cursor-pointer"
-                                [ngClass]="{'text-green-400 hover:text-green-600': sortingService.sortColumn === 'player_taken'}"
-                                (click)="sortingService.toggleSort(filteredDraftPicks, 'player_taken')"
-                            >
-                                <span class="flex items-center">
-                                    Player Taken
-                                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path *ngIf="sortingService.sortColumn !== 'player_taken'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                                        <path *ngIf="sortingService.sortColumn === 'player_taken' && sortingService.sortDirection === 'desc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
-                                        <path *ngIf="sortingService.sortColumn === 'player_taken' && sortingService.sortDirection === 'asc'" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>   
-                                    </svg>
-                                </span>    
-                            </th>
+                                    Pick History
+                                </a> 
+                            </div>                          
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let pick of filteredDraftPicks" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-
-                            <td class="px-2 py-2 hidden md:table-cell text-sm">
-                                <a (click)="openModal(editAssetModal, pick)">
-                                    <svg class="hidden w-6 h-6 align-text-top text-gray-500 dark:text-white hover:text-gray-700 md:inline-flex ms-1 hover:cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                                    </svg> 
-                                </a>                              
-                            </td>
-                            
-                            <td class="px-2 py-2 hidden md:table-cell text-sm">
-                                {{ pick.asset_id }}
-                            </td>
-
-                            <td class="px-2 py-2 hidden md:table-cell text-sm">
-                                <div *ngIf="pick.type === 'general'">
-                                    <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
-                                        {{ globalService.capitalizeFirstLetter(pick.type) }}
-                                    </span>
-                                </div>
-                                <div *ngIf="pick.type === 'rookie'">
-                                    <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">
-                                        {{ globalService.capitalizeFirstLetter(pick.type) }}
-                                    </span>
-                                </div>
-                            </td>
-
-                            <td class="px-2py-2 hidden md:table-cell text-sm">
-                                <span class="text-center justify-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
-                                    {{ pick.year }}
-                                 </span>
-                            </td>
-
-                            <td class="px-2 py-2 hidden md:table-cell text-sm">
-                                <div *ngIf="pick.position">
-                                    {{ pick.round }}.{{ pick.position }} <span *ngIf="pick.pick_number">&nbsp;(#{{ pick.pick_number }})</span>
-                                </div>
-                                <div *ngIf="!pick.position">
-                                    Round {{ pick.round }}
-                                </div>
-                            </td>
-
-                            <td class="px-2 py-2 dark:bg-gray-800">
-                                <div class="flex items-center">
-                                    <img class="w-6 h-6 rounded-full" src="{{ getTeamPicture(pick.assigned_to) }}" alt="team photo">
-                                    <span class="text-xs md:text-sm font-semibold text-gray-900 ms-3">{{ globalService.getTeamName(pick.assigned_to) }}</span>
-                                </div>      
-                            </td>
-                            
-                            <td class="px-2 py-2 dark:bg-gray-800">
-                                <div *ngIf="pick.assigned_to !== pick.owned_by" class="flex items-center">
-                                    <img class="w-6 h-6 rounded-full" src="{{ getTeamPicture(pick.owned_by) }}" alt="team photo">
-                                    <span class="text-xs md:text-sm font-semibold text-gray-900 ms-3">{{ globalService.getTeamName(pick.owned_by) }}</span>
-                                </div>
-                                <div *ngIf="pick.assigned_to === pick.owned_by">
-                                    --
-                                </div>      
-                            </td>
-                                        
-                            <td class="px-2 py-2 hidden md:table-cell text-sm" [ngClass]="{'text-red-600': pick.player_taken === 'none' || pick.player_taken === 'penalty'}">
-                                <div *ngIf="pick.player_taken && pick.player_taken !== 'none' && pick.player_taken !== 'penalty'">
-                                    {{ pick.player_full_name }}
-                                </div>    
-                                <div *ngIf="!pick.player_taken">
-                                    --
-                                </div>
-                                <div *ngIf="pick.player_taken === 'none'">
-                                    Burned
-                                </div> 
-                                <div *ngIf="pick.player_taken === 'penalty'">
-                                    Penalty
-                                </div> 
-                            </td>
-                            <td class="px-2 py-2 hidden md:table-cell text-sm">
-                                <div *ngIf="pick.assigned_to !== pick.owned_by">
-                                    <a (click)="openModal(pickHistoryModal, pick)" class="cursor-pointer font-medium text-green-500 dark:text-green-500 hover:underline flex items-center">
-                                        <svg class="w-4 h-4 text-green-500 dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                        </svg>
-                                        Pick History
-                                    </a> 
-                                </div>                          
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- Pagination -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
+            <div class="flex justify-center md:justify-start rounded text-gray-500">
+                <p>Showing {{ paginationService.getPageStart() }} to {{ paginationService.getPageEnd(filteredDraftPicks) }} of {{ filteredDraftPicks.length }} results</p>
             </div>
+            <div class="flex items-center justify-center rounded dark:bg-gray-800">
+                <nav aria-label="Page navigation example">
+                    <ul class="flex items-center -space-x-px h-8 text-sm">
+                    <li>
+                        <button [disabled]="paginationService.currentPage === 1" (click)="paginationService.previousPage()" class="flex items-center justify-center px-4 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <span class="sr-only">Previous</span>
+                        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                        </svg>
+                        </button>
+                    </li>
+                    <li *ngFor="let page of paginationService.generatePageArray()">
+                        <button (click)="paginationService.setPage(page)" 
+                            [class]="paginationService.currentPage === page ? 'flex items-center justify-center px-4 h-8 leading-tight text-white bg-green-400 border border-gray-300 hover:bg-green-500 hover:text-white dark:bg-green-600 dark:border-green-600 dark:text-white dark:hover:bg-blue-900 dark:hover:text-white' : 'flex items-center justify-center px-4 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                            >
+                        {{ page }}
+                        </button>
+                    <li>
+                        <button [disabled]="paginationService.currentPage === paginationService.totalPages" (click)="paginationService.nextPage()" class="flex items-center justify-center px-4 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <span class="sr-only">Next</span>
+                        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                        </button>
+                    </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="flex justify-center md:justify-end items-center rounded dark:bg-gray-800">
+                <select [(ngModel)]="paginationService.pageSize" (ngModelChange)="paginationService.setPageSize($event, filteredDraftPicks)" class="inline-flex items-center min-w-[60px] text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>          
+                </select>  
+                <p class="px-3 text-gray-500">results per page</p>
+
+            </div>      
+
+        </div>
+
     </div>
     
     <!-- FA Pick Tab -->
     <div *ngIf="displaying === 'fa'" id="styled-dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
         
         <!-- Main User Table -->
-            <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[800px]">
+            <div class="overflow-x-auto mb-4 rounded m:rounded-lg shadow-md border-2 max-h-[650px]">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr class="border-b-2 sticky top-0 z-10">
@@ -1006,7 +1053,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let fa of filteredFAPicks" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <tr *ngFor="let fa of filteredFAPicks | slice:(paginationService.currentPage - 1) * paginationService.pageSize : paginationService.currentPage * paginationService.pageSize;" class="border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
 
                             <td class="px-2 py-2 hidden md:table-cell text-sm">
                                 <a (click)="openModal(editAssetModal, fa)">
@@ -1094,6 +1141,53 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
+                <div class="flex justify-center md:justify-start rounded text-gray-500">
+                    <p>Showing {{ paginationService.getPageStart() }} to {{ paginationService.getPageEnd(filteredFAPicks) }} of {{ filteredFAPicks.length }} results</p>
+                </div>
+                <div class="flex items-center justify-center rounded dark:bg-gray-800">
+                    <nav aria-label="Page navigation example">
+                        <ul class="flex items-center -space-x-px h-8 text-sm">
+                        <li>
+                            <button [disabled]="paginationService.currentPage === 1" (click)="paginationService.previousPage()" class="flex items-center justify-center px-4 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <span class="sr-only">Previous</span>
+                            <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                            </svg>
+                            </button>
+                        </li>
+                        <li *ngFor="let page of paginationService.generatePageArray()">
+                            <button (click)="paginationService.setPage(page)" 
+                                [class]="paginationService.currentPage === page ? 'flex items-center justify-center px-4 h-8 leading-tight text-white bg-green-400 border border-gray-300 hover:bg-green-500 hover:text-white dark:bg-green-600 dark:border-green-600 dark:text-white dark:hover:bg-blue-900 dark:hover:text-white' : 'flex items-center justify-center px-4 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                                >
+                            {{ page }}
+                            </button>
+                        <li>
+                            <button [disabled]="paginationService.currentPage === paginationService.totalPages" (click)="paginationService.nextPage()" class="flex items-center justify-center px-4 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <span class="sr-only">Next</span>
+                            <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                            </svg>
+                            </button>
+                        </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="flex justify-center md:justify-end items-center rounded dark:bg-gray-800">
+                    <select [(ngModel)]="paginationService.pageSize" (ngModelChange)="paginationService.setPageSize($event, filteredFAPicks)" class="inline-flex items-center min-w-[60px] text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">         
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>          
+                    </select>  
+                    <p class="px-3 text-gray-500">results per page</p>
+
+                </div>      
+
+            </div>
+
     </div>
 
 </div>

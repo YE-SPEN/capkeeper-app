@@ -1,13 +1,14 @@
 import { Component, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { GlobalService } from '../../../../services/global.service';
-import { PlayerService } from '../../../../services/player.service';
-import { SortingService } from '../../../../services/sorting.service';
-import { TeamService } from '../../../../services/team.service';
-import { ToastService } from '../../../../services/toast-service.service';
+import { GlobalService } from '@app/services/global.service';
+import { PlayerService } from '@app/services/player.service';
+import { SortingService } from '@app/services/sorting.service';
+import { PaginationService } from '@app/services/pagination.service';
+import { TeamService } from '@app/services/team.service';
+import { ToastService } from '@app/services/toast-service.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { Team, Player, FA_Pick } from '../../../../types';
+import { Team, Player, FA_Pick } from '@app/types';
 
 interface Warning {
   header: string,
@@ -32,9 +33,6 @@ export class PlayerDatabaseComponent {
   fa_picks: FA_Pick[] = [];
   fa_to_use!: string;
   searchKey: string = '';
-  currentPage = 1;
-  totalPages!: number;
-  pageSize = 25;
   statusFilter = 'all';
   positionFilter = 'all';
   teamFilter = 'all';
@@ -62,6 +60,7 @@ export class PlayerDatabaseComponent {
     public sortingService: SortingService,
     private modalService: BsModalService,
     private toastService: ToastService,
+    public paginationService: PaginationService,
     private route: ActivatedRoute,
     private http: HttpClient
   ) { }
@@ -125,8 +124,8 @@ export class PlayerDatabaseComponent {
               && (player.first_name.toLowerCase().includes(this.searchKey.toLowerCase()) || player.last_name.toLowerCase().includes(this.searchKey.toLowerCase()))
             );
     this.sortingService.sort(this.filteredPlayers, this.sortingService.sortColumn, this.sortingService.sortDirection);
-    this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
-    this.setPage(1);
+    this.paginationService.calculateTotalPages(this.filteredPlayers);
+    this.paginationService.setPage(1);
   }
 
   clearFilter(): void {
@@ -169,65 +168,6 @@ export class PlayerDatabaseComponent {
   resetSearch(): void {
     this.searchKey = '';
     this.filterPlayers();
-  }
-
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
-  }
-
-  setPage(page: number): void {
-    this.currentPage = page;
-  }
-
-  getPageStart(): number {
-    return ((this.currentPage % this.pageSize) * this.pageSize) - (this.pageSize - 1);
-  }
-
-  getPageEnd(): number {
-    if (!this.filteredPlayers) {
-      return 0; 
-    }
-    return Math.min((this.currentPage % this.pageSize * this.pageSize), this.filteredPlayers.length);
-  }
-  
-  generatePageArray(): number[] {
-    let array = [];
-  
-    if (this.currentPage <= 3) {
-      const maxPage = Math.min(5, this.totalPages);
-      for (let i = 1; i <= maxPage; i++) {
-        array.push(i);
-      }
-      return array;
-    }
-  
-    if (this.currentPage >= this.totalPages - 2) {
-      const startPage = Math.max(this.totalPages - 4, 1); 
-      for (let i = startPage; i <= this.totalPages; i++) {
-        array.push(i);
-      }
-      return array;
-    }
-
-    for (let i = this.currentPage - 2; i <= this.currentPage + 2; i++) {
-      array.push(i);
-    }
-  
-    return array;
-  }
-  
-  setPageSize(size: number): void {
-    this.pageSize = size;
-    this.setPage(1);
-    this.totalPages = Math.ceil(this.filteredPlayers.length / this.pageSize);
   }
 
   generateID(first_name: string, last_name: string): string {

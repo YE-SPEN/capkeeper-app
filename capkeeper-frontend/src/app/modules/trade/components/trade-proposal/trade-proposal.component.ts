@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from '../../../../services/global.service';
 import { TeamService } from '../../../../services/team.service';
 import { ToastService } from '../../../../services/toast-service.service';
-import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Team, Player, Draft_Pick, FA_Pick, Asset } from '../../../../types';

@@ -25,6 +25,10 @@ const routes: Routes = [
         path: ':league_id/admin',
         loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule)
     },
+    {
+        path: ':league_id/trade',
+        loadChildren: () => import('./modules/trade/trade.module').then(m => m.TradeModule)
+    },
 
     { path: '**', redirectTo: 'login' }
 ];
