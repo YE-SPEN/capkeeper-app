@@ -109,8 +109,8 @@ export class PlayerDatabaseComponent {
     const eightDaysAfter = new Date(today);
     eightDaysAfter.setDate(today.getDate() + 8);
   
-    const expiryDate = new Date(fa.expiry_date);
-    const targetDate = new Date(2025, 2, 3); // March 3, 2025
+    let expiryDate = new Date(fa.expiry_date);
+    const targetDate = new Date(2025, 2, 2); // March 2, 2025
     
     console.log('Expiry Date:', expiryDate);
     console.log('Target Date:', targetDate);

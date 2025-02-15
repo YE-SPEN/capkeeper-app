@@ -43,7 +43,9 @@ export class CommissionerHubComponent {
   displaying: 'teams' | 'users' | 'draft' | 'fa' = 'teams';
   toastMessage: string = '';
   yearFilter: string = 'any';
+  weekFilter: string = 'any';
   pickTypeFilter: 'any' | 'general' | 'rookie' = 'any';
+  pickStatusFilter: string = 'any';
   teamFilter: string = 'any';
   leagueSettings!: League;
   draftToEdit: Draft | null = null;
@@ -169,6 +171,16 @@ export class CommissionerHubComponent {
     return Array.from(yearSet).sort((a, b) => a - b);
   }
 
+  getFAWeeks(): number[] {
+    const weekSet = new Set<number>();
+    this.allFAs.forEach(fa => {
+      if (fa.week) {
+        weekSet.add(fa.week);
+      }
+    });
+    return Array.from(weekSet).sort((a, b) => a - b);
+  }
+
   getManagers(team: Team): User[] {
     let managers = [];
     for (let user of this.allUsers) {
@@ -246,7 +258,7 @@ export class CommissionerHubComponent {
 
   filterFAs(): void {
     this.filteredFAPicks = this.allFAs
-      .filter(fa => this.inYearFilter(fa) && this.inTeamFilter(fa));
+      .filter(fa => this.inYearFilter(fa) && this.inTeamFilter(fa) && this.inWeekFilter(fa));
     this.sortingService.sort(this.filteredFAPicks, this.sortingService.sortColumn, this.sortingService.sortDirection);
     this.paginationService.calculateTotalPages(this.filteredFAPicks);
     this.paginationService.setPage(1);
@@ -254,6 +266,10 @@ export class CommissionerHubComponent {
 
   inYearFilter(pick: Draft_Pick | FA_Pick): boolean {
     return pick.year === Number(this.yearFilter) || this.yearFilter === 'any';
+  }
+
+  inWeekFilter(pick: FA_Pick): boolean {
+    return pick.week === Number(this.weekFilter) || this.weekFilter === 'any';
   }
   
   inPickTypeFilter(pick: Draft_Pick): boolean {
@@ -267,10 +283,19 @@ export class CommissionerHubComponent {
     return pick.owned_by === this.teamFilter;
   }
 
+  inPickStatusFilter(pick: Draft_Pick | FA_Pick): boolean {
+    if (this.pickStatusFilter === 'any') {
+      return true;
+    }
+    return pick.owned_by === this.teamFilter;
+  }
+
   clearFilters(): void {
     this.yearFilter = 'any';
     this.pickTypeFilter = 'any';
     this.teamFilter = 'any';
+    this.weekFilter = 'any';
+    this.pickStatusFilter = 'any';
     this.filterDraftPicks();
     this.filterFAs();
   }

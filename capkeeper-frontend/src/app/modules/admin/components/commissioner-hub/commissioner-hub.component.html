@@ -411,9 +411,17 @@
         <div 
             class="hidden"
             [ngClass]="{ 'flex justify-end gap-2': displaying === 'fa', 'hidden': displaying !== 'fa' }"
-        >
+        >          
             <div class="flex flex-col">
-                <label for="year-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Filter by Year</label>
+                <label for="status-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Status</label>
+                <select id="status-filter" [(ngModel)]="pickStatusFilter" (ngModelChange)="filterFAs()" 
+                    class="cursor-pointer bg-gray-50 border border-green-400 text-gray-900 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 block p-1.5 min-w-[110px]">
+                    <option value="any" selected>All Picks</option>
+                    
+                </select>
+            </div>
+            <div class="flex flex-col">
+                <label for="year-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Year</label>
                 <select id="year-filter" [(ngModel)]="yearFilter" (ngModelChange)="filterFAs()" 
                     class="cursor-pointer bg-gray-50 border border-green-400 text-gray-900 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 block p-1.5 min-w-[110px]">
                     <option value="any" selected>All Years</option>
@@ -421,7 +429,15 @@
                 </select>
             </div>
             <div class="flex flex-col">
-                <label for="position-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Filter by Team</label>
+                <label for="week-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Week</label>
+                <select id="week-filter" [(ngModel)]="weekFilter" (ngModelChange)="filterFAs()" 
+                    class="cursor-pointer bg-gray-50 border border-green-400 text-gray-900 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 block p-1.5 min-w-[110px]">
+                    <option value="any" selected>All Weeks</option>
+                    <option *ngFor="let week of getFAWeeks()" [ngValue]="week">{{ week }}</option>
+                </select>
+            </div>
+            <div class="flex flex-col">
+                <label for="position-filter" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Owned By</label>
                 <select id="position-filter" [(ngModel)]="teamFilter" (ngModelChange)="filterFAs()" 
                     class="cursor-pointer bg-gray-50 border border-green-400 text-gray-900 text-xs rounded-lg focus:ring-green-400 focus:border-green-400 block p-1.5 min-w-[140px]">
                     <option value="any" selected>All Teams</option>
