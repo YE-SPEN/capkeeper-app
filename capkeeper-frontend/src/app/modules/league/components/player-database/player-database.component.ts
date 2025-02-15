@@ -110,9 +110,19 @@ export class PlayerDatabaseComponent {
     eightDaysAfter.setDate(today.getDate() + 8);
   
     const expiryDate = new Date(fa.expiry_date);
+    const targetDate = new Date(2025, 2, 3); // March 3, 2025
+    
+    console.log('Expiry Date:', expiryDate);
+    console.log('Target Date:', targetDate);
+
+    // helper method for four nations faceoff long week 
+    const isSameDay = expiryDate.getFullYear() === targetDate.getFullYear() &&
+                     expiryDate.getMonth() === targetDate.getMonth() &&
+                     expiryDate.getDate() === targetDate.getDate();
   
-    return expiryDate >= twoDaysBefore && expiryDate <= eightDaysAfter;
-  }
+    return (expiryDate >= twoDaysBefore && expiryDate <= eightDaysAfter) || 
+           (!this.globalService.faIsExpired(fa) && isSameDay);
+}
 
   filterPlayers(): void {
     this.filteredPlayers = this.allPlayers
