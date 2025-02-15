@@ -7,7 +7,8 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
+  standalone: false
 })
 export class HomeComponent {
   league_id!: string;

@@ -116,7 +116,7 @@
             <div *ngIf="globalService.inboxMenuIsOpen" id="dropdownUsers" class="absolute top-full right-0 z-50 bg-white rounded-lg shadow w-auto dark:bg-gray-700">
               <ul class="text-xs font-semibold overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
                 <li *ngFor="let trade of globalService.loggedInTeam.inbox" class="border-gray-200 border-b rounded-lg">
-                  <a [routerLink]="['/', globalService.league?.league_id, 'trade', trade.trade_id]" class="rounded-lg flex items-center justify-between text-gray-900 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white whitespace-nowrap">
+                  <a [routerLink]="['/', globalService.league?.league_id, 'trade', 'review', trade.trade_id]" class="rounded-lg flex items-center justify-between text-gray-900 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white whitespace-nowrap">
                     <span>Trade Request received from {{ globalService.getTeamName(trade.requested_by) }}</span>
                     <svg class="w-6 h-6 text-green-400 dark:text-white ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/>
@@ -154,10 +154,10 @@
               </div>
               <ul class="py-1" role="none">
                 <li>
-                  <a [routerLink]="['/', globalService.league?.league_id, 'teams', globalService.loggedInTeam?.team_id]" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">My Team</a>
+                  <a [routerLink]="['/', globalService.league?.league_id, 'team', globalService.loggedInTeam?.team_id]" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">My Team</a>
                 </li>
                 <li>
-                  <a [routerLink]="['/user/', globalService.loggedInUser.user_name]" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">My Profile</a>
+                  <a [routerLink]="['admin/user/', globalService.loggedInUser.user_name]" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">My Profile</a>
                 </li>
                 <li>
                   <button (click)="signOutClicked()" class="w-full block px-4 py-2 text-sm text-left text-gray-200 hover:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</button>
@@ -192,7 +192,7 @@
               </a>
            </li>
            <li>
-              <a [routerLink]="['/', globalService.league?.league_id, 'activity-log']"  class="flex items-center p-2 text-gray-200 rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group">
+              <a [routerLink]="['/', globalService.league?.league_id, 'league', 'activity-log']"  class="flex items-center p-2 text-gray-200 rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group">
                 <svg class="flex-shrink-0 w-5 h-5 text-green-400 transition duration-75 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M18.458 3.11A1 1 0 0 1 19 4v16a1 1 0 0 1-1.581.814L12 16.944V7.056l5.419-3.87a1 1 0 0 1 1.039-.076ZM22 12c0 1.48-.804 2.773-2 3.465v-6.93c1.196.692 2 1.984 2 3.465ZM10 8H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6V8Zm0 9H5v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-3Z"/>
                 </svg>              
@@ -214,7 +214,7 @@
               </button>
               <ul *ngIf="globalService.teamsMenuIsOpen" id="dropdown-example" class="py-1 space-y-1.5">
                     <li *ngFor="let team of globalService.teams">
-                      <a [routerLink]="['/', globalService.league?.league_id, 'teams', team.team_id]"  class="flex items-center w-full text-sm text-gray-200 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 dark:text-white dark:hover:bg-gray-700">
+                      <a [routerLink]="['/', globalService.league?.league_id, 'team', team.team_id]"  class="flex items-center w-full text-sm text-gray-200 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 dark:text-white dark:hover:bg-gray-700">
                         {{ team.team_name }}
                         <div *ngIf="team.team_id === globalService.loggedInTeam?.team_id" class="pl-2">
                           <svg class="w-5 h-5 text-green-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -226,7 +226,7 @@
               </ul>
           </li>
            <li>
-            <a [routerLink]="['/', globalService.league?.league_id, 'players']"  class="flex items-center p-2 text-gray-200 rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group">
+            <a [routerLink]="['/', globalService.league?.league_id, 'league', 'players']"  class="flex items-center p-2 text-gray-200 rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group">
               <svg class="flex-shrink-0 w-5 h-5 text-green-400 transition duration-75 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z" clip-rule="evenodd"/>
               </svg>
@@ -247,18 +247,18 @@
             </button>
             <ul *ngIf="globalService.toolsMenuIsOpen" id="dropdown-example" class="py-1 space-y-1.5">
                   <li class="hidden md:block">
-                    <a [routerLink]="['/', globalService.league?.league_id, 'draft']"  class="flex items-center w-full text-sm text-gray-200 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 dark:text-white dark:hover:bg-gray-700">Draft Results</a>
+                    <a [routerLink]="['/', globalService.league?.league_id, 'league', 'draft']"  class="flex items-center w-full text-sm text-gray-200 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 dark:text-white dark:hover:bg-gray-700">Draft Results</a>
                   </li>
                   <li>
-                    <a [routerLink]="['/', globalService.league?.league_id, 'protection-sheet']"  class="flex items-center w-full text-sm text-gray-200 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 dark:text-white dark:hover:bg-gray-700">Protection Sheet Builder</a>
+                    <a [routerLink]="['/', globalService.league?.league_id, 'admin', 'protection-sheet']"  class="flex items-center w-full text-sm text-gray-200 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 dark:text-white dark:hover:bg-gray-700">Protection Sheet Builder</a>
                   </li>
                   <li *ngIf="globalService.loggedInUser.isAdmin">
-                    <a [routerLink]="['/', globalService.league?.league_id, 'commissioner-hub']"  class="flex items-center w-full text-sm text-gray-200 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 dark:text-white dark:hover:bg-gray-700">Commissioner Settings</a>
+                    <a [routerLink]="['/', globalService.league?.league_id, 'admin', 'commissioner-hub']"  class="flex items-center w-full text-sm text-gray-200 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 dark:text-white dark:hover:bg-gray-700">Commissioner Settings</a>
                   </li>
             </ul>
         </li>
            <li>
-              <a [routerLink]="['/', globalService.league?.league_id, 'rules']"  class="flex items-center p-2 text-gray-200 rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group">
+              <a [routerLink]="['/', globalService.league?.league_id, 'admin', 'rules']"  class="flex items-center p-2 text-gray-200 rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group">
                  <svg class="flex-shrink-0 w-5 h-5 text-green-400 transition duration-75 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                   <path fill-rule="evenodd" d="M11 4.717c-2.286-.58-4.16-.756-7.045-.71A1.99 1.99 0 0 0 2 6v11c0 1.133.934 2.022 2.044 2.007 2.759-.038 4.5.16 6.956.791V4.717Zm2 15.081c2.456-.631 4.198-.829 6.956-.791A2.013 2.013 0 0 0 22 16.999V6a1.99 1.99 0 0 0-1.955-1.993c-2.885-.046-4.76.13-7.045.71v15.081Z" />
                 </svg>

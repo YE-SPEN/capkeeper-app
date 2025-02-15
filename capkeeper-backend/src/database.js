@@ -22,8 +22,8 @@ const pool = mysql.createPool({
         ca: fs.readFileSync(path.join(__dirname, '../certs/ca-certificate.crt')),
     }
 }); 
-/*
 
+/*
 // Database config (development)
 const pool = mysql.createPool({
     host: 'localhost',

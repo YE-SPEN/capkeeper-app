@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { TeamService } from './services/team.service';
 import { GlobalService } from './services/global.service';
 import { getAuth, onAuthStateChanged, User, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { Router } from '@angular/router';
@@ -8,13 +7,13 @@ import { Router } from '@angular/router';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  standalone: false
 })
 export class AppComponent implements OnInit {
   title = 'capkeeper-app';
   user: User | null = null;
 
   constructor(
-    private teamService: TeamService,
     public globalService: GlobalService,
     private router: Router
   ) {}

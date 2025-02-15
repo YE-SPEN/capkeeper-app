@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-toast',
+  standalone: false,
   template: `
     <div *ngIf="isVisible" id="toast" class="toast fixed bottom-4 right-4 w-auto max-w-lg p-4 mb-4 flex items-center justify-between text-gray-500 bg-white rounded-lg shadow-lg dark:text-gray-400 dark:bg-gray-800" role="alert">
       <!-- Success Icon -->

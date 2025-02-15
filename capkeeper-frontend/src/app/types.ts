@@ -35,6 +35,7 @@ export interface League {
     max_retention_perc: number,
     general_draft_length: number,
     rookie_draft_length: number,
+    protection_sheet_limit: number,
     drafts: Draft[];
 };
 
