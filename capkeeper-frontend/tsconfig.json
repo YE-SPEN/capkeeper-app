@@ -15,24 +15,35 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022",
+    "module": "esnext",     
     "useDefineForClassFields": false,
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "baseUrl": "./",            
+    "paths": {                  
+      "@app/*": ["src/app/*"],
+      "@env/*": ["src/environments/*"],
+      "@shared/*": ["src/app/shared/*"]
+    },
+    "removeComments": true,     
+    "allowSyntheticDefaultImports": true,  
+    "preserveSymlinks": true     
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictTemplates": true,
+    "enableIvy": true,          
+    "fullTemplateTypeCheck": true 
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.js",
     "src/**/*.mjs",
     "src/hapi-cors.d.ts",
-    "tailwind.config.js",  
+    "tailwind.config.js"
   ]
 }

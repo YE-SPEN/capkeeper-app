@@ -14,11 +14,6 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { ToastComponent } from './components/toast/toast.component';
 
-// Import the feature modules
-import { TeamModule } from './modules/team/team.module';
-import { LeagueModule } from './modules/league/league.module';
-import { AdminModule } from './modules/admin/admin.module';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,12 +25,9 @@ import { AdminModule } from './modules/admin/admin.module';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    ModalModule,
+    ModalModule.forRoot(),
     NgIdleKeepaliveModule.forRoot(),
     HttpClientModule,
-    TeamModule,
-    LeagueModule,
-    AdminModule
   ],
   exports: [
     ToastComponent
