@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { TeamService } from './services/team.service';
 import { GlobalService } from './services/global.service';
 import { getAuth, onAuthStateChanged, User, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { Router } from '@angular/router';
@@ -15,7 +14,6 @@ export class AppComponent implements OnInit {
   user: User | null = null;
 
   constructor(
-    private teamService: TeamService,
     public globalService: GlobalService,
     private router: Router
   ) {}
