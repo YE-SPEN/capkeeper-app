@@ -39,6 +39,7 @@ export class CommissionerHubComponent {
   filteredFAPicks: FA_Pick[] = [];
   selected!: Draft_Pick | FA_Pick;
   assetToEdit!: Draft_Pick | FA_Pick;
+  addPlayerToRoster: boolean = false;
   inEditMode: boolean = false;
   displaying: 'teams' | 'users' | 'draft' | 'fa' = 'teams';
   toastMessage: string = '';
@@ -49,6 +50,7 @@ export class CommissionerHubComponent {
   teamFilter: string = 'any';
   leagueSettings!: League;
   draftToEdit: Draft | null = null;
+  advanceSeasonKey: string = '';
   leagueDetails = {
     league_name: '',
     picture: '',
@@ -137,6 +139,14 @@ export class CommissionerHubComponent {
   setDisplay(display: 'users' | 'teams' | 'draft' | 'fa'): void {
     this.displaying = display;
     this.clearFilters();
+    if (this.displaying === 'draft') {
+      this.sortingService.sortDirection = 'asc';
+      this.sortingService.sort(this.filteredDraftPicks, 'year', this.sortingService.sortDirection);
+    }
+    if (this.displaying === 'fa') {
+      this.sortingService.sortDirection = 'asc';
+      this.sortingService.sort(this.filteredFAPicks, 'expiry_date', this.sortingService.sortDirection);
+    }
   }
 
   toggleEditMode(): void {
@@ -258,7 +268,7 @@ export class CommissionerHubComponent {
 
   filterFAs(): void {
     this.filteredFAPicks = this.allFAs
-      .filter(fa => this.inYearFilter(fa) && this.inTeamFilter(fa) && this.inWeekFilter(fa));
+      .filter(fa => this.inYearFilter(fa) && this.inTeamFilter(fa) && this.inWeekFilter(fa) && this.inPickStatusFilter(fa));
     this.sortingService.sort(this.filteredFAPicks, this.sortingService.sortColumn, this.sortingService.sortDirection);
     this.paginationService.calculateTotalPages(this.filteredFAPicks);
     this.paginationService.setPage(1);
@@ -283,11 +293,14 @@ export class CommissionerHubComponent {
     return pick.owned_by === this.teamFilter;
   }
 
-  inPickStatusFilter(pick: Draft_Pick | FA_Pick): boolean {
+  inPickStatusFilter(pick: FA_Pick): boolean {
     if (this.pickStatusFilter === 'any') {
       return true;
     }
-    return pick.owned_by === this.teamFilter;
+    if (this.pickStatusFilter === 'available') {
+      return !this.globalService.faIsExpired(pick)
+    }
+    return this.globalService.faIsExpired(pick);
   }
 
   clearFilters(): void {
@@ -395,7 +408,6 @@ export class CommissionerHubComponent {
   }
 
   editAsset(asset: Draft_Pick | FA_Pick): void {
-
     const payload = {
       type: asset.type ? 'draft-pick' : 'fa',
       action: 'edit',
@@ -403,8 +415,6 @@ export class CommissionerHubComponent {
       owned_by: asset.owned_by ? asset.owned_by : this.selected.owned_by,
       player_taken: asset.player_taken ? asset.player_taken : this.selected.player_taken,
     };
-
-    console.log('Payload: ', payload);
     
     this.http.post(`/api/edit-asset`, payload)
     .subscribe({
@@ -415,12 +425,16 @@ export class CommissionerHubComponent {
           this.selected.player_taken = asset.player_taken;
           this.selected.player_full_name = asset.player_full_name;
         }
-
-        this.closeModal();
         
-        let message = 'Saved Changes to Asset #' + payload.asset_id;
-        this.toastService.showToast(message, true);
-
+        if (this.addPlayerToRoster) {
+          this.addPlayer(payload.player_taken, payload.owned_by, asset)
+        }
+        else { 
+          let message = 'Saved Changes to Asset #' + payload.asset_id;
+          this.toastService.showToast(message, true);
+          this.closeModal();
+        }
+        
       },
       error: (error) => {
         console.error('Error submitting form', error, payload);
@@ -478,6 +492,53 @@ export class CommissionerHubComponent {
       }
     });
 
+  }
+
+  addPlayer(player_id: string, team_id: string, asset: Draft_Pick | FA_Pick): void {
+    const payload = {
+      player_id: player_id,
+      league_id: this.league_id,
+      team_id: team_id,
+      isRookie: 0,
+      fa_used: asset.asset_id,
+      action: 'add',
+      last_updated: this.globalService.getToday(),
+      updated_by: this.globalService.loggedInUser?.first_name + ' ' + this.globalService.loggedInUser?.last_name
+    }
+    console.log('Payload', payload);
+    
+    this.http.post('api/players/add-drop', payload)
+    .subscribe({
+      next: (response) => {
+        console.log('Player added successfully:', response);
+        //this.globalService.updateTeamCap(team);
+
+        let message = 'Player Added to ' + this.globalService.getTeamName(asset.owned_by) + ' using Asset #' + asset.asset_id;
+        this.toastService.showToast(message, true);
+        
+        if (this.globalService.loggedInUser) {
+          let action = 'add-player';
+          this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, action, message);
+        } 
+        
+        this.closeModal();
+        
+      },
+      error: (error) => {
+        console.error('Error recording action:', error);
+      }
+    }); 
+
+  }
+
+  togglePlayerAdd(): void {
+    this.addPlayerToRoster = !this.addPlayerToRoster;
+  }
+
+  compareDrafts(draft1: any, draft2: any): boolean {
+    return draft1 && draft2 ? 
+           draft1.year === draft2.year && draft1.type === draft2.type : 
+           draft1 === draft2;
   }
 
   async generateDraftPicks(): Promise<void> {
@@ -566,13 +627,16 @@ export class CommissionerHubComponent {
     }
   }
 
-  addToDraftOrder(index: number, event: any): void {
-    console.log('Event: ', event.target.value)
-    const team = this.allTeams.find(team => team.team_name === event.target.value);
-    if (team) {
-      this.draftOrder[index] = team;
+  logChange(): void {
+    console.log('Draft order', this.draftOrder);
+  }
+
+  updateDraftOrder(team_id: string, index: number) {
+    const selectedTeam = this.allTeams.find(team => team.team_id === team_id);
+    if (selectedTeam) {
+      this.draftOrder[index] = selectedTeam;
     }
-    console.log(this.draftOrder)
+    console.log('Order', this.draftOrder)
   }
 
   orderIsSet(): boolean {
@@ -621,7 +685,7 @@ export class CommissionerHubComponent {
   
       console.log('Payload', payload);
       
-      this.http.post('/api/set-draft-order', payload)
+      /*this.http.post('/api/set-draft-order', payload)
         .subscribe({
           next: (response) => {
             console.log('Draft order set successfully.', response);
@@ -635,7 +699,7 @@ export class CommissionerHubComponent {
             console.error('Error setting draft order:', error);
             this.toastService.showToast('Error setting draft order.', false);
           }
-      });
+      }); */
       
     }
   }
@@ -645,6 +709,10 @@ export class CommissionerHubComponent {
         pick.assigned_to === team.team_id && 
         pick.round === round
     );
+  }
+
+  confirmAdvanceSeason(): boolean {
+    return this.advanceSeasonKey === 'advance';
   }
 
   async advanceSeason(): Promise<void> {
@@ -731,6 +799,7 @@ export class CommissionerHubComponent {
 
   clearForms(): void {
     this.searchKey = '';
+    this.addPlayerToRoster = false;
 
     this.leagueDetails = {
       league_name: '',
