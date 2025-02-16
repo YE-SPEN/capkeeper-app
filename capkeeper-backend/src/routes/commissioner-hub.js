@@ -37,7 +37,6 @@ export const commisssionerHubRoute = {
                 [league_id]
             )
 
-            
             const { results: drafts } = await db.query(
                 `SELECT * FROM drafts
                 WHERE league_id = ?
@@ -53,7 +52,7 @@ export const commisssionerHubRoute = {
                 LEFT JOIN players p
                     ON dp.player_taken = p.player_id
                 WHERE d.league_id = ?
-                ORDER BY d.type, d.year, dp.round, dp.position`,
+                ORDER BY d.type, d.year ASC, dp.round ASC, dp.position ASC`,
                 [league_id]
             )
 
@@ -63,7 +62,7 @@ export const commisssionerHubRoute = {
                 LEFT JOIN players p
                     ON f.player_taken = p.player_id
                 WHERE league_id = ?
-                ORDER BY year, week, assigned_to`,
+                ORDER BY year, week ASC, assigned_to`,
                 [league_id]
             )
 
