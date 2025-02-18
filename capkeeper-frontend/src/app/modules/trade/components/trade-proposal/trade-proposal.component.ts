@@ -1,12 +1,12 @@
 import { Component, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { GlobalService } from '../../../../services/global.service';
-import { TeamService } from '../../../../services/team.service';
-import { ToastService } from '../../../../services/toast-service.service';
+import { GlobalService } from '@app/services/global.service';
+import { TeamService } from '@app/services/team.service';
+import { ToastService } from '@app/services/toast-service.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Team, Player, Draft_Pick, FA_Pick, Asset } from '../../../../types';
+import { Team, Player, Draft_Pick, Asset } from '@app/types';
 
 @Component({
   selector: 'app-trade-proposal',
@@ -33,6 +33,7 @@ export class TradeProposalComponent {
   assets_given_types: string[] = Array(6).fill('');
   assets_received: Asset[] = Array(6).fill(null);
   assets_received_types: string[] = Array(6).fill('');
+  trade_conditions: string[] = [];
   dropdownOpenReq: boolean[] = Array(6).fill(false);
   dropdownOpenRec: boolean[] = Array(6).fill(false);  
   toastMessage: string = '';
@@ -377,6 +378,20 @@ export class TradeProposalComponent {
     }
   }
 
+  addCondition(): void {
+    if (this.trade_conditions.length < 6) {
+      this.trade_conditions.push("");
+    }
+  }
+
+  removeCondition(index: number): void {
+    this.trade_conditions.splice(index, 1);
+  }
+
+  trackIndex(index: number, obj: any): any {
+    return index;
+  }
+
   rosterIsValid(roster: number): boolean {
     if (this.globalService.league) {
       return roster <= this.globalService.league?.max_roster_size;
@@ -416,7 +431,8 @@ export class TradeProposalComponent {
             retention_perc: '',
             asset_type: ''
           }
-      ]
+      ],
+      conditions: this.trade_conditions
     };
   
     for (let asset of this.assets_given) {
@@ -446,11 +462,14 @@ export class TradeProposalComponent {
     }
 
     payload.assets = payload.assets.filter(asset => asset.asset_type !== '');
+    payload.conditions = payload.conditions.filter(condition => condition !== '');
 
+    console.log('Payload', payload);
+    
     this.http.post('api/send-trade', payload)
     .subscribe({
       next: (response) => {
-        this.router.navigate(['/' + this.league_id + '/teams/' + this.globalService.loggedInTeam?.team_id]);
+        this.router.navigate(['/' + this.league_id + '/team/' + this.globalService.loggedInTeam?.team_id]);
           this.toastService.showToast('Your trade request has been sent!.', true)
       },
       error: (error) => {

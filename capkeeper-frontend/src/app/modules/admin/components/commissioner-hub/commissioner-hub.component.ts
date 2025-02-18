@@ -11,7 +11,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Team, Player, FA_Pick, Season, User, League, Draft_Pick, Draft, Pick_History } from '../../../../types';
+import { Team, Player, FA_Pick, Season, User, League, Draft_Pick, Draft, Pick_History, Trade_Condition, Trade, Asset } from '../../../../types';
 
 
 @Component({
@@ -31,6 +31,8 @@ export class CommissionerHubComponent {
   allFAs: FA_Pick[] = [];
   allPlayers: Player[] = [];
   allDrafts: Draft[] = [];
+  allConditions: Trade_Condition[] = [];
+  filteredConditions: Trade_Condition[] = [];
   nextDrafts: Draft[] = [];
   draftOrder: Team[] = [];
   searchKey: string = '';
@@ -38,16 +40,18 @@ export class CommissionerHubComponent {
   filteredDraftPicks: Draft_Pick[] = [];
   filteredFAPicks: FA_Pick[] = [];
   selected!: Draft_Pick | FA_Pick;
+  selectedTrade!: Trade;
   assetToEdit!: Draft_Pick | FA_Pick;
   addPlayerToRoster: boolean = false;
   inEditMode: boolean = false;
-  displaying: 'teams' | 'users' | 'draft' | 'fa' = 'teams';
+  displaying: 'teams' | 'users' | 'draft' | 'fa' | 'trade' = 'teams';
   toastMessage: string = '';
   yearFilter: string = 'any';
   weekFilter: string = 'any';
   pickTypeFilter: 'any' | 'general' | 'rookie' = 'any';
   pickStatusFilter: string = 'any';
   teamFilter: string = 'any';
+  conditionFilter: string = 'any';
   leagueSettings!: League;
   draftToEdit: Draft | null = null;
   advanceSeasonKey: string = '';
@@ -98,6 +102,8 @@ export class CommissionerHubComponent {
           this.filteredDraftPicks = this.allDraftPicks;
           this.allFAs = response.fa_picks;
           this.filteredFAPicks = this.allFAs;
+          this.allConditions = response.trade_conditions;
+          this.filterConditions('unresolved');
         });
       
       this.globalService.getLeagueHomeData(this.globalService.league?.league_id)
@@ -136,7 +142,7 @@ export class CommissionerHubComponent {
       }
   }
   
-  setDisplay(display: 'users' | 'teams' | 'draft' | 'fa'): void {
+  setDisplay(display: 'users' | 'teams' | 'draft' | 'fa' | 'trade'): void {
     this.displaying = display;
     this.clearFilters();
     if (this.displaying === 'draft') {
@@ -274,6 +280,16 @@ export class CommissionerHubComponent {
     this.paginationService.setPage(1);
   }
 
+  filterConditions(filter: string): void {
+    if (filter === 'any') {
+      this.filteredConditions = this.allConditions;
+    }
+    else {
+      this.filteredConditions = this.allConditions
+        .filter(cdn => cdn.status === filter);
+    }
+  }
+
   inYearFilter(pick: Draft_Pick | FA_Pick): boolean {
     return pick.year === Number(this.yearFilter) || this.yearFilter === 'any';
   }
@@ -309,8 +325,10 @@ export class CommissionerHubComponent {
     this.teamFilter = 'any';
     this.weekFilter = 'any';
     this.pickStatusFilter = 'any';
+    this.conditionFilter = 'any';
     this.filterDraftPicks();
     this.filterFAs();
+    this.filterConditions('any');
   }
 
   toggleAdminRights(user: User): void {
@@ -682,10 +700,8 @@ export class CommissionerHubComponent {
           }
         });
       }
-  
-      console.log('Payload', payload);
       
-      /*this.http.post('/api/set-draft-order', payload)
+      this.http.post('/api/set-draft-order', payload)
         .subscribe({
           next: (response) => {
             console.log('Draft order set successfully.', response);
@@ -699,7 +715,7 @@ export class CommissionerHubComponent {
             console.error('Error setting draft order:', error);
             this.toastService.showToast('Error setting draft order.', false);
           }
-      }); */
+      });
       
     }
   }
@@ -774,6 +790,51 @@ export class CommissionerHubComponent {
       });
   }
 
+  resolveCondition(condition_id: string): void {
+    this.http.post(`/api/resolve-condition/${condition_id}`, null)
+      .subscribe({
+        next: (response) => {
+          this.fetchConditions();
+          this.toastService.showToast('Condition #' + condition_id + ' marked as resolved.', true);
+        },
+        error: (error) => {
+            console.error('Error submitting form', error);
+        }
+      });
+  }
+
+  async fetchConditions(): Promise<void> {
+    try {
+        const response = await firstValueFrom(this.commisisonerService.getTradeConditions(this.league_id));
+        this.allConditions = response.trade_conditions;
+        this.filteredConditions = this.allConditions;
+    } catch (error) {
+        console.error('Failed to fetch conditions:', error);
+    }
+  }
+
+  async fetchTradeByID(trade_id: string): Promise<Trade> {
+    try {
+      const response = await firstValueFrom(this.teamService.getTradeByID(this.league_id, trade_id));
+      const trade = response.trade;
+      trade.assets = response.tradeItems;
+      return trade;
+    } catch (error) {
+      console.error('Failed to fetch trade items:', error);
+      throw error;
+    }
+  }
+
+  getTradePartners(trade: Trade): string[] {
+    const teamIdsSet = new Set([trade.requested_by, trade.sent_to]);
+    return Array.from(teamIdsSet);
+  }
+
+  getAssetsByTeam(trade: Trade, team_id: string): Asset[] {
+    const items = trade.assets.filter(asset => asset?.traded_to === team_id);
+    return items
+  }
+
   deepCopyPick(pick: Draft_Pick | FA_Pick): Draft_Pick | FA_Pick {
     return {
       ...pick,
@@ -785,16 +846,19 @@ export class CommissionerHubComponent {
     };
   }
 
-  openModal(template: TemplateRef<any>, pick?: Draft_Pick | FA_Pick): void {
-      if (pick) {
-          this.selected = pick;
-          this.assetToEdit = this.deepCopyPick(pick);
-          this.fetchPickHistory(this.selected);
-          if (this.allPlayers.length === 0) {
-            this.fetchPlayers();
-          }
-      }
-      this.modalRef = this.modalService.show(template);
+  async openModal(template: TemplateRef<any>, pick?: Draft_Pick | FA_Pick | null, trade_id?: string): Promise<void> {
+    if (trade_id) {
+      this.selectedTrade = await this.fetchTradeByID(trade_id);
+    }  
+    if (pick) {
+        this.selected = pick;
+        this.assetToEdit = this.deepCopyPick(pick);
+        this.fetchPickHistory(this.selected);
+        if (this.allPlayers.length === 0) {
+          this.fetchPlayers();
+        }
+    }
+    this.modalRef = this.modalService.show(template);
   }
 
   clearForms(): void {

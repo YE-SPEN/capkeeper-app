@@ -414,6 +414,20 @@
         </div>
 
     </div>
+
+    <div class="hidden md:block" *ngIf="trade_conditions.length > 0">
+        <h3 class="font-semibold text-gray-900 mb-2">
+            Trade Conditions
+        </h3>
+        
+        <ol class="max-w-md space-y-1 text-gray-500 list-decimal list-inside dark:text-gray-400">
+            <div *ngFor="let condition of trade_conditions; let i = index" class="flex flex-col">
+                <li>
+                    {{ trade_conditions[i] }}
+                </li>
+            </div>
+        </ol>
+    </div>
     
     <div class="hidden md:block">
         <table class="w-full table-auto border-collapse pt-6">

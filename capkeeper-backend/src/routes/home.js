@@ -39,12 +39,37 @@ export const leagueHomeRoute = {
                     END AS player_taken
                 FROM fa_picks fa
                     LEFT JOIN players p ON fa.player_taken = p.player_id
+                    JOIN leagues l on fa.league_id = l.league_id
                 WHERE fa.league_id = ?
-                AND fa.year = 2024`,
+                AND fa.year = l.current_season`,
                 [league_id]
-            )
+            );
 
-            return { recentActivity, teams, teamPoints, faPicks };
+            const { results: generalPicks } = await db.query(
+                `SELECT dp.asset_id, dp.round, dp.position, dp.pick_number, dp.assigned_to, dp.owned_by, dp.year, dp.type
+                FROM leagues l 
+                    JOIN drafts d ON l.league_id = d.league_id
+                    JOIN draft_picks dp ON d.draft_id = dp.draft_id
+                WHERE d.league_id = ?
+                    AND d.type = 'general'
+                    AND d.year = l.current_season + 1
+                ORDER BY dp.round, dp.pick_number`,
+                [league_id]
+            );
+
+            const { results: rookiePicks } = await db.query(
+                `SELECT dp.asset_id, dp.round, dp.position, dp.pick_number, dp.assigned_to, dp.owned_by, dp.year, dp.type
+                FROM leagues l 
+                    JOIN drafts d ON l.league_id = d.league_id
+                    JOIN draft_picks dp ON d.draft_id = dp.draft_id
+                WHERE d.league_id = ?
+                    AND d.type = 'rookie'
+                    AND d.year = l.current_season + 1
+                ORDER BY dp.round, dp.pick_number`,
+                [league_id]
+            );
+
+            return { recentActivity, teams, teamPoints, faPicks, generalPicks, rookiePicks };
 
         } catch (err) {
             console.error(err);

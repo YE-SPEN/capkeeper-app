@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Team, League, NHL_Team, User, Activity, Asset, Trade, FA_Pick, Season } from '../types';
+import { Team, League, NHL_Team, User, Activity, Asset, Trade, FA_Pick, Draft_Pick, Season } from '../types';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { TeamService } from './team.service';
@@ -191,9 +191,9 @@ export class GlobalService {
     return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
-  getLeagueHomeData(league_id: string): Observable<{ recentActivity: Activity[], teams: Team[], teamPoints: Season[], faPicks: FA_Pick[] }> {
+  getLeagueHomeData(league_id: string): Observable<{ recentActivity: Activity[], teams: Team[], teamPoints: Season[], faPicks: FA_Pick[], generalPicks: Draft_Pick[], rookiePicks: Draft_Pick[] }> {
     const url = `api/${league_id}/home`;
-    return this.http.get<{ recentActivity: Activity[], teams: Team[], teamPoints: Season[], faPicks: FA_Pick[] }>(url);
+    return this.http.get<{ recentActivity: Activity[], teams: Team[], teamPoints: Season[], faPicks: FA_Pick[], generalPicks: Draft_Pick[], rookiePicks: Draft_Pick[] }>(url);
   }
 
   getActivitiesByLeague(league_id: string, start: string, end: string): Observable<{ action_log: Activity[], users: User[], tradeItems: Asset[] }> {

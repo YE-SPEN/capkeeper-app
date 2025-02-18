@@ -34,6 +34,16 @@ export const tradeReviewRoute = {
                         WHEN ti.asset_type = 'fa' THEN fa.year
                         ELSE NULL
                     END AS year,
+                    CASE 
+                        WHEN ti.asset_type = 'draft_pick' THEN dp.assigned_to
+                        WHEN ti.asset_type = 'fa' THEN fa.assigned_to
+                        ELSE NULL
+                    END AS assigned_to,
+                    CASE 
+                        WHEN ti.asset_type = 'draft_pick' THEN dp.owned_by
+                        WHEN ti.asset_type = 'fa' THEN fa.owned_by
+                        ELSE NULL
+                    END AS owned_by,
                     dp.round, 
                     dp.pick_number, 
                     d.type, 
@@ -50,7 +60,14 @@ export const tradeReviewRoute = {
                  [trade_id]
             );
 
-            return { trade, tradeItems };
+            const { results: tradeConditions } = await db.query( 
+                `SELECT description
+                FROM trade_conditions
+                WHERE trade_id = ?`,
+                 [trade_id]
+            );
+
+            return { trade, tradeItems, tradeConditions };
 
         } catch (err) {
             console.error(err);

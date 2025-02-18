@@ -6,7 +6,7 @@ export const sendTradeRoute = {
     path: '/api/send-trade',
     handler: async (req, h) => {
         try {
-            const { league_id, requested_by, sent_to, assets } = req.payload;
+            const { league_id, requested_by, sent_to, assets, conditions } = req.payload;
 
             const insertTradeQuery = `
                 INSERT INTO trades (league_id, requested_by, sent_to, status)
@@ -23,8 +23,18 @@ export const sendTradeRoute = {
                 `;
 
                 for (const asset of assets) {
-                    console.log('Asset object: ', asset)
                     await db.query(insertAssetQuery, [trade_id, asset.draft_pick_id, asset.fa_id, asset.player_id, asset.traded_to, asset.traded_from, asset.retention_perc, asset.asset_type]);
+                }
+            }
+
+            if (conditions && conditions.length > 0) {
+                const insertConditionQuery = `
+                    INSERT INTO trade_conditions (trade_id, description)
+                    VALUES (?, ?);
+                `;
+
+                for (const condition of conditions) {
+                    await db.query(insertConditionQuery, [trade_id, condition]);
                 }
             }
 

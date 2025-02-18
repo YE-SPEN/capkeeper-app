@@ -166,7 +166,20 @@ export interface Trade {
     requested_by: string,
     sent_to: string,
     status: string,
-    assets: Asset[]
+    assets: Asset[],
+    conditions: Trade_Condition[]
+}
+
+export interface Trade_Condition {
+    [key: string]: any;
+    condition_id: string,
+    trade_id: string,
+    description: string,
+    status: string,
+    league_id: number,
+    requested_by: string,
+    sent_to: string,
+    date: Date
 }
 
 export interface NHL_Team {
