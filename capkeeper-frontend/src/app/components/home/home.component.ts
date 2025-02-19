@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { GlobalService } from '../../services/global.service';
-import { Team, Activity, FA_Pick, Season } from '../../types';
+import { Team, Activity, FA_Pick, Season, Draft_Pick } from '../../types';
 import { Router, ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
@@ -15,7 +15,10 @@ export class HomeComponent {
   allTeams: Team[] = [];
   recent_activity: Activity[] = [];
   displaying: 'points' | 'cap' = 'cap';
-  allFAs: FA_Pick[] = [] 
+  displaying2: 'fa' | 'general' | 'rookie' = 'fa';
+  allFAs: FA_Pick[] = [];
+  allGeneralPicks: Draft_Pick[] = [];
+  allRookiePicks: Draft_Pick[] = []; 
   maxFAWeek!: number;
   rolling_seasons: string[] = ["2023-24", "2024-25", "2025-26"];
   allTeamSeasons!: Season[];
@@ -43,6 +46,8 @@ export class HomeComponent {
         .subscribe(response => {
           this.recent_activity = response.recentActivity;
           this.allFAs = response.faPicks;
+          this.allGeneralPicks = response.generalPicks;
+          this.allRookiePicks = response.rookiePicks;
           this.allTeams = this.globalService.teams;
           this.maxFAWeek = this.allFAs.length / this.allTeams.length;
           this.allTeamSeasons = response.teamPoints;
@@ -72,6 +77,10 @@ export class HomeComponent {
 
   setDisplay(display: 'points' | 'cap'): void {
     this.displaying = display;
+  }
+
+  setDisplay2(display: 'fa' | 'general' | 'rookie'): void {
+    this.displaying2 = display;
   }
 
   getPlayerTaken(team: Team, week: number): string {
@@ -148,6 +157,63 @@ export class HomeComponent {
       }
     }
     return '';
+  }
+
+  getPicksByRound(team: string, round: number, type: string): number {
+    let sum = 0;
+    if (type === 'general') {
+      for (let pick of this.allGeneralPicks) {
+        if (pick.owned_by === team && pick.round === round && pick.type === type) {
+          ++sum;
+        }
+      }
+    }
+    if (type === 'rookie') {
+      for (let pick of this.allRookiePicks) {
+        if (pick.owned_by === team && pick.round === round && pick.type === type) {
+          ++sum;
+        }
+      }
+    }
+    return sum;
+  }
+
+  displayPicksByRound(team: string, round: number, type: string): Draft_Pick[] {
+    let array = [];
+    if (type === 'general') {
+      for (let pick of this.allGeneralPicks) {
+        if (pick.owned_by === team && pick.round === round && pick.type === type) {
+          array.push(pick);
+        }
+      }
+    }
+    if (type === 'rookie') {
+      for (let pick of this.allRookiePicks) {
+        if (pick.owned_by === team && pick.round === round && pick.type === type) {
+          array.push(pick);
+        }
+      }
+    }
+    return array;
+  }
+
+  getTotalPicksByTeam(team: string, type: string): number {
+    let sum = 0;
+    if (type === 'general') {
+      for (let pick of this.allGeneralPicks) {
+        if (pick.owned_by === team && pick.type === type) {
+          ++sum;
+        }
+      }
+    }
+    if (type === 'rookie') {
+      for (let pick of this.allRookiePicks) {
+        if (pick.owned_by === team && pick.type === type) {
+          ++sum;
+        }
+      }
+    }
+    return sum;
   }
 
 }

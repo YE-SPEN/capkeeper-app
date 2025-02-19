@@ -38,12 +38,16 @@ export class TradeReviewComponent extends TradeProposalComponent {
   
     const response = await firstValueFrom(this.teamService.getTradeByID(this.league_id, trade_id));
     this.trade = response.trade;
+    for (let condition of response.tradeConditions) {
+      this.trade_conditions.push(condition.description);
+    }
   
     await this.setRequestor(this.trade.requested_by);
     await this.setRecipient(this.trade.sent_to);
   
     this.assets_given = response.tradeItems.filter(asset => asset?.traded_to === this.recipient.team_id);
     this.assets_received = response.tradeItems.filter(asset => asset?.traded_to === this.requestor.team_id);
+    console.log(this.assets_given)
     this.adjustSalaries();
   }
   

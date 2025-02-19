@@ -66,7 +66,17 @@ export const commisssionerHubRoute = {
                 [league_id]
             )
 
-            return { users, teams, league, drafts, draft_picks, fa_picks };
+            const { results: trade_conditions } = await db.query(
+                `SELECT tc.*, t.league_id, t.requested_by, t.sent_to
+                FROM trades t 
+                    JOIN trade_conditions tc ON t.trade_id = tc.trade_id
+                WHERE t.league_id = ?
+                    AND t.status = 'Accepted'
+                    `,
+                [league_id]
+            )
+
+            return { users, teams, league, drafts, draft_picks, fa_picks, trade_conditions };
 
         } catch (err) {
             console.error(err);
