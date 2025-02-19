@@ -69,7 +69,7 @@ export class TradeReviewComponent extends TradeProposalComponent {
             this.globalService.recordAction(this.league_id, this.globalService.loggedInUser?.user_name, 'trade', message, this.trade.trade_id);
           }
 
-          this.router.navigate(['/' + this.league_id + '/teams/' + this.globalService.loggedInTeam?.team_id]).then(() => {
+          this.router.navigate(['/' + this.league_id + '/team/' + this.globalService.loggedInTeam?.team_id]).then(() => {
             if (this.globalService.loggedInTeam) {
               this.globalService.updateTeamCap(this.globalService.loggedInTeam);
             }
@@ -92,7 +92,7 @@ export class TradeReviewComponent extends TradeProposalComponent {
     this.http.post('api/confirm-trade', payload)
     .subscribe({
       next: (response) => {
-        this.router.navigate(['/' + this.league_id + '/teams/' + this.globalService.loggedInTeam?.team_id]);
+        this.router.navigate(['/' + this.league_id + '/team/' + this.globalService.loggedInTeam?.team_id]);
         if (this.globalService.loggedInTeam) {
           this.globalService.updateTeamCap(this.globalService.loggedInTeam);
         }
